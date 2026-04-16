@@ -20,7 +20,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // ⚠️ CAMBIA ESTO POR TUS DATOS REALES:
-    const supabase = window.supabase.createClient('https://swbnbjtnhthwipfuryqq.supabase.co', 'TU_ANON_KEY_AQUI');
+    const supabase = window.supabase.createClient('https://swbnbjtnhthwipfuryqq.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3Ym5ianRuaHRod2lwZnVyeXFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDU5ODcsImV4cCI6MjA5MTc4MTk4N30.eObhEYQuUrWGpR75z51QZyFHTgDPryh6hPHeoMLoOrA');
 
     async function cargar() {
       const { data } = await supabase.from('clientes').select('*');
