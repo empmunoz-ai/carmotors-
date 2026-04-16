@@ -6,7 +6,27 @@
   <title>CARMOTORS</title>
 </head>
 <body>
-  <h1>🚗 CARMOTORS - Clientes</h1>
-  <p>Próximo: formulario + tabla</p>
+  <h1>🚗 CARMOTORS</h1>
+  <form id="form-cliente">
+    <input id="nombre" placeholder="Nombre" required>
+    <input id="telefono" placeholder="Teléfono">
+    <button type="submit">Guardar</button>
+  </form>
+  <table id="tabla" border="1">
+    <tr><th>Nombre</th><th>Teléfono</th></tr>
+    <tbody id="lista"></tbody>
+  </table>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = window.supabase.createClient('TU_SUPABASE_URL', 'TU_ANON_KEY');
+    async function cargar() {
+      const { data } = await supabase.from('clientes').select('*');
+      document.getElementById('lista').innerHTML = data.map(c => 
+        `<tr><td>${c.nombre}</td><td>${c.telefono||''}</td></tr>`
+      ).join('');
+    }
+    cargar();
+  </script>
 </body>
 </html>
