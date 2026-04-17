@@ -862,33 +862,3 @@
   console.log('Supabase conectado ✅');
 </script>
 </body>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-<script>
-const supabase = supabase.createClient(
-  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3Ym5ianRuaHRod2lwZnVyeXFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDU5ODcsImV4cCI6MjA5MTc4MTk4N30.eObhEYQuUrWGpR75z51QZyFHTgDPryh6hPHeoMLoOrA"
-);
-
-async function cargarClientes() {
-  const { data, error } = await supabase
-    .from("clientes")
-    .select("*");
-
-  console.log(data);
-
-  const lista = document.getElementById("lista");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  data.forEach(c => {
-    const li = document.createElement("li");
-    li.textContent = c.nombre + " - " + c.telefono;
-    lista.appendChild(li);
-  });
-}
-
-cargarClientes();
-</script>
