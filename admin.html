@@ -1,1 +1,684 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAR MOTORS — Panel Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --negro: #0a0a0a;
+    --gris-oscuro: #141414;
+    --gris-panel: #1a1a1a;
+    --gris-borde: #2a2a2a;
+    --naranja: #f97316;
+    --naranja-oscuro: #c2410c;
+    --blanco: #f5f5f5;
+    --gris-texto: #888;
+    --verde: #22c55e;
+    --rojo: #ef4444;
+    --azul: #3b82f6;
+  }
 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #login-screen {
+    position: fixed; inset: 0;
+    background: var(--negro);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .login-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+  }
+  .login-logo span { color: var(--naranja); }
+
+  .login-box {
+    background: var(--gris-panel);
+    border: 1px solid var(--gris-borde);
+    border-radius: 12px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .login-box h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .input-field {
+    background: var(--negro);
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--blanco);
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .input-field:focus { outline: none; border-color: var(--naranja); }
+  .input-field::placeholder { color: var(--gris-texto); }
+
+  .btn-naranja {
+    background: var(--naranja);
+    color: var(--negro);
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem 1.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+  }
+  .btn-naranja:hover { background: var(--naranja-oscuro); }
+  .btn-naranja:active { transform: scale(0.98); }
+
+  #login-error {
+    color: var(--rojo);
+    font-size: 0.85rem;
+    text-align: center;
+    display: none;
+  }
+
+  /* APP */
+  #app { display: none; }
+
+  /* HEADER */
+  header {
+    background: var(--gris-oscuro);
+    border-bottom: 1px solid var(--gris-borde);
+    padding: 0 1.5rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--naranja); }
+  .logo small {
+    font-size: 0.7rem;
+    color: var(--gris-texto);
+    font-weight: 400;
+    letter-spacing: 2px;
+    display: block;
+    margin-top: -4px;
+  }
+
+  .btn-logout {
+    background: transparent;
+    border: 1px solid var(--gris-borde);
+    color: var(--gris-texto);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--rojo); color: var(--rojo); }
+
+  /* NAV */
+  nav {
+    background: var(--gris-oscuro);
+    border-bottom: 1px solid var(--gris-borde);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--gris-texto);
+    padding: 1rem 1.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .nav-btn:hover { color: var(--blanco); }
+  .nav-btn.active { color: var(--naranja); border-bottom-color: var(--naranja); }
+
+  /* MAIN */
+  main { padding: 1.5rem; max-width: 1000px; margin: 0 auto; }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* STATS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--gris-panel);
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .stat-card .label {
+    font-size: 0.75rem;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+  .stat-card .valor {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--naranja);
+  }
+
+  /* CARD / PANEL */
+  .card {
+    background: var(--gris-panel);
+    border: 1px solid var(--gris-borde);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* FORM GRID */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  .form-group label {
+    font-size: 0.75rem;
+    color: var(--gris-texto);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  select.input-field {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23888'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+  }
+
+  /* TABLA */
+  .tabla-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  th {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gris-texto);
+    border-bottom: 1px solid var(--gris-borde);
+  }
+  td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--gris-borde);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(249,115,22,0.04); }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .badge-verde { background: rgba(34,197,94,0.15); color: var(--verde); }
+  .badge-naranja { background: rgba(249,115,22,0.15); color: var(--naranja); }
+  .badge-rojo { background: rgba(239,68,68,0.15); color: var(--rojo); }
+
+  /* BTN PEQUEÑO */
+  .btn-sm {
+    padding: 0.3rem 0.7rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .btn-sm:hover { opacity: 0.8; }
+  .btn-danger { background: rgba(239,68,68,0.15); color: var(--rojo); }
+  .btn-primary { background: rgba(249,115,22,0.15); color: var(--naranja); }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--verde);
+    color: #000;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+    z-index: 9999;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+  #toast.error { background: var(--rojo); color: #fff; }
+
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gris-texto);
+    font-size: 0.9rem;
+  }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gris-texto);
+    font-size: 0.9rem;
+  }
+
+  /* IMAGEN PREVIEW */
+  .img-preview {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .img-preview img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--gris-borde);
+  }
+
+  .item-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .full { grid-column: 1; }
+    main { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-logo">CAR<span>MOTORS</span></div>
+  <div class="login-box">
+    <h2>Panel Admin</h2>
+    <div class="form-group">
+      <label>Correo</label>
+      <input type="email" id="login-email" class="input-field" placeholder="correo@ejemplo.com">
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" class="input-field" placeholder="••••••••">
+    </div>
+    <p id="login-error">Correo o contraseña incorrectos</p>
+    <button class="btn-naranja" onclick="login()">Entrar</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="logo">
+      CAR<span>MOTORS</span>
+      <small>Panel Admin</small>
+    </div>
+    <button class="btn-logout" onclick="logout()">Salir</button>
+  </header>
+
+  <nav>
+    <button class="nav-btn active" onclick="showSection('dashboard', this)">📊 Inicio</button>
+    <button class="nav-btn" onclick="showSection('clientes', this)">👥 Clientes</button>
+    <button class="nav-btn" onclick="showSection('inventario', this)">📦 Inventario</button>
+    <button class="nav-btn" onclick="showSection('ventas', this)">💰 Ventas</button>
+    <button class="nav-btn" onclick="showSection('citas', this)">📅 Citas</button>
+  </nav>
+
+  <main>
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard" class="section active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="label">Clientes</div>
+          <div class="valor" id="stat-clientes">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Productos</div>
+          <div class="valor" id="stat-inventario">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Ventas</div>
+          <div class="valor" id="stat-ventas">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Citas hoy</div>
+          <div class="valor" id="stat-citas">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Citas recientes</div>
+        </div>
+        <div id="citas-recientes"><div class="loading">Cargando...</div></div>
+      </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div id="section-clientes" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Nuevo Cliente</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre completo *</label>
+            <input type="text" id="c-nombre" class="input-field" placeholder="Juan Pérez">
+          </div>
+          <div class="form-group">
+            <label>Teléfono / WhatsApp</label>
+            <input type="text" id="c-telefono" class="input-field" placeholder="300 123 4567">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="c-email" class="input-field" placeholder="correo@gmail.com">
+          </div>
+          <div class="form-group">
+            <label>Placa</label>
+            <input type="text" id="c-placa" class="input-field" placeholder="ABC123">
+          </div>
+          <div class="form-group">
+            <label>Marca moto</label>
+            <input type="text" id="c-marca" class="input-field" placeholder="Honda">
+          </div>
+          <div class="form-group">
+            <label>Modelo</label>
+            <input type="text" id="c-modelo" class="input-field" placeholder="Bóxer 100">
+          </div>
+          <div class="form-group full">
+            <label>Dirección</label>
+            <input type="text" id="c-direccion" class="input-field" placeholder="Calle 10 # 5-20">
+          </div>
+          <div class="form-group full">
+            <label>Notas</label>
+            <input type="text" id="c-notas" class="input-field" placeholder="Observaciones del cliente">
+          </div>
+          <div class="full">
+            <button class="btn-naranja" onclick="guardarCliente()">Guardar Cliente</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Clientes registrados</div>
+        </div>
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Placa</th>
+                <th>Moto</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-clientes">
+              <tr><td colspan="5"><div class="loading">Cargando...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVENTARIO -->
+    <div id="section-inventario" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Nuevo Producto</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Nombre del producto *</label>
+            <input type="text" id="i-nombre" class="input-field" placeholder="Aceite Motor 10W-40">
+          </div>
+          <div class="form-group full">
+            <label>Descripción / Características</label>
+            <input type="text" id="i-descripcion" class="input-field" placeholder="Medidas, especificaciones, compatibilidad...">
+          </div>
+          <div class="form-group">
+            <label>Categoría</label>
+            <select id="i-categoria" class="input-field">
+              <option value="">Seleccionar...</option>
+              <option>Aceites y lubricantes</option>
+              <option>Repuestos motor</option>
+              <option>Frenos</option>
+              <option>Eléctrico</option>
+              <option>Filtros</option>
+              <option>Transmisión</option>
+              <option>Carrocería</option>
+              <option>Herramientas</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Unidad</label>
+            <select id="i-unidad" class="input-field">
+              <option value="unidad">Unidad</option>
+              <option value="litro">Litro</option>
+              <option value="par">Par</option>
+              <option value="kit">Kit</option>
+              <option value="metro">Metro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Precio compra (COP)</label>
+            <input type="number" id="i-precio-compra" class="input-field" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Precio venta (COP)</label>
+            <input type="number" id="i-precio-venta" class="input-field" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Stock inicial</label>
+            <input type="number" id="i-stock" class="input-field" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>URL imagen principal</label>
+            <input type="text" id="i-imagen" class="input-field" placeholder="https://...">
+          </div>
+          <div class="form-group full">
+            <label>URLs imágenes adicionales (una por línea)</label>
+            <textarea id="i-imagenes" class="input-field" rows="3" placeholder="https://imagen1.com&#10;https://imagen2.com&#10;https://imagen3.com" style="resize:vertical"></textarea>
+          </div>
+          <div class="full" id="img-preview-container">
+            <div class="img-preview" id="img-preview"></div>
+          </div>
+          <div class="full">
+            <button class="btn-naranja" onclick="guardarProducto()">Guardar Producto</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Inventario</div>
+        </div>
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Img</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Precio venta</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-inventario">
+              <tr><td colspan="6"><div class="loading">Cargando...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- VENTAS -->
+    <div id="section-ventas" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Nueva Venta</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Cliente</label>
+            <select id="v-cliente" class="input-field">
+              <option value="">Seleccionar cliente...</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Notas de la venta</label>
+            <input type="text" id="v-notas" class="input-field" placeholder="Descripción del servicio o venta">
+          </div>
+          <div class="form-group">
+            <label>Total (COP)</label>
+            <input type="number" id="v-total" class="input-field" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select id="v-estado" class="input-field">
+              <option value="pendiente">Pendiente</option>
+              <option value="pagado">Pagado</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+          <div class="full">
+            <button class="btn-naranja" onclick="guardarVenta()">Registrar Venta</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Ventas registradas</div>
+        </div>
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-ventas">
+              <tr><td colspan="6"><div class="loading">Cargando...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CITAS -->
+    <div id="section-citas" class="section">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Citas agendadas</div>
+        </div>
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr>
