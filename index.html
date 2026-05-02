@@ -1,1 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CARMOTORS — Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --navy:   #1B3A5C;
+      --steel:  #4A8FB5;
+      --red:    #C0392B;
+      --orange: #E8821A;
+      --cream:  #F5F0E8;
+      --dark:   #0f2236;
+      --card:   #1e3f60;
+      --border: #2a5278;
+      --text:   #d4e8f5;
+      --muted:  #7aaec8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--navy);
+      border-bottom: 2px solid var(--orange);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 13px;
+      color: var(--dark); flex-shrink: 0;
+    }
+    header h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 22px; font-weight: 700;
+      letter-spacing: 2px; color: var(--cream);
+    }
+    header span {
+      font-size: 11px; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-left: auto;
+    }
+    .btn-agenda {
+      background: var(--red);
+      color: white; border: none; border-radius: 6px;
+      padding: 7px 13px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 1px; cursor: pointer;
+      text-decoration: none; white-space: nowrap;
+    }
+    .tabs {
+      display: flex; background: var(--navy);
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      background: none; border: none;
+      color: var(--muted);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px; font-weight: 600;
+      letter-spacing: 1px; cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all .2s;
+    }
+    .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+    main { padding: 20px 16px; max-width: 800px; margin: 0 auto; }
+    .section { display: none; }
+    .section.active { display: block; }.form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px; margin-bottom: 24px;
+    }
+    .form-card h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px; font-weight: 600;
+      letter-spacing: 1px; color: var(--orange);
+      margin-bottom: 14px; text-transform: uppercase;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .form-grid .full { grid-column: 1 / -1; }
+    label {
+      display: block; font-size: 11px; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
+    }
+    input, textarea, select {
+      width: 100%; background: var(--dark);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 9px 12px; color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px; outline: none; transition: border-color .2s;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--steel); }
+    textarea { resize: vertical; min-height: 70px; }
+    select option { background: var(--dark); }
+    .btn-primary {
+      margin-top: 14px; width: 100%; padding: 11px;
+      background: var(--orange); color: var(--dark);
+      border: none; border-radius: 7px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px; font-weight: 700;
+      letter-spacing: 1px; cursor: pointer; transition: background .2s;
+    }
+    .btn-primary:hover { background: #f09030; }
+    .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
+    .msg {
+      padding: 10px 14px; border-radius: 6px;
+      font-size: 13px; margin-bottom: 16px; display: none;
+    }
+    .msg.ok  { background: #1a3d2b; color: #5ddb8c; border: 1px solid #2a6040; display: block; }
+    .msg.err { background: #3d1a1a; color: #e07070; border: 1px solid #6a2a2a; display: block; }
+    .table-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .table-header h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px; color: var(--steel);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .badge {
+      background: var(--steel); color: var(--dark);
+      font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: 20px;
+    }
+    .item-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px; margin-bottom: 10px;
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 10px;
+      animation: fadeIn .3s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: none; } }
+    .item-info h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px; font-weight: 600; color: var(--cream);
+    }
+    .item-info p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .item-meta { text-align: right; flex-shrink: 0; }
+    .item-meta .price {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px; font-weight: 700; color: var(--orange);
+    }
+    .item-meta .stock { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .estado-badge {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 3px 9px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .estado-pendiente  { background: #3d3010; color: var(--orange); }
+    .estado-en-proceso { background: #103040; color: var(--steel); }
+    .estado-terminado  { background: #1a3d2b; color: #5ddb8c; }
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+    .empty span { display: block; font-size: 32px; margin-bottom: 8px; }
+    .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+    #status-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--dark); border-top: 1px solid var(--border);
+      padding: 8px 16px; font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    #conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    #conn-dot.online  { background: #5ddb8c; }
+    #conn-dot.offline { background: var(--red); }
+    body { padding-bottom: 40px; }
+  </style>
+</head>
+<body>
 
+<header>
+  <div class="logo-mark">CM</div>
+  <h1>CARMOTORS</h1>
+  <span>Panel</span>
+  <a href="agenda.html" class="btn-agenda">📅 AGENDAR</a>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('articulos')">🔩 Artículos</button>
+  <button class="tab-btn" onclick="switchTab('ordenes')">📋 Órdenes</button>
+</div>
+
+<main>
+  <div id="tab-articulos" class="section active">
+    <div class="form-card">
+      <h2>➕ Nuevo artículo</h2>
+      <div id="msg-art" class="msg"></div>
+      <div class="form-grid">
+        <div>
+          <label>Nombre</label>
+          <input id="art-nombre" type="text" placeholder="Ej: Filtro de aceite"/>
+        </div>
+        <div>
+          <label>Referencia</label>
+          <input id="art-ref" type="text" placeholder="Ej: FO-1234"/>
+        </div>
+        <div>
+          <label>Precio ($)</label>
+          <input id="art-precio" type="number" placeholder="0"/>
+        </div>
+        <div>
+          <label>Stock</label>
+          <input id="art-stock" type="number" placeholder="0"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="guardarArticulo()">GUARDAR ARTÍCULO</button>
+    </div>
+    <div class="table-header">
+      <h2>Inventario</h2>
+      <span class="badge" id="badge-art">0</span>
+    </div>
+    <div id="lista-articulos"><div class="loading">Cargando...</div></div>
+  </div>
+
+  <div id="tab-ordenes" class="section">
+    <div class="form-card">
+      <h2>➕ Nueva orden de trabajo</h2>
+      <div id="msg-ord" class="msg"></div>
+      <div class="form-grid">
+        <div>
+          <label>Cliente</label>
+          <input id="ord-cliente" type="text" placeholder="Nombre del cliente"/>
+        </div>
+        <div>
+          <label>Vehículo</label>
+          <input id="ord-vehiculo" type="text" placeholder="Ej: Honda CB190 2022"/>
+        </div>
+        <div class="full">
+          <label>Descripción del trabajo</label>
+          <textarea id="ord-desc" placeholder="Describe el servicio o falla reportada..."></textarea>
+        </div>
+        <div>
+          <label>Estado</label>
+          <select id="ord-estado">
+            <option value="pendiente">Pendiente</option>
+            <option value="en-proceso">En proceso</option>
+            <option value="terminado">Terminado</option>
+          </select>
+        </div>
+        <div>
+          <label>Total ($)</label>
+          <input id="ord-total" type="number" placeholder="0"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="guardarOrden()">GUARDAR ORDEN</button>
+    </div>
+    <div class="table-header">
+      <h2>Órdenes de trabajo</h2>
+      <span class="badge" id="badge-ord">0</span>
+    </div>
+    <div id="lista-ordenes"><div class="loading">Cargando...</div></div>
+  </div>
+</main>
+
+<div id="status-bar">
+  <div id="conn-dot"></div>
+  <span id="conn-text">Conectando a Supabase...</span>
+</div><script>
+  const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function switchTab(tab) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function showMsg(id, texto, tipo) {
+    const el = document.getElementById(id);
+    el.textContent = texto;
+    el.className = 'msg ' + tipo;
+    setTimeout(() => { el.className = 'msg'; }, 3500);
+  }
+
+  function fmt(n) {
+    return '$' + Number(n).toLocaleString('es-CO');
+  }
+
+  async function guardarArticulo() {
+    const nombre = document.getElementById('art-nombre').value.trim();
+    if (!nombre) { showMsg('msg-art', '⚠️ El nombre es obligatorio.', 'err'); return; }
+    const btn = event.target;
+    btn.disabled = true; btn.textContent = 'GUARDANDO...';
+    const { error } = await db.from('articulos').insert({
+      nombre,
+      referencia: document.getElementById('art-ref').value.trim() || null,
+      precio: parseFloat(document.getElementById('art-precio').value) || 0,
+      stock: parseInt(document.getElementById('art-stock').value) || 0,
+    });
+    btn.disabled = false; btn.textContent = 'GUARDAR ARTÍCULO';
+    if (error) {
+      showMsg('msg-art', '❌ Error: ' + error.message, 'err');
+    } else {
+      showMsg('msg-art', '✅ Artículo guardado.', 'ok');
+      document.getElementById('art-nombre').value = '';
+      document.getElementById('art-ref').value = '';
+      document.getElementById('art-precio').value = '';
+      document.getElementById('art-stock').value = '';
+      cargarArticulos();
+    }
+  }
+
+  async function cargarArticulos() {
+    const { data, error } = await db
+      .from('articulos').select('*')
+      .order('creado_en', { ascending: false });
+    const cont = document.getElementById('lista-articulos');
+    document.getElementById('badge-art').textContent = data ? data.length : 0;
+    if (error) { cont.innerHTML = '<div class="empty"><span>⚠️</span>Error al cargar.</div>'; return; }
+    if (!data || data.length === 0) { cont.innerHTML = '<div class="empty"><span>🔩</span>Sin artículos todavía.</div>'; return; }
+    cont.innerHTML = data.map(a => `
+      <div class="item-card">
+        <div class="item-info">
+          <h3>${a.nombre}</h3>
+          <p>${a.referencia ? 'Ref: ' + a.referencia : 'Sin referencia'}</p>
+        </div>
+        <div class="item-meta">
+          <div class="price">${fmt(a.precio)}</div>
+          <div class="stock">Stock: ${a.stock}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  async function guardarOrden() {
+    const cliente = document.getElementById('ord-cliente').value.trim();
+    if (!cliente) { showMsg('msg-ord', '⚠️ El cliente es obligatorio.', 'err'); return; }
+    const btn = event.target;
+    btn.disabled = true; btn.textContent = 'GUARDANDO...';
+    const { error } = await db.from('ordenes_trabajo').insert({
+      cliente,
+      vehiculo: document.getElementById('ord-vehiculo').value.trim() || null,
+      descripcion: document.getElementById('ord-desc').value.trim() || null,
+      estado: document.getElementById('ord-estado').value,
+      total: parseFloat(document.getElementById('ord-total').value) || 0,
+    });
+    btn.disabled = false; btn.textContent = 'GUARDAR ORDEN';
+    if (error) {
+      showMsg('msg-ord', '❌ Error: ' + error.message, 'err');
+    } else {
+      showMsg('msg-ord', '✅ Orden guardada.', 'ok');
+      document.getElementById('ord-cliente').value = '';
+      document.getElementById('ord-vehiculo').value = '';
+      document.getElementById('ord-desc').value = '';
+      document.getElementById('ord-total').value = '';
+      document.getElementById('ord-estado').value = 'pendiente';
+      cargarOrdenes();
+    }
+  }
+
+  async function cargarOrdenes() {
+    const { data, error } = await db
+      .from('ordenes_trabajo').select('*')
+      .order('creado_en', { ascending: false });
+    const cont = document.getElementById('lista-ordenes');
+    document.getElementById('badge-ord').textContent = data ? data.length : 0;
+    if (error) { cont.innerHTML = '<div class="empty"><span>⚠️</span>Error al cargar.</div>'; return; }
+    if (!data || data.length === 0) { cont.innerHTML = '<div class="empty"><span>📋</span>Sin órdenes todavía.</div>'; return; }
+    cont.innerHTML = data.map(o => `
+      <div class="item-card">
+        <div class="item-info">
+          <h3>${o.cliente}</h3>
+          <p>${o.vehiculo || 'Vehículo no especificado'}</p>
+          <p style="margin-top:6px">${o.descripcion || ''}</p>
+        </div>
+        <div class="item-meta">
+          <div class="price">${fmt(o.total)}</div>
+          <div style="margin-top:6px">
+            <span class="estado-badge estado-${o.estado}">${o.estado}</span>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  async function init() {
+    const dot = document.getElementById('conn-dot');
+    const txt = document.getElementById('conn-text');
+    try {
+      const { error } = await db.from('articulos').select('id').limit(1);
+      if (error) throw error;
+      dot.className = 'online';
+      txt.textContent = 'Supabase conectado ✓';
+    } catch(e) {
+      dot.className = 'offline';
+      txt.textContent = 'Sin conexión a Supabase';
+    }
+    cargarArticulos();
+    cargarOrdenes();
+  }
+
+  init();
+</script>
+</body>
+</html>
