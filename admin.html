@@ -1,1 +1,303 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CARMOTORS — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --navy:   #1B3A5C;
+      --steel:  #4A8FB5;
+      --red:    #C0392B;
+      --orange: #E8821A;
+      --cream:  #F5F0E8;
+      --dark:   #0f2236;
+      --card:   #1e3f60;
+      --border: #2a5278;
+      --text:   #d4e8f5;
+      --muted:  #7aaec8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+    header {
+      background: var(--navy);
+      border-bottom: 2px solid var(--red);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    header .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--red);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 13px;
+      color: white; flex-shrink: 0;
+    }
+    header h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 20px; font-weight: 700;
+      letter-spacing: 2px; color: var(--cream);
+    }
+    header span {
+      font-size: 11px; color: var(--red);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .btn-back {
+      margin-left: auto;
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); border-radius: 6px;
+      padding: 6px 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px; font-weight: 600;
+      text-decoration: none;
+    }
+    main { padding: 16px; max-width: 800px; margin: 0 auto; }
+    .filtros {
+      display: flex; gap: 8px; margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .filtro-btn {
+      padding: 7px 14px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); border-radius: 20px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+    }
+    .filtro-btn.active { background: var(--orange); color: var(--dark); border-color: var(--orange); }
+    .table-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .table-header h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px; color: var(--steel);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .badge {
+      background: var(--steel); color: var(--dark);
+      font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: 20px;.cita-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px; margin-bottom: 12px;
+      animation: fadeIn .3s ease;
+    }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: none; } }
+    .cita-top {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .cita-nombre {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px; font-weight: 700; color: var(--cream);
+    }
+    .cita-vehiculo { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .cita-servicio {
+      font-size: 12px; color: var(--orange);
+      margin-top: 4px; font-weight: 500;
+    }
+    .estado-badge {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: .5px;
+      white-space: nowrap;
+    }
+    .estado-pendiente   { background: #3d3010; color: var(--orange); }
+    .estado-confirmada  { background: #103040; color: var(--steel); }
+    .estado-terminada   { background: #1a3d2b; color: #5ddb8c; }
+    .estado-cancelada   { background: #3d1a1a; color: #e07070; }
+    .cita-info {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6px; margin-bottom: 12px;
+    }
+    .cita-info-item { font-size: 12px; color: var(--muted); }
+    .cita-info-item strong { color: var(--text); display: block; font-size: 13px; }
+    .cita-desc {
+      font-size: 12px; color: var(--muted);
+      background: var(--dark); border-radius: 6px;
+      padding: 8px 10px; margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .cita-acciones {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-accion {
+      padding: 6px 12px;
+      border: none; border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: opacity .2s;
+    }
+    .btn-accion:hover { opacity: .85; }
+    .btn-confirmar  { background: var(--steel); color: white; }
+    .btn-terminar   { background: #2a6040; color: #5ddb8c; }
+    .btn-cancelar   { background: #6a2a2a; color: #e07070; }
+    .btn-llamar     { background: var(--orange); color: var(--dark); }
+    .pago-check {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted);
+      margin-left: auto; cursor: pointer;
+    }
+    .pago-check input { width: 16px; height: 16px; cursor: pointer; }
+    .pago-check.pagado { color: #5ddb8c; }
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+    .empty span { display: block; font-size: 32px; margin-bottom: 8px; }
+    .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+    #status-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--dark); border-top: 1px solid var(--border);
+      padding: 8px 16px; font-size: 11px; color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    #conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    #conn-dot.online  { background: #5ddb8c; }
+    #conn-dot.offline { background: var(--red); }
+  </style>
+</head><body>
+
+<header>
+  <div class="logo-mark">CM</div>
+  <div>
+    <h1>CARMOTORS</h1>
+    <span>⚙️ Panel Admin</span>
+  </div>
+  <a href="index.html" class="btn-back">← Panel</a>
+</header>
+
+<main>
+
+  <div class="filtros">
+    <button class="filtro-btn active" onclick="filtrar('todos', this)">Todas</button>
+    <button class="filtro-btn" onclick="filtrar('pendiente', this)">⏳ Pendientes</button>
+    <button class="filtro-btn" onclick="filtrar('confirmada', this)">✅ Confirmadas</button>
+    <button class="filtro-btn" onclick="filtrar('terminada', this)">🏁 Terminadas</button>
+    <button class="filtro-btn" onclick="filtrar('cancelada', this)">❌ Canceladas</button>
+  </div>
+
+  <div class="table-header">
+    <h2>📅 Citas agendadas</h2>
+    <span class="badge" id="badge-citas">0</span>
+  </div>
+
+  <div id="lista-citas"><div class="loading">Cargando citas...</div></div>
+
+</main>
+
+<div id="status-bar">
+  <div id="conn-dot"></div>
+  <span id="conn-text">Conectando...</span>
+</div>
+    }<script>
+  const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
+
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let todasLasCitas = [];
+  let filtroActual = 'todos';
+
+  function filtrar(estado, btn) {
+    filtroActual = estado;
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCitas(estado === 'todos' ? todasLasCitas : todasLasCitas.filter(c => c.estado === estado));
+  }
+
+  function renderCitas(citas) {
+    const cont = document.getElementById('lista-citas');
+    document.getElementById('badge-citas').textContent = citas.length;
+    if (!citas.length) {
+      cont.innerHTML = '<div class="empty"><span>📭</span>Sin citas en esta categoría.</div>';
+      return;
+    }
+    cont.innerHTML = citas.map(c => `
+      <div class="cita-card" id="cita-${c.id}">
+        <div class="cita-top">
+          <div>
+            <div class="cita-nombre">👤 ${c.nombre}</div>
+            <div class="cita-vehiculo">🏍️ ${c.vehiculo || 'Vehículo no especificado'}</div>
+            <div class="cita-servicio">🔧 ${c.servicio || 'Servicio no especificado'}</div>
+          </div>
+          <span class="estado-badge estado-${c.estado}">${c.estado}</span>
+        </div>
+        <div class="cita-info">
+          <div class="cita-info-item">
+            <strong>${c.fecha || 'Sin fecha'}</strong>Fecha
+          </div>
+          <div class="cita-info-item">
+            <strong>${c.telefono || 'Sin teléfono'}</strong>Teléfono
+          </div>
+        </div>
+        ${c.descripcion ? `<div class="cita-desc">💬 ${c.descripcion}</div>` : ''}
+        <div class="cita-acciones">
+          ${c.estado === 'pendiente' ? `<button class="btn-accion btn-confirmar" onclick="cambiarEstado('${c.id}','confirmada')">✅ Confirmar</button>` : ''}
+          ${c.estado === 'confirmada' ? `<button class="btn-accion btn-terminar" onclick="cambiarEstado('${c.id}','terminada')">🏁 Terminada</button>` : ''}
+          ${c.estado !== 'cancelada' && c.estado !== 'terminada' ? `<button class="btn-accion btn-cancelar" onclick="cambiarEstado('${c.id}','cancelada')">❌ Cancelar</button>` : ''}
+          ${c.telefono ? `<a href="tel:${c.telefono}" class="btn-accion btn-llamar">📞 Llamar</a>` : ''}
+          <label class="pago-check ${c.pago_diagnostico ? 'pagado' : ''}">
+            <input type="checkbox" ${c.pago_diagnostico ? 'checked' : ''} onchange="togglePago('${c.id}', this.checked)"/>
+            ${c.pago_diagnostico ? '💰 Anticipo pagado' : 'Anticipo pendiente'}
+          </label>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function cambiarEstado(id, nuevoEstado) {
+    await db.from('agenda').update({ estado: nuevoEstado }).eq('id', id);
+    cargarCitas();
+  }
+
+  async function togglePago(id, pagado) {
+    await db.from('agenda').update({ pago_diagnostico: pagado }).eq('id', id);
+    cargarCitas();
+  }
+
+  async function cargarCitas() {
+    const { data, error } = await db
+      .from('agenda').select('*')
+      .order('creado_en', { ascending: false });
+    if (error) {
+      document.getElementById('lista-citas').innerHTML = '<div class="empty"><span>⚠️</span>Error al cargar.</div>';
+      return;
+    }
+    todasLasCitas = data || [];
+    filtrar(filtroActual, document.querySelector('.filtro-btn.active'));
+  }
+
+  async function init() {
+    const dot = document.getElementById('conn-dot');
+    const txt = document.getElementById('conn-text');
+    try {
+      const { error } = await db.from('agenda').select('id').limit(1);
+      if (error) throw error;
+      dot.className = 'online';
+      txt.textContent = 'Supabase conectado ✓';
+    } catch(e) {
+      dot.className = 'offline';
+      txt.textContent = 'Sin conexión';
+    }
+    cargarCitas();
+  }
+
+  init();
+</script>
+</body>
+</html>
