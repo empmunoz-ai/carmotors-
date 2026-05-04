@@ -25,8 +25,7 @@
     header { background: var(--navy); border-bottom: 2px solid var(--orange); padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
     header .logo-mark { width: 36px; height: 36px; background: var(--orange); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; color: var(--dark); flex-shrink: 0; }
     header h1 { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--cream); }
-    .btn-agenda { background: var(--red); color: white; border: none; border-radius: 6px; padding: 7px 13px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: auto; }
-    .btn-admin { background: var(--navy); color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 7px 13px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; margin-left: 8px; }
+    header span { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-left: auto; }
     .tabs { display: flex; background: var(--navy); padding: 0 16px; border-bottom: 1px solid var(--border); }
     .tab-btn { padding: 12px 20px; background: none; border: none; color: var(--muted); font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; }
     .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
@@ -84,8 +83,7 @@
 <header>
   <div class="logo-mark">CM</div>
   <h1>CARMOTORS</h1>
-  <a href="agendar.html" class="btn-agenda">📅 AGENDAR</a>
-  <a href="admin.html" class="btn-admin">⚙️ ADMIN</a>
+  <span>Panel</span>
 <a href="ventas.html" class="btn-admin" style="color:var(--green);border-color:var(--green)">💰 VENTAS</a>
 </header>
 
@@ -218,10 +216,20 @@
   </div>
 </main>
 
-<div id="status-bar">
-  <div id="conn-dot"></div>
-  <span id="conn-text">Conectando...</span>
-</div><script>
+<nav class="bottom-nav">
+  <a href="index.html" class="active">
+    <span>🏠</span>PANEL
+  </a>
+  <a href="ventas.html">
+    <span>💰</span>VENTAS
+  </a>
+  <a href="agendar.html">
+    <span>📅</span>AGENDA
+  </a>
+  <a href="admin.html">
+    <span>⚙️</span>ADMIN
+  </a>
+</nav><script>
   const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
   const { createClient } = supabase;
