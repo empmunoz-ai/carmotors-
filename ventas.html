@@ -83,10 +83,11 @@
     .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
     .empty span { display: block; font-size: 32px; margin-bottom: 8px; }
     .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
-    #status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); border-top: 1px solid var(--border); padding: 8px 16px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
-    #conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
-    #conn-dot.online { background: var(--green); }
-    #conn-dot.offline { background: var(--red); }
+   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--navy); border-top: 2px solid var(--border); display: flex; z-index: 100; }
+.bottom-nav a { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 4px; text-decoration: none; color: var(--muted); font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; gap: 2px; }
+.bottom-nav a.active { color: var(--orange); border-top: 2px solid var(--orange); margin-top: -2px; }
+.bottom-nav a span { font-size: 20px; }
+body { padding-bottom: 60px; }
   </style>
 </head><body>
 <header>
@@ -238,10 +239,12 @@
 
 </main>
 
-<div id="status-bar">
-  <div id="conn-dot"></div>
-  <span id="conn-text">Conectando...</span>
-</div><script>
+<nav class="bottom-nav">
+  <a href="index.html"><span>🏠</span>PANEL</a>
+  <a href="ventas.html" class="active"><span>💰</span>VENTAS</a>
+  <a href="agendar.html"><span>📅</span>AGENDA</a>
+  <a href="admin.html"><span>⚙️</span>ADMIN</a>
+</nav><script>
   const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
   const { createClient } = supabase;
