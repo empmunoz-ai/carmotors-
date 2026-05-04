@@ -20,182 +20,69 @@
       --muted:  #7aaec8;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--dark);
-      color: var(--text);
-      font-family: 'IBM Plex Sans', sans-serif;
-      min-height: 100vh;
-    }
-    header {
-      background: var(--navy);
-      border-bottom: 2px solid var(--orange);
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    header .logo-mark {
-      width: 36px; height: 36px;
-      background: var(--orange);
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700; font-size: 13px;
-      color: var(--dark); flex-shrink: 0;
-    }
-    header h1 {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 22px; font-weight: 700;
-      letter-spacing: 2px; color: var(--cream);
-    }
-    header span {
-      font-size: 11px; color: var(--muted);
-      letter-spacing: 1px; text-transform: uppercase;
-      margin-left: auto;
-    }
-    .btn-agenda {
-      background: var(--red);
-      color: white; border: none; border-radius: 6px;
-      padding: 7px 13px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 13px; font-weight: 700;
-      letter-spacing: 1px; cursor: pointer;
-      text-decoration: none; white-space: nowrap;
-    }
-    .tabs {
-      display: flex; background: var(--navy);
-      padding: 0 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .tab-btn {
-      padding: 12px 20px;
-      background: none; border: none;
-      color: var(--muted);
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 15px; font-weight: 600;
-      letter-spacing: 1px; cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: all .2s;
-    }
+    body { background: var(--dark); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; padding-bottom: 40px; }
+    header { background: var(--navy); border-bottom: 2px solid var(--orange); padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
+    header .logo-mark { width: 36px; height: 36px; background: var(--orange); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; color: var(--dark); flex-shrink: 0; }
+    header h1 { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--cream); }
+    .btn-agenda { background: var(--red); color: white; border: none; border-radius: 6px; padding: 7px 13px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 1px; cursor: pointer; text-decoration: none; white-space: nowrap; margin-left: auto; }
+    .btn-admin { background: var(--navy); color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 7px 13px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; margin-left: 8px; }
+    .tabs { display: flex; background: var(--navy); padding: 0 16px; border-bottom: 1px solid var(--border); }
+    .tab-btn { padding: 12px 20px; background: none; border: none; color: var(--muted); font-family: 'Rajdhani', sans-serif; font-size: 15px; font-weight: 600; letter-spacing: 1px; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; }
     .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
     main { padding: 20px 16px; max-width: 800px; margin: 0 auto; }
     .section { display: none; }
-    .section.active { display: block; }.form-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px; margin-bottom: 24px;
-    }
-    .form-card h2 {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px; font-weight: 600;
-      letter-spacing: 1px; color: var(--orange);
-      margin-bottom: 14px; text-transform: uppercase;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+    .section.active { display: block; }
+    .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 24px; }
+    .form-card h2 { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 1px; color: var(--orange); margin-bottom: 14px; text-transform: uppercase; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .form-grid .full { grid-column: 1 / -1; }
-    label {
-      display: block; font-size: 11px; color: var(--muted);
-      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
-    }
-    input, textarea, select {
-      width: 100%; background: var(--dark);
-      border: 1px solid var(--border); border-radius: 6px;
-      padding: 9px 12px; color: var(--text);
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 14px; outline: none; transition: border-color .2s;
-    }
+    label { display: block; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    input, textarea, select { width: 100%; background: var(--dark); border: 1px solid var(--border); border-radius: 6px; padding: 9px 12px; color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
     input:focus, textarea:focus, select:focus { border-color: var(--steel); }
+    input[type="file"] { padding: 6px; cursor: pointer; }
     textarea { resize: vertical; min-height: 70px; }
-    select option { background: var(--dark); }
-    .btn-primary {
-      margin-top: 14px; width: 100%; padding: 11px;
-      background: var(--orange); color: var(--dark);
-      border: none; border-radius: 7px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px; font-weight: 700;
-      letter-spacing: 1px; cursor: pointer; transition: background .2s;
-    }
+    select option { background: var(--dark); }.btn-primary { margin-top: 14px; width: 100%; padding: 11px; background: var(--orange); color: var(--dark); border: none; border-radius: 7px; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: background .2s; }
     .btn-primary:hover { background: #f09030; }
     .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
-    .msg {
-      padding: 10px 14px; border-radius: 6px;
-      font-size: 13px; margin-bottom: 16px; display: none;
-    }
+    .msg { padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px; display: none; }
     .msg.ok  { background: #1a3d2b; color: #5ddb8c; border: 1px solid #2a6040; display: block; }
     .msg.err { background: #3d1a1a; color: #e07070; border: 1px solid #6a2a2a; display: block; }
-    .table-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px;
-    }
-    .table-header h2 {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px; color: var(--steel);
-      letter-spacing: 1px; text-transform: uppercase;
-    }
-    .badge {
-      background: var(--steel); color: var(--dark);
-      font-size: 11px; font-weight: 700;
-      padding: 3px 8px; border-radius: 20px;
-    }
-    .item-card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 8px; padding: 14px; margin-bottom: 10px;
-      display: flex; justify-content: space-between;
-      align-items: flex-start; gap: 10px;
-      animation: fadeIn .3s ease;
-    }
+    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .table-header h2 { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--steel); letter-spacing: 1px; text-transform: uppercase; }
+    .badge { background: var(--steel); color: var(--dark); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
+    .item-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; animation: fadeIn .3s ease; }
     @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: none; } }
-    .item-info h3 {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px; font-weight: 600; color: var(--cream);
-    }
+    .item-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
+    .item-img-placeholder { width: 60px; height: 60px; border-radius: 8px; background: var(--dark); border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .item-info h3 { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 600; color: var(--cream); }
     .item-info p { font-size: 12px; color: var(--muted); margin-top: 3px; }
     .item-meta { text-align: right; flex-shrink: 0; }
-    .item-meta .price {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 17px; font-weight: 700; color: var(--orange);
-    }
+    .item-meta .price { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; color: var(--orange); }
     .item-meta .stock { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .estado-badge {
-      display: inline-block; font-size: 11px; font-weight: 600;
-      padding: 3px 9px; border-radius: 20px;
-      text-transform: uppercase; letter-spacing: .5px;
-    }
+    .estado-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
     .estado-pendiente  { background: #3d3010; color: var(--orange); }
     .estado-en-proceso { background: #103040; color: var(--steel); }
     .estado-terminado  { background: #1a3d2b; color: #5ddb8c; }
     .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
     .empty span { display: block; font-size: 32px; margin-bottom: 8px; }
     .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
-    #status-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: var(--dark); border-top: 1px solid var(--border);
-      padding: 8px 16px; font-size: 11px; color: var(--muted);
-      display: flex; align-items: center; gap: 8px;
-    }
+    #status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); border-top: 1px solid var(--border); padding: 8px 16px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
     #conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
     #conn-dot.online  { background: #5ddb8c; }
     #conn-dot.offline { background: var(--red); }
-    body { padding-bottom: 40px; }
   </style>
-</head>
-<body>
+</head><body>
 
 <header>
   <div class="logo-mark">CM</div>
   <h1>CARMOTORS</h1>
-  <span>Panel</span>
-  <a href="agenda.html" class="btn-agenda">📅 AGENDAR</a>
+  <a href="agendar.html" class="btn-agenda">📅 AGENDAR</a>
+  <a href="admin.html" class="btn-admin">⚙️ ADMIN</a>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('articulos')">🔩 Artículos</button>
-  <button class="tab-btn" onclick="switchTab('ordenes')">📋 Órdenes</button>
+  <button class="tab-btn active" onclick="switchTab('articulos', this)">🔩 Artículos</button>
+  <button class="tab-btn" onclick="switchTab('ordenes', this)">📋 Órdenes</button>
 </div>
 
 <main>
@@ -219,6 +106,10 @@
         <div>
           <label>Stock</label>
           <input id="art-stock" type="number" placeholder="0"/>
+        </div>
+        <div class="full">
+          <label>Foto del repuesto</label>
+          <input id="art-foto" type="file" accept="image/*"/>
         </div>
       </div>
       <button class="btn-primary" onclick="guardarArticulo()">GUARDAR ARTÍCULO</button>
@@ -272,7 +163,7 @@
 
 <div id="status-bar">
   <div id="conn-dot"></div>
-  <span id="conn-text">Conectando a Supabase...</span>
+  <span id="conn-text">Conectando...</span>
 </div><script>
   const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
@@ -280,11 +171,11 @@
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  function switchTab(tab) {
+  function switchTab(tab, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
-    event.target.classList.add('active');
+    btn.classList.add('active');
   }
 
   function showMsg(id, texto, tipo) {
@@ -294,22 +185,41 @@
     setTimeout(() => { el.className = 'msg'; }, 3500);
   }
 
-  function fmt(n) {
-    return '$' + Number(n).toLocaleString('es-CO');
-  }
+  function fmt(n) { return '$' + Number(n).toLocaleString('es-CO'); }
 
   async function guardarArticulo() {
     const nombre = document.getElementById('art-nombre').value.trim();
     if (!nombre) { showMsg('msg-art', '⚠️ El nombre es obligatorio.', 'err'); return; }
+
     const btn = event.target;
     btn.disabled = true; btn.textContent = 'GUARDANDO...';
+
+    let imagen_url = null;
+    const fotoInput = document.getElementById('art-foto');
+
+    if (fotoInput.files && fotoInput.files[0]) {
+      const file = fotoInput.files[0];
+      const ext = file.name.split('.').pop();
+      const nombre_archivo = `${Date.now()}.${ext}`;
+      const { data: uploadData, error: uploadError } = await db.storage
+        .from('repuestos')
+        .upload(nombre_archivo, file, { contentType: file.type });
+      if (!uploadError) {
+        const { data: urlData } = db.storage.from('repuestos').getPublicUrl(nombre_archivo);
+        imagen_url = urlData.publicUrl;
+      }
+    }
+
     const { error } = await db.from('articulos').insert({
       nombre,
       referencia: document.getElementById('art-ref').value.trim() || null,
       precio: parseFloat(document.getElementById('art-precio').value) || 0,
       stock: parseInt(document.getElementById('art-stock').value) || 0,
+      imagen_url
     });
+
     btn.disabled = false; btn.textContent = 'GUARDAR ARTÍCULO';
+
     if (error) {
       showMsg('msg-art', '❌ Error: ' + error.message, 'err');
     } else {
@@ -318,20 +228,22 @@
       document.getElementById('art-ref').value = '';
       document.getElementById('art-precio').value = '';
       document.getElementById('art-stock').value = '';
+      document.getElementById('art-foto').value = '';
       cargarArticulos();
     }
   }
 
   async function cargarArticulos() {
-    const { data, error } = await db
-      .from('articulos').select('*')
-      .order('creado_en', { ascending: false });
+    const { data, error } = await db.from('articulos').select('*').order('creado_en', { ascending: false });
     const cont = document.getElementById('lista-articulos');
     document.getElementById('badge-art').textContent = data ? data.length : 0;
     if (error) { cont.innerHTML = '<div class="empty"><span>⚠️</span>Error al cargar.</div>'; return; }
     if (!data || data.length === 0) { cont.innerHTML = '<div class="empty"><span>🔩</span>Sin artículos todavía.</div>'; return; }
     cont.innerHTML = data.map(a => `
       <div class="item-card">
+        ${a.imagen_url
+          ? `<img src="${a.imagen_url}" class="item-img" alt="${a.nombre}"/>`
+          : `<div class="item-img-placeholder">🔩</div>`}
         <div class="item-info">
           <h3>${a.nombre}</h3>
           <p>${a.referencia ? 'Ref: ' + a.referencia : 'Sin referencia'}</p>
@@ -370,9 +282,7 @@
   }
 
   async function cargarOrdenes() {
-    const { data, error } = await db
-      .from('ordenes_trabajo').select('*')
-      .order('creado_en', { ascending: false });
+    const { data, error } = await db.from('ordenes_trabajo').select('*').order('creado_en', { ascending: false });
     const cont = document.getElementById('lista-ordenes');
     document.getElementById('badge-ord').textContent = data ? data.length : 0;
     if (error) { cont.innerHTML = '<div class="empty"><span>⚠️</span>Error al cargar.</div>'; return; }
@@ -403,7 +313,7 @@
       txt.textContent = 'Supabase conectado ✓';
     } catch(e) {
       dot.className = 'offline';
-      txt.textContent = 'Sin conexión a Supabase';
+      txt.textContent = 'Sin conexión';
     }
     cargarArticulos();
     cargarOrdenes();
