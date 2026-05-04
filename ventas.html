@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CARMOTORS — Ventas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --navy:   #1B3A5C;
+      --steel:  #4A8FB5;
+      --red:    #C0392B;
+      --orange: #E8821A;
+      --cream:  #F5F0E8;
+      --dark:   #0f2236;
+      --card:   #1e3f60;
+      --border: #2a5278;
+      --text:   #d4e8f5;
+      --muted:  #7aaec8;
+      --green:  #5ddb8c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--dark); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; padding-bottom: 50px; }
+    header { background: var(--navy); border-bottom: 2px solid var(--orange); padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
+    header .logo-mark { width: 36px; height: 36px; background: var(--orange); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; color: var(--dark); flex-shrink: 0; }
+    header h1 { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: 2px; color: var(--cream); }
+    .btn-back { margin-left: auto; background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 6px 12px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; text-decoration: none; }
+    .tabs { display: flex; background: var(--navy); padding: 0 16px; border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab-btn { padding: 12px 16px; background: none; border: none; color: var(--muted); font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 1px; cursor: pointer; border-bottom: 3px solid transparent; transition: all .2s; white-space: nowrap; }
+    .tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+    main { padding: 16px; max-width: 800px; margin: 0 auto; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .resumen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .resumen-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+    .resumen-card .valor { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--orange); }
+    .resumen-card .valor.green { color: var(--green); }
+    .resumen-card .valor.red { color: var(--red); }
+    .resumen-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 20px; }
+    .form-card h2 { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 1px; color: var(--orange); margin-bottom: 14px; text-transform: uppercase; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    label { display: block; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    input, select, textarea { width: 100%; background: var(--dark); border: 1px solid var(--border); border-radius: 6px; padding: 9px 12px; color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
+    input:focus, select:focus { border-color: var(--steel); }
+    select option { background: var(--dark); }.btn-primary { width: 100%; padding: 11px; background: var(--orange); color: var(--dark); border: none; border-radius: 7px; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: background .2s; margin-top: 10px; }
+    .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
+    .btn-secondary { padding: 8px 14px; background: var(--navy); color: var(--muted); border: 1px solid var(--border); border-radius: 6px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-green { background: #1a3d2b; color: var(--green); border: 1px solid #2a6040; }
+    .btn-red { background: #3d1a1a; color: #e07070; border: 1px solid #6a2a2a; }
+    .msg { padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 12px; display: none; }
+    .msg.ok  { background: #1a3d2b; color: var(--green); border: 1px solid #2a6040; display: block; }
+    .msg.err { background: #3d1a1a; color: #e07070; border: 1px solid #6a2a2a; display: block; }
+    .items-lista { margin: 12px 0; }
+    .item-row { background: var(--dark); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .item-row .item-desc { flex: 1; font-size: 13px; }
+    .item-row .item-sub { font-size: 11px; color: var(--muted); }
+    .item-row .item-total { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: var(--orange); white-space: nowrap; }
+    .item-row .btn-del { background: none; border: none; color: var(--red); font-size: 18px; cursor: pointer; padding: 0 4px; }
+    .total-box { background: var(--navy); border: 1px solid var(--orange); border-radius: 8px; padding: 12px 16px; margin: 12px 0; }
+    .total-box .total-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .total-box .total-final { display: flex; justify-content: space-between; font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: var(--orange); margin-top: 8px; }
+    .venta-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; animation: fadeIn .3s ease; }
+    .venta-card.fiado { border-color: var(--red); }
+    .venta-card.parcial { border-color: var(--orange); }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: none; } }
+    .venta-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .venta-cliente { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; color: var(--cream); }
+    .venta-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .venta-meta { text-align: right; }
+    .venta-total { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: var(--orange); }
+    .venta-ganancia { font-size: 11px; color: var(--green); }
+    .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; }
+    .badge-pagado  { background: #1a3d2b; color: var(--green); }
+    .badge-fiado   { background: #3d1a1a; color: #e07070; }
+    .badge-parcial { background: #3d3010; color: var(--orange); }
+    .venta-acciones { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .btn-wasa { background: #1a3d2b; color: var(--green); border: 1px solid #2a6040; border-radius: 6px; padding: 6px 12px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .btn-abono { background: #103040; color: var(--steel); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-family: 'Rajdhani', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .saldo-pendiente { font-size: 12px; color: #e07070; margin-top: 4px; }
+    .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+    .empty span { display: block; font-size: 32px; margin-bottom: 8px; }
+    .loading { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+    #status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); border-top: 1px solid var(--border); padding: 8px 16px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    #conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    #conn-dot.online { background: var(--green); }
+    #conn-dot.offline { background: var(--red); }
+  </style>
+</head><body>
+<header>
+  <div class="logo-mark">CM</div>
+  <h1>CARMOTORS</h1>
+  <a href="index.html" class="btn-back">← Panel</a>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('nueva', this)">➕ Nueva venta</button>
+  <button class="tab-btn" onclick="switchTab('hoy', this)">📊 Hoy</button>
+  <button class="tab-btn" onclick="switchTab('fiados', this)">💳 Fiados</button>
+  <button class="tab-btn" onclick="switchTab('clientes', this)">👥 Clientes</button>
+</div>
+
+<main>
+
+  <!-- ══ NUEVA VENTA ══ -->
+  <div id="tab-nueva" class="section active">
+    <div class="form-card">
+      <h2>➕ Nueva venta</h2>
+      <div id="msg-venta" class="msg"></div>
+      <div class="form-grid">
+        <div class="full">
+          <label>Cliente</label>
+          <select id="venta-cliente">
+            <option value="">Sin cliente / mostrador</option>
+          </select>
+        </div>
+        <div class="full">
+          <label>Tipo de ítem</label>
+          <select id="item-tipo" onchange="cambiarTipo()">
+            <option value="servicio">🔧 Servicio</option>
+            <option value="repuesto">🔩 Repuesto del inventario</option>
+          </select>
+        </div>
+        <div class="full" id="box-repuesto" style="display:none">
+          <label>Repuesto</label>
+          <select id="item-repuesto" onchange="seleccionarRepuesto()">
+            <option value="">Selecciona repuesto...</option>
+          </select>
+        </div>
+        <div class="full" id="box-servicio">
+          <label>Descripción</label>
+          <input id="item-desc" type="text" placeholder="Ej: Cambio de aceite, alineación..."/>
+        </div>
+        <div>
+          <label>Cantidad</label>
+          <input id="item-cantidad" type="number" value="1" min="1"/>
+        </div>
+        <div>
+          <label>Precio unitario</label>
+          <input id="item-precio" type="number" placeholder="0"/>
+        </div>
+      </div>
+      <button class="btn-secondary" style="width:100%;margin-top:10px" onclick="agregarItem()">+ AGREGAR ÍTEM</button>
+
+      <div class="items-lista" id="items-lista"></div>
+
+      <div class="total-box" id="total-box" style="display:none">
+        <div class="total-row"><span>Subtotal</span><span id="subtotal-txt">$0</span></div>
+        <div class="total-row"><span>Ganancia estimada</span><span id="ganancia-txt" style="color:var(--green)">$0</span></div>
+        <div class="total-final"><span>TOTAL</span><span id="total-txt">$0</span></div>
+      </div>
+
+      <div class="form-grid" style="margin-top:12px">
+        <div>
+          <label>Método de pago</label>
+          <select id="venta-metodo">
+            <option value="efectivo">💵 Efectivo</option>
+            <option value="nequi">📱 Nequi</option>
+            <option value="daviplata">📱 Daviplata</option>
+            <option value="tarjeta">💳 Tarjeta</option>
+            <option value="credito">📋 Crédito (fiado)</option>
+          </select>
+        </div>
+        <div id="box-abono" style="display:none">
+          <label>Abono inicial</label>
+          <input id="venta-abono" type="number" placeholder="0"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="guardarVenta()">💰 REGISTRAR VENTA</button>
+    </div>
+  </div>
+
+  <!-- ══ HOY ══ -->
+  <div id="tab-hoy" class="section">
+    <div class="resumen-grid">
+      <div class="resumen-card">
+        <div class="valor" id="res-total">$0</div>
+        <div class="label">Vendido hoy</div>
+      </div>
+      <div class="resumen-card">
+        <div class="valor green" id="res-ganancia">$0</div>
+        <div class="label">Ganancia hoy</div>
+      </div>
+      <div class="resumen-card">
+        <div class="valor" id="res-servicios">$0</div>
+        <div class="label">En servicios</div>
+      </div>
+      <div class="resumen-card">
+        <div class="valor" id="res-repuestos">$0</div>
+        <div class="label">En repuestos</div>
+      </div>
+    </div>
+    <div id="lista-hoy"><div class="loading">Cargando...</div></div>
+  </div>
+
+  <!-- ══ FIADOS ══ -->
+  <div id="tab-fiados" class="section">
+    <div id="lista-fiados"><div class="loading">Cargando...</div></div>
+  </div>
+
+  <!-- ══ CLIENTES ══ -->
+  <div id="tab-clientes" class="section">
+    <div class="form-card">
+      <h2>➕ Nuevo cliente</h2>
+      <div id="msg-cliente" class="msg"></div>
+      <div class="form-grid">
+        <div>
+          <label>Nombre</label>
+          <input id="cli-nombre" type="text" placeholder="Nombre completo"/>
+        </div>
+        <div>
+          <label>Teléfono / WhatsApp</label>
+          <input id="cli-tel" type="tel" placeholder="3XX XXX XXXX"/>
+        </div>
+        <div>
+          <label>Vehículo</label>
+          <input id="cli-vehiculo" type="text" placeholder="Ej: Honda CB190"/>
+        </div>
+        <div>
+          <label>Placa</label>
+          <input id="cli-placa" type="text" placeholder="Ej: ABC123"/>
+        </div>
+        <div class="full">
+          <label>Próximo servicio</label>
+          <input id="cli-proximo" type="date"/>
+        </div>
+        <div class="full">
+          <label>Notas</label>
+          <input id="cli-notas" type="text" placeholder="Ej: Alérgico a aceite mineral"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="guardarCliente()">GUARDAR CLIENTE</button>
+    </div>
+    <div id="lista-clientes"><div class="loading">Cargando...</div></div>
+  </div>
+
+</main>
+
+<div id="status-bar">
+  <div id="conn-dot"></div>
+  <span id="conn-text">Conectando...</span>
+</div><script>
+  const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let items = [];
+  let articulos = [];
+
+  function fmt(n) { return '$' + Number(n||0).toLocaleString('es-CO'); }
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    btn.classList.add('active');
+    if (tab === 'hoy') cargarHoy();
+    if (tab === 'fiados') cargarFiados();
+    if (tab === 'clientes') cargarClientes();
+  }
+
+  function cambiarTipo() {
+    const tipo = document.getElementById('item-tipo').value;
+    document.getElementById('box-repuesto').style.display = tipo === 'repuesto' ? 'block' : 'none';
+    document.getElementById('box-servicio').style.display = tipo === 'servicio' ? 'block' : 'none';
+  }
+
+  document.getElementById('venta-metodo').addEventListener('change', function() {
+    document.getElementById('box-abono').style.display = this.value === 'credito' ? 'block' : 'none';
+  });
+
+  function seleccionarRepuesto() {
+    const id = document.getElementById('item-repuesto').value;
+    const art = articulos.find(a => a.id === id);
+    if (art) {
+      document.getElementById('item-precio').value = art.precio;
+      document.getElementById('item-desc').value = art.nombre;
+    }
+  }
+
+  function agregarItem() {
+    const tipo = document.getElementById('item-tipo').value;
+    const desc = document.getElementById('item-desc').value.trim();
+    const cantidad = parseInt(document.getElementById('item-cantidad').value) || 1;
+    const precio = parseFloat(document.getElementById('item-precio').value) || 0;
+    if (!desc) { alert('Agrega una descripción'); return; }
+    if (!precio) { alert('Agrega el precio'); return; }
+
+    let costo = 0;
+    let articulo_id = null;
+    if (tipo === 'repuesto') {
+      const id = document.getElementById('item-repuesto').value;
+      const art = articulos.find(a => a.id === id);
+      if (art) { costo = art.costo || 0; articulo_id = art.id; }
+    }
+
+    items.push({ tipo, descripcion: desc, cantidad, precio_unitario: precio, costo_unitario: costo, subtotal: cantidad * precio, articulo_id });
+    renderItems();
+  }
+
+  function renderItems() {
+    const lista = document.getElementById('items-lista');
+    const totalBox = document.getElementById('total-box');
+    if (!items.length) { lista.innerHTML = ''; totalBox.style.display = 'none'; return; }
+
+    let total = 0, ganancia = 0;
+    lista.innerHTML = items.map((it, i) => {
+      total += it.subtotal;
+      ganancia += (it.precio_unitario - it.costo_unitario) * it.cantidad;
+      return `<div class="item-row">
+        <div class="item-desc">
+          <div>${it.descripcion}</div>
+          <div class="item-sub">${it.cantidad} x ${fmt(it.precio_unitario)}</div>
+        </div>
+        <div class="item-total">${fmt(it.subtotal)}</div>
+        <button class="btn-del" onclick="eliminarItem(${i})">✕</button>
+      </div>`;
+    }).join('');
+
+    totalBox.style.display = 'block';
+    document.getElementById('subtotal-txt').textContent = fmt(total);
+    document.getElementById('ganancia-txt').textContent = fmt(ganancia);
+    document.getElementById('total-txt').textContent = fmt(total);
+  }
+
+  function eliminarItem(i) { items.splice(i, 1); renderItems(); }
+
+  async function guardarVenta() {
+    if (!items.length) { document.getElementById('msg-venta').className = 'msg err'; document.getElementById('msg-venta').textContent = '⚠️ Agrega al menos un ítem.'; return; }
+    const btn = event.target;
+    btn.disabled = true; btn.textContent = 'GUARDANDO...';
+
+    const total = items.reduce((s, i) => s + i.subtotal, 0);
+    const ganancia = items.reduce((s, i) => s + (i.precio_unitario - i.costo_unitario) * i.cantidad, 0);
+    const metodo = document.getElementById('venta-metodo').value;
+    const abonado = metodo === 'credito' ? (parseFloat(document.getElementById('venta-abono').value) || 0) : total;
+    const saldo = total - abonado;
+    const estado_pago = saldo <= 0 ? 'pagado' : abonado > 0 ? 'parcial' : 'fiado';
+    const tipo = items.some(i => i.tipo === 'repuesto') && items.some(i => i.tipo === 'servicio') ? 'mixto' : items[0].tipo;
+    const cliente_id = document.getElementById('venta-cliente').value || null;
+    const descripcion = items.map(i => i.descripcion).join(', ');
+
+    const { data: venta, error } = await db.from('ventas').insert({ cliente_id, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodo, abonado, saldo, fecha: new Date().toISOString().split('T')[0] }).select().single();
+
+    if (error) { btn.disabled = false; btn.textContent = '💰 REGISTRAR VENTA'; document.getElementById('msg-venta').className = 'msg err'; document.getElementById('msg-venta').textContent = '❌ Error: ' + error.message; return; }
+
+    await db.from('venta_items').insert(items.map(i => ({ ...i, venta_id: venta.id })));
+    await db.from('pagos').insert({ venta_id: venta.id, monto: abonado, metodo, nota: 'Pago inicial' });
+
+    for (const it of items) {
+      if (it.articulo_id) {
+        const art = articulos.find(a => a.id === it.articulo_id);
+        if (art) await db.from('articulos').update({ stock: Math.max(0, art.stock - it.cantidad) }).eq('id', art.id);
+      }
+    }
+
+    if (cliente_id && saldo > 0) {
+      const { data: cli } = await db.from('clientes').select('saldo_pendiente').eq('id', cliente_id).single();
+      if (cli) await db.from('clientes').update({ saldo_pendiente: (cli.saldo_pendiente || 0) + saldo }).eq('id', cliente_id);
+    }
+
+    items = [];
+    renderItems();
+    document.getElementById('venta-cliente').value = '';
+    document.getElementById('venta-metodo').value = 'efectivo';
+    document.getElementById('item-desc').value = '';
+    document.getElementById('item-precio').value = '';
+    document.getElementById('item-cantidad').value = '1';
+    btn.disabled = false; btn.textContent = '💰 REGISTRAR VENTA';
+    document.getElementById('msg-venta').className = 'msg ok';
+    document.getElementById('msg-venta').textContent = '✅ Venta registrada correctamente.';
+    setTimeout(() => { document.getElementById('msg-venta').className = 'msg'; }, 3500);
+    cargarArticulos();
+  }
+
+  async function cargarHoy() {
+    const hoy = new Date().toISOString().split('T')[0];
+    const { data } = await db.from('ventas').select('*, clientes(nombre)').eq('fecha', hoy).order('creado_en', { ascending: false });
+    if (!data) return;
+    let total = 0, ganancia = 0, servicios = 0, repuestos = 0;
+    data.forEach(v => {
+      total += v.total; ganancia += v.ganancia;
+      if (v.tipo === 'servicio') servicios += v.total;
+      if (v.tipo === 'repuesto') repuestos += v.total;
+    });
+    document.getElementById('res-total').textContent = fmt(total);
+    document.getElementById('res-ganancia').textContent = fmt(ganancia);
+    document.getElementById('res-servicios').textContent = fmt(servicios);
+    document.getElementById('res-repuestos').textContent = fmt(repuestos);
+    const cont = document.getElementById('lista-hoy');
+    if (!data.length) { cont.innerHTML = '<div class="empty"><span>📭</span>Sin ventas hoy.</div>'; return; }
+    cont.innerHTML = data.map(v => `
+      <div class="venta-card ${v.estado_pago !== 'pagado' ? v.estado_pago : ''}">
+        <div class="venta-top">
+          <div>
+            <div class="venta-cliente">${v.clientes?.nombre || 'Mostrador'}</div>
+            <div class="venta-desc">${v.descripcion}</div>
+          </div>
+          <div class="venta-meta">
+            <div class="venta-total">${fmt(v.total)}</div>
+            <div class="venta-ganancia">+${fmt(v.ganancia)}</div>
+            <span class="badge badge-${v.estado_pago}">${v.estado_pago}</span>
+          </div>
+        </div>
+        ${v.saldo > 0 ? `<div class="saldo-pendiente">⚠️ Saldo pendiente: ${fmt(v.saldo)}</div>` : ''}
+        <div class="venta-acciones">
+          ${v.clientes?.nombre ? `<a class="btn-wasa" href="https://wa.me/57${v.clientes?.telefono || ''}?text=${encodeURIComponent('*CARMOTORS - Mecánicos de Confianza*\n\nCliente: '+v.clientes?.nombre+'\nServicio: '+v.descripcion+'\nTotal: '+fmt(v.total)+'\nEstado: '+v.estado_pago+'\n\nGracias por confiar en nosotros 🏍️')}" target="_blank">📲 WhatsApp</a>` : ''}
+          ${v.estado_pago !== 'pagado' ? `<button class="btn-abono" onclick="registrarAbono('${v.id}', ${v.saldo})">💵 Abonar</button>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  async function registrarAbono(venta_id, saldo_actual) {
+    const monto = parseFloat(prompt(`Saldo actual: ${fmt(saldo_actual)}\n\n¿Cuánto abona?`));
+    if (!monto || monto <= 0) return;
+    const abono = Math.min(monto, saldo_actual);
+    const nuevo_saldo = saldo_actual - abono;
+    const metodo = prompt('Método: efectivo, nequi, daviplata, tarjeta') || 'efectivo';
+    await db.from('pagos').insert({ venta_id, monto: abono, metodo, nota: 'Abono' });
+    const { data: v } = await db.from('ventas').select('abonado, cliente_id').eq('id', venta_id).single();
+    await db.from('ventas').update({ abonado: (v.abonado||0) + abono, saldo: nuevo_saldo, estado_pago: nuevo_saldo <= 0 ? 'pagado' : 'parcial' }).eq('id', venta_id);
+    if (v.cliente_id) {
+      const { data: cli } = await db.from('clientes').select('saldo_pendiente').eq('id', v.cliente_id).single();
+      if (cli) await db.from('clientes').update({ saldo_pendiente: Math.max(0, (cli.saldo_pendiente||0) - abono) }).eq('id', v.cliente_id);
+    }
+    cargarHoy(); cargarFiados();
+  }
+
+  async function cargarFiados() {
+    const { data } = await db.from('ventas').select('*, clientes(nombre, telefono)').neq('estado_pago', 'pagado').order('creado_en', { ascending: false });
+    const cont = document.getElementById('lista-fiados');
+    if (!data || !data.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin fiados pendientes.</div>'; return; }
+    cont.innerHTML = data.map(v => `
+      <div class="venta-card fiado">
+        <div class="venta-top">
+          <div>
+            <div class="venta-cliente">${v.clientes?.nombre || 'Mostrador'}</div>
+            <div class="venta-desc">${v.descripcion}</div>
+            <div class="venta-desc">${v.fecha}</div>
+          </div>
+          <div class="venta-meta">
+            <div class="venta-total">${fmt(v.total)}</div>
+            <div class="saldo-pendiente">Saldo: ${fmt(v.saldo)}</div>
+            <span class="badge badge-${v.estado_pago}">${v.estado_pago}</span>
+          </div>
+        </div>
+        <div class="venta-acciones">
+          ${v.clientes?.telefono ? `<a class="btn-wasa" href="https://wa.me/57${v.clientes.telefono}?text=${encodeURIComponent('Hola '+v.clientes.nombre+', te recordamos que tienes un saldo pendiente de '+fmt(v.saldo)+' en CARMOTORS. 🏍️')}" target="_blank">📲 Recordar</a>` : ''}
+          <button class="btn-abono" onclick="registrarAbono('${v.id}', ${v.saldo})">💵 Abonar</button>
+        </div>
+      </div>`).join('');
+  }
+
+  async function guardarCliente() {
+    const nombre = document.getElementById('cli-nombre').value.trim();
+    if (!nombre) return;
+    const btn = event.target; btn.disabled = true;
+    const { error } = await db.from('clientes').insert({ nombre, telefono: document.getElementById('cli-tel').value.trim() || null, vehiculo: document.getElementById('cli-vehiculo').value.trim() || null, placa: document.getElementById('cli-placa').value.trim() || null, proximo_servicio: document.getElementById('cli-proximo').value || null, notas: document.getElementById('cli-notas').value.trim() || null });
+    btn.disabled = false;
+    if (error) { document.getElementById('msg-cliente').className = 'msg err'; document.getElementById('msg-cliente').textContent = '❌ ' + error.message; return; }
+    document.getElementById('msg-cliente').className = 'msg ok';
+    document.getElementById('msg-cliente').textContent = '✅ Cliente guardado.';
+    ['cli-nombre','cli-tel','cli-vehiculo','cli-placa','cli-notas','cli-proximo'].forEach(id => document.getElementById(id).value = '');
+    setTimeout(() => { document.getElementById('msg-cliente').className = 'msg'; }, 3000);
+    cargarClientes(); cargarSelectClientes();
+  }
+
+  async function cargarClientes() {
+    const { data } = await db.from('clientes').select('*').order('nombre');
+    const cont = document.getElementById('lista-clientes');
+    if (!data || !data.length) { cont.innerHTML = '<div class="empty"><span>👥</span>Sin clientes todavía.</div>'; return; }
+    cont.innerHTML = data.map(c => `
+      <div class="venta-card ${c.saldo_pendiente > 0 ? 'fiado' : ''}">
+        <div class="venta-top">
+          <div>
+            <div class="venta-cliente">${c.nombre}</div>
+            <div class="venta-desc">🏍️ ${c.vehiculo || 'Sin vehículo'} ${c.placa ? '· '+c.placa : ''}</div>
+            ${c.proximo_servicio ? `<div class="venta-desc" style="color:var(--orange)">⏰ Próximo servicio: ${c.proximo_servicio}</div>` : ''}
+            ${c.notas ? `<div class="venta-desc">📝 ${c.notas}</div>` : ''}
+          </div>
+          <div class="venta-meta">
+            ${c.saldo_pendiente > 0 ? `<div class="saldo-pendiente">⚠️ ${fmt(c.saldo_pendiente)}</div>` : '<div style="color:var(--green);font-size:12px">✅ Al día</div>'}
+            ${c.telefono ? `<a class="btn-wasa" style="margin-top:6px;display:inline-block" href="https://wa.me/57${c.telefono}" target="_blank">📲</a>` : ''}
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  async function cargarSelectClientes() {
+    const { data } = await db.from('clientes').select('id, nombre, saldo_pendiente').order('nombre');
+    const sel = document.getElementById('venta-cliente');
+    sel.innerHTML = '<option value="">Sin cliente / mostrador</option>';
+    if (data) data.forEach(c => { sel.innerHTML += `<option value="${c.id}">${c.nombre}${c.saldo_pendiente > 0 ? ' ⚠️ '+fmt(c.saldo_pendiente) : ''}</option>`; });
+  }
+
+  async function cargarArticulos() {
+    const { data } = await db.from('articulos').select('*').order('nombre');
+    articulos = data || [];
+    const sel = document.getElementById('item-repuesto');
+    sel.innerHTML = '<option value="">Selecciona repuesto...</option>';
+    articulos.forEach(a => { sel.innerHTML += `<option value="${a.id}">${a.nombre} — Stock: ${a.stock} — ${fmt(a.precio)}</option>`; });
+  }
+
+  async function init() {
+    const dot = document.getElementById('conn-dot');
+    const txt = document.getElementById('conn-text');
+    try {
+      await db.from('ventas').select('id').limit(1);
+      dot.className = 'online'; txt.textContent = 'Supabase conectado ✓';
+    } catch(e) { dot.className = 'offline'; txt.textContent = 'Sin conexión'; }
+    cargarArticulos(); cargarSelectClientes(); cargarHoy();
+  }
+
+  init();
+</script>
+</body>
+</html>
