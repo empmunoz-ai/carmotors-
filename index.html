@@ -40,8 +40,8 @@
     input, textarea, select { width: 100%; background: var(--dark); border: 1px solid var(--border); border-radius: 6px; padding: 9px 12px; color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; outline: none; transition: border-color .2s; }
     input:focus, textarea:focus, select:focus { border-color: var(--steel); }
     input[type="file"] { padding: 6px; cursor: pointer; }
-    textarea { resize: vertical; min-height: 70px; }
-    select option { background: var(--dark); }.btn-primary { margin-top: 14px; width: 100%; padding: 11px; background: var(--orange); color: var(--dark); border: none; border-radius: 7px; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: background .2s; }
+    select option { background: var(--dark); }
+    .alert-stock { color: var(--red); font-size: 11px; margin-top: 2px; }.btn-primary { margin-top: 14px; width: 100%; padding: 11px; background: var(--orange); color: var(--dark); border: none; border-radius: 7px; font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: background .2s; }
     .btn-primary:hover { background: #f09030; }
     .btn-primary:disabled { background: var(--border); cursor: not-allowed; }
     .msg { padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 16px; display: none; }
@@ -50,15 +50,22 @@
     .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .table-header h2 { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--steel); letter-spacing: 1px; text-transform: uppercase; }
     .badge { background: var(--steel); color: var(--dark); font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px; }
-    .item-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; animation: fadeIn .3s ease; }
+    .badge-red { background: var(--red); }
+    .item-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; animation: fadeIn .3s ease; }
+    .item-card.stock-bajo { border-color: var(--red); }
     @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: none; } }
-    .item-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
-    .item-img-placeholder { width: 60px; height: 60px; border-radius: 8px; background: var(--dark); border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .item-img { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
+    .item-img-placeholder { width: 64px; height: 64px; border-radius: 8px; background: var(--dark); border: 1px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .item-info { flex: 1; }
     .item-info h3 { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 600; color: var(--cream); }
-    .item-info p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .item-info .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .item-info .tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--dark); border: 1px solid var(--border); color: var(--muted); }
     .item-meta { text-align: right; flex-shrink: 0; }
     .item-meta .price { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; color: var(--orange); }
-    .item-meta .stock { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .item-meta .costo { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .item-meta .stock { font-size: 12px; color: var(--text); margin-top: 4px; }
+    .item-meta .stock.bajo { color: var(--red); font-weight: 700; }
     .estado-badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
     .estado-pendiente  { background: #3d3010; color: var(--orange); }
     .estado-en-proceso { background: #103040; color: var(--steel); }
@@ -100,12 +107,56 @@
           <input id="art-ref" type="text" placeholder="Ej: FO-1234"/>
         </div>
         <div>
-          <label>Precio ($)</label>
+          <label>Código de barras</label>
+          <input id="art-barras" type="text" placeholder="Escanea o escribe"/>
+        </div>
+        <div>
+          <label>Categoría</label>
+          <select id="art-categoria">
+            <option value="">Sin categoría</option>
+            <option value="Filtros">Filtros</option>
+            <option value="Aceites">Aceites</option>
+            <option value="Frenos">Frenos</option>
+            <option value="Electricidad">Electricidad</option>
+            <option value="Motor">Motor</option>
+            <option value="Transmisión">Transmisión</option>
+            <option value="Carrocería">Carrocería</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </div>
+        <div>
+          <label>Precio venta ($)</label>
           <input id="art-precio" type="number" placeholder="0"/>
         </div>
         <div>
-          <label>Stock</label>
+          <label>Costo ($)</label>
+          <input id="art-costo" type="number" placeholder="0"/>
+        </div>
+        <div>
+          <label>Stock actual</label>
           <input id="art-stock" type="number" placeholder="0"/>
+        </div>
+        <div>
+          <label>Stock mínimo</label>
+          <input id="art-stock-min" type="number" placeholder="0"/>
+        </div>
+        <div>
+          <label>Unidad</label>
+          <select id="art-unidad">
+            <option value="unidad">Unidad</option>
+            <option value="par">Par</option>
+            <option value="juego">Juego</option>
+            <option value="litro">Litro</option>
+            <option value="metro">Metro</option>
+          </select>
+        </div>
+        <div>
+          <label>Ubicación estante</label>
+          <input id="art-ubicacion" type="text" placeholder="Ej: A-12"/>
+        </div>
+        <div class="full">
+          <label>Proveedor</label>
+          <input id="art-proveedor" type="text" placeholder="Ej: Distribuidora Moto Norte"/>
         </div>
         <div class="full">
           <label>Foto del repuesto</label>
@@ -167,7 +218,6 @@
 </div><script>
   const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
-
   const { createClient } = supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -190,20 +240,16 @@
   async function guardarArticulo() {
     const nombre = document.getElementById('art-nombre').value.trim();
     if (!nombre) { showMsg('msg-art', '⚠️ El nombre es obligatorio.', 'err'); return; }
-
     const btn = event.target;
     btn.disabled = true; btn.textContent = 'GUARDANDO...';
 
     let imagen_url = null;
     const fotoInput = document.getElementById('art-foto');
-
     if (fotoInput.files && fotoInput.files[0]) {
       const file = fotoInput.files[0];
       const ext = file.name.split('.').pop();
       const nombre_archivo = `${Date.now()}.${ext}`;
-      const { data: uploadData, error: uploadError } = await db.storage
-        .from('repuestos')
-        .upload(nombre_archivo, file, { contentType: file.type });
+      const { error: uploadError } = await db.storage.from('repuestos').upload(nombre_archivo, file, { contentType: file.type });
       if (!uploadError) {
         const { data: urlData } = db.storage.from('repuestos').getPublicUrl(nombre_archivo);
         imagen_url = urlData.publicUrl;
@@ -213,8 +259,15 @@
     const { error } = await db.from('articulos').insert({
       nombre,
       referencia: document.getElementById('art-ref').value.trim() || null,
+      codigo_barras: document.getElementById('art-barras').value.trim() || null,
+      categoria: document.getElementById('art-categoria').value || null,
       precio: parseFloat(document.getElementById('art-precio').value) || 0,
+      costo: parseFloat(document.getElementById('art-costo').value) || 0,
       stock: parseInt(document.getElementById('art-stock').value) || 0,
+      stock_minimo: parseInt(document.getElementById('art-stock-min').value) || 0,
+      unidad: document.getElementById('art-unidad').value,
+      ubicacion: document.getElementById('art-ubicacion').value.trim() || null,
+      proveedor: document.getElementById('art-proveedor').value.trim() || null,
       imagen_url
     });
 
@@ -224,10 +277,9 @@
       showMsg('msg-art', '❌ Error: ' + error.message, 'err');
     } else {
       showMsg('msg-art', '✅ Artículo guardado.', 'ok');
-      document.getElementById('art-nombre').value = '';
-      document.getElementById('art-ref').value = '';
-      document.getElementById('art-precio').value = '';
-      document.getElementById('art-stock').value = '';
+      ['art-nombre','art-ref','art-barras','art-precio','art-costo','art-stock','art-stock-min','art-ubicacion','art-proveedor'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('art-categoria').value = '';
+      document.getElementById('art-unidad').value = 'unidad';
       document.getElementById('art-foto').value = '';
       cargarArticulos();
     }
@@ -239,20 +291,31 @@
     document.getElementById('badge-art').textContent = data ? data.length : 0;
     if (error) { cont.innerHTML = '<div class="empty"><span>⚠️</span>Error al cargar.</div>'; return; }
     if (!data || data.length === 0) { cont.innerHTML = '<div class="empty"><span>🔩</span>Sin artículos todavía.</div>'; return; }
-    cont.innerHTML = data.map(a => `
-      <div class="item-card">
-        ${a.imagen_url
-          ? `<img src="${a.imagen_url}" class="item-img" alt="${a.nombre}"/>`
-          : `<div class="item-img-placeholder">🔩</div>`}
+    cont.innerHTML = data.map(a => {
+      const stockBajo = a.stock_minimo > 0 && a.stock <= a.stock_minimo;
+      return `
+      <div class="item-card ${stockBajo ? 'stock-bajo' : ''}">
+        ${a.imagen_url ? `<img src="${a.imagen_url}" class="item-img" alt="${a.nombre}"/>` : `<div class="item-img-placeholder">🔩</div>`}
         <div class="item-info">
           <h3>${a.nombre}</h3>
-          <p>${a.referencia ? 'Ref: ' + a.referencia : 'Sin referencia'}</p>
+          <div class="sub">${a.referencia ? 'Ref: '+a.referencia : ''} ${a.codigo_barras ? '· '+a.codigo_barras : ''}</div>
+          <div class="tags">
+            ${a.categoria ? `<span class="tag">📦 ${a.categoria}</span>` : ''}
+            ${a.ubicacion ? `<span class="tag">📍 ${a.ubicacion}</span>` : ''}
+            ${a.proveedor ? `<span class="tag">🏭 ${a.proveedor}</span>` : ''}
+            ${a.unidad ? `<span class="tag">${a.unidad}</span>` : ''}
+          </div>
         </div>
         <div class="item-meta">
           <div class="price">${fmt(a.precio)}</div>
-          <div class="stock">Stock: ${a.stock}</div>
+          <div class="costo">Costo: ${fmt(a.costo)}</div>
+          <div class="stock ${stockBajo ? 'bajo' : ''}">
+            ${stockBajo ? '⚠️' : ''} Stock: ${a.stock}
+            ${stockBajo ? `<br/><small>Mín: ${a.stock_minimo}</small>` : ''}
+          </div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
   async function guardarOrden() {
@@ -272,10 +335,7 @@
       showMsg('msg-ord', '❌ Error: ' + error.message, 'err');
     } else {
       showMsg('msg-ord', '✅ Orden guardada.', 'ok');
-      document.getElementById('ord-cliente').value = '';
-      document.getElementById('ord-vehiculo').value = '';
-      document.getElementById('ord-desc').value = '';
-      document.getElementById('ord-total').value = '';
+      ['ord-cliente','ord-vehiculo','ord-desc','ord-total'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('ord-estado').value = 'pendiente';
       cargarOrdenes();
     }
@@ -291,14 +351,12 @@
       <div class="item-card">
         <div class="item-info">
           <h3>${o.cliente}</h3>
-          <p>${o.vehiculo || 'Vehículo no especificado'}</p>
-          <p style="margin-top:6px">${o.descripcion || ''}</p>
+          <p class="sub">${o.vehiculo || 'Vehículo no especificado'}</p>
+          <p class="sub" style="margin-top:6px">${o.descripcion || ''}</p>
         </div>
         <div class="item-meta">
           <div class="price">${fmt(o.total)}</div>
-          <div style="margin-top:6px">
-            <span class="estado-badge estado-${o.estado}">${o.estado}</span>
-          </div>
+          <div style="margin-top:6px"><span class="estado-badge estado-${o.estado}">${o.estado}</span></div>
         </div>
       </div>`).join('');
   }
