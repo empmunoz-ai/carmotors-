@@ -273,6 +273,7 @@
   let items = [];
   let articulos = [];
   let metodoPago = 'efectivo';
+  let turnoActivo = null;
 
   function fmt(n) { return '$' + Number(n||0).toLocaleString('es-CO'); }
 
@@ -458,8 +459,6 @@
         </div>
       </div>`).join('');
   }
-
-  let turnoActivo = null;
 
   async function verificarTurno() {
     const hoy = new Date().toISOString().split('T')[0];
