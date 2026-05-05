@@ -92,6 +92,7 @@
   <button class="tab-btn active" onclick="switchTab('nueva',this)">➕ Nueva venta</button>
   <button class="tab-btn" onclick="switchTab('hoy',this)">📊 Hoy</button>
   <button class="tab-btn" onclick="switchTab('fiados',this)">💳 Fiados</button>
+  <button class="tab-btn" onclick="switchTab('caja',this)">🧾 Cierre caja</button>
 </div>
 
 <main>
@@ -202,6 +203,22 @@
       <div class="resumen-card"><div class="valor" id="res-repuestos">$0</div><div class="label">Repuestos</div></div>
     </div>
     <div id="lista-hoy"><div class="loading">Cargando...</div></div>
+  </div>
+  <!-- ══ CIERRE DE CAJA ══ -->
+  <div id="tab-caja" class="section">
+    <div class="form-card">
+      <h2>🧾 Cierre de caja</h2>
+      <div class="form-row">
+        <div>
+          <label>Fecha</label>
+          <input id="caja-fecha" type="date"/>
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn-primary" style="margin-top:0" onclick="cargarCierre()">VER CIERRE</button>
+        </div>
+      </div>
+    </div>
+    <div id="cierre-resultado"></div>
   </div>
 
   <!-- ══ FIADOS ══ -->
@@ -458,7 +475,62 @@
       sel.innerHTML += `<option value="${a.id}">${a.nombre} — Stock: ${a.stock} — ${fmt(a.precio)}</option>`;
     });
   }
+  async function cargarCierre() {
+    const fecha = document.getElementById('caja-fecha').value || new Date().toISOString().split('T')[0];
+    const { data } = await db.from('ventas').select('*, clientes(nombre)').eq('fecha', fecha).order('creado_en', { ascending: false });
+    const cont = document.getElementById('cierre-resultado');
+    if (!data || !data.length) { cont.innerHTML = '<div class="empty"><span>📭</span>Sin ventas ese día.</div>'; return; }
 
+    let total=0, ganancia=0, efectivo=0, nequi=0, daviplata=0, tarjeta=0, transferencia=0, credito=0, servicios=0, repuestos=0, fiados=0;
+    data.forEach(v => {
+      total += v.total; ganancia += v.ganancia;
+      if (v.metodo_pago==='efectivo') efectivo += v.abonado;
+      else if (v.metodo_pago==='nequi') nequi += v.abonado;
+      else if (v.metodo_pago==='daviplata') daviplata += v.abonado;
+      else if (v.metodo_pago==='tarjeta') tarjeta += v.abonado;
+      else if (v.metodo_pago==='transferencia') transferencia += v.abonado;
+      else if (v.metodo_pago==='credito') credito += v.abonado;
+      if (v.tipo==='servicio'||v.tipo==='mixto') servicios += v.total;
+      if (v.tipo==='repuesto') repuestos += v.total;
+      if (v.estado_pago!=='pagado') fiados += v.saldo;
+    });
+
+    const resumen = `*CIERRE DE CAJA CARMOTORS*\n📅 ${fecha}\n\n💰 Total vendido: ${fmt(total)}\n📈 Ganancia: ${fmt(ganancia)}\n\n*Por método:*\n💵 Efectivo: ${fmt(efectivo)}\n📱 Nequi: ${fmt(nequi)}\n📲 Daviplata: ${fmt(daviplata)}\n💳 Tarjeta: ${fmt(tarjeta)}\n🏦 Transferencia: ${fmt(transferencia)}\n📋 Crédito cobrado: ${fmt(credito)}\n\n*Por tipo:*\n🔧 Servicios: ${fmt(servicios)}\n🔩 Repuestos: ${fmt(repuestos)}\n\n⚠️ Fiados pendientes: ${fmt(fiados)}`;
+
+    cont.innerHTML = `
+      <div class="form-card">
+        <div class="resumen-grid">
+          <div class="resumen-card"><div class="valor">${fmt(total)}</div><div class="label">Total vendido</div></div>
+          <div class="resumen-card"><div class="valor green">${fmt(ganancia)}</div><div class="label">Ganancia</div></div>
+        </div>
+        <div style="margin-bottom:14px">
+          <div class="total-row" style="margin-bottom:8px"><span>💵 Efectivo</span><span style="color:var(--text)">${fmt(efectivo)}</span></div>
+          <div class="total-row" style="margin-bottom:8px"><span>📱 Nequi</span><span style="color:var(--text)">${fmt(nequi)}</span></div>
+          <div class="total-row" style="margin-bottom:8px"><span>📲 Daviplata</span><span style="color:var(--text)">${fmt(daviplata)}</span></div>
+          <div class="total-row" style="margin-bottom:8px"><span>💳 Tarjeta</span><span style="color:var(--text)">${fmt(tarjeta)}</span></div>
+          <div class="total-row" style="margin-bottom:8px"><span>🏦 Transferencia</span><span style="color:var(--text)">${fmt(transferencia)}</span></div>
+          <div class="total-row" style="margin-bottom:8px"><span>🔧 Servicios</span><span style="color:var(--text)">${fmt(servicios)}</span></div>
+          <div class="total-row" style="margin-bottom:8px"><span>🔩 Repuestos</span><span style="color:var(--text)">${fmt(repuestos)}</span></div>
+          <div class="total-row"><span>⚠️ Fiados pendientes</span><span style="color:#e07070">${fmt(fiados)}</span></div>
+        </div>
+        <a class="btn-wasa" style="display:block;text-align:center;padding:10px" href="https://wa.me/?text=${encodeURIComponent(resumen)}" target="_blank">📲 Enviar resumen por WhatsApp</a>
+      </div>
+      ${data.map(v => `
+        <div class="venta-card">
+          <div class="venta-top">
+            <div>
+              <div class="venta-cliente">${v.clientes?.nombre || 'Mostrador'}</div>
+              <div class="venta-sub">${v.descripcion}</div>
+              <div class="venta-sub">💳 ${v.metodo_pago}</div>
+            </div>
+            <div>
+              <div class="venta-total">${fmt(v.total)}</div>
+              <div class="venta-ganancia">+${fmt(v.ganancia)}</div>
+              <span class="badge badge-${v.estado_pago}">${v.estado_pago}</span>
+            </div>
+          </div>
+        </div>`).join('')}`;
+  }
   async function cargarSelectClientes() {
     const { data } = await db.from('clientes').select('id, nombre, saldo_pendiente').order('nombre');
     const sel = document.getElementById('venta-cliente');
