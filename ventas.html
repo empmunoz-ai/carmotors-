@@ -92,7 +92,7 @@
   <button class="tab-btn active" onclick="switchTab('nueva',this)">➕ Nueva venta</button>
   <button class="tab-btn" onclick="switchTab('hoy',this)">📊 Hoy</button>
   <button class="tab-btn" onclick="switchTab('fiados',this)">💳 Fiados</button>
-  <button class="tab-btn" onclick="switchTab('caja',this)">🧾 Cierre caja</button>
+  <button class="tab-btn" onclick="switchTab('caja',this)">🧾 Caja</button>
 </div>
 
 <main>
@@ -204,21 +204,51 @@
     </div>
     <div id="lista-hoy"><div class="loading">Cargando...</div></div>
   </div>
-  <!-- ══ CIERRE DE CAJA ══ -->
+     <!-- ══ CAJA ══ -->
   <div id="tab-caja" class="section">
+    <div id="caja-estado"></div>
     <div class="form-card">
       <h2>🧾 Cierre de caja</h2>
-      <div class="form-row">
+     <div class="form-card" id="box-apertura">
+      <h2>🔓 Abrir turno</h2>
+      <div class="form-row full">
         <div>
-          <label>Fecha</label>
-          <input id="caja-fecha" type="date"/>
-        </div>
-        <div style="display:flex;align-items:flex-end">
-          <button class="btn-primary" style="margin-top:0" onclick="cargarCierre()">VER CIERRE</button>
+          <label>Nombre del vendedor</label>
+          <input id="turno-vendedor" type="text" placeholder="Tu nombre"/>
         </div>
       </div>
+      <div class="form-row full">
+        <div>
+          <label>Base de apertura ($)</label>
+          <input id="turno-base" type="number" placeholder="Ej: 50000"/>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="abrirTurno()">🔓 ABRIR TURNO</button>
     </div>
-    <div id="cierre-resultado"></div>
+
+    <div class="form-card" id="box-cierre" style="display:none">
+      <h2>🔒 Cerrar turno</h2>
+      <div id="cierre-resumen"></div>
+      <div class="form-row full" style="margin-top:12px">
+        <div>
+          <label>Conteo físico de efectivo ($)</label>
+          <input id="conteo-fisico" type="number" placeholder="Cuánto hay en caja"/>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div>
+          <label>Notas</label>
+          <input id="turno-notas" type="text" placeholder="Observaciones del turno..."/>
+        </div>
+      </div>
+      <button class="btn-primary" style="background:var(--red)" onclick="cerrarTurno()">🔒 CERRAR TURNO</button>
+      <a id="btn-wasa-cierre" class="btn-wasa" style="display:block;text-align:center;padding:10px;margin-top:10px" href="#" target="_blank">📲 Enviar resumen WhatsApp</a>
+    </div>
+
+    <div class="form-card">
+      <h2>📋 Historial de turnos</h2>
+      <div id="lista-turnos"><div class="loading">Cargando...</div></div>
+    </div> 
   </div>
 
   <!-- ══ FIADOS ══ -->
