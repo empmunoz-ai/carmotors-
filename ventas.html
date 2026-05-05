@@ -365,7 +365,10 @@
 
   function quitarItem(i) { items.splice(i, 1); renderItems(); }
 
-  async function guardarVenta() {
+  async function guardarVenta() {if (!turnoActivo) {
+      mostrarMsg('msg-venta', '⚠️ Debes abrir un turno de caja antes de vender.', 'err');
+      return;
+  }
     if (!items.length) { mostrarMsg('msg-venta', '⚠️ Agrega al menos un ítem.', 'err'); return; }
     const btn = event.target;
     btn.disabled = true; btn.textContent = 'GUARDANDO...';
