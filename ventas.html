@@ -282,7 +282,7 @@
     document.getElementById('tab-' + tab).classList.add('active');
     btn.classList.add('active');
     if (tab === 'hoy') cargarHoy();
-    if (tab === 'fiados') cargarFiados();
+    if (tab === 'caja') verificarTurno();
   }
 
   function selMetodo(metodo, el) {
@@ -455,29 +455,114 @@
       </div>`).join('');
   }
 
-  async function cargarFiados() {
-    const { data } = await db.from('ventas').select('*, clientes(nombre, telefono)').neq('estado_pago','pagado').order('creado_en', { ascending: false });
-    const cont = document.getElementById('lista-fiados');
-    if (!data || !data.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin fiados pendientes.</div>'; return; }
-    cont.innerHTML = data.map(v => `
-      <div class="venta-card fiado">
+  let turnoActivo = null;
+
+  async function verificarTurno() {
+    const hoy = new Date().toISOString().split('T')[0];
+    const { data } = await db.from('turnos_caja').select('*').eq('estado','abierto').eq('fecha',hoy).order('hora_apertura', { ascending: false }).limit(1);
+    turnoActivo = data && data.length ? data[0] : null;
+    const boxApertura = document.getElementById('box-apertura');
+    const boxCierre = document.getElementById('box-cierre');
+    const estadoDiv = document.getElementById('caja-estado');
+
+    if (turnoActivo) {
+      boxApertura.style.display = 'none';
+      boxCierre.style.display = 'block';
+      estadoDiv.innerHTML = `<div style="background:#1a3d2b;border:1px solid #2a6040;border-radius:8px;padding:12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center"><div><span style="color:var(--green);font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700">🟢 TURNO ABIERTO</span><div style="font-size:12px;color:var(--muted);margin-top:2px">Vendedor: ${turnoActivo.vendedor}</div></div><div style="text-align:right"><div style="color:var(--orange);font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">Base: $${Number(turnoActivo.base_apertura).toLocaleString('es-CO')}</div></div></div>`;
+      await actualizarResumenCierre();
+    } else {
+      boxApertura.style.display = 'block';
+      boxCierre.style.display = 'none';
+      estadoDiv.innerHTML = `<div style="background:#3d1a1a;border:1px solid #6a2a2a;border-radius:8px;padding:12px;margin-bottom:14px"><span style="color:#e07070;font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700">🔴 CAJA CERRADA</span></div>`;
+    }
+    cargarHistorialTurnos();
+  }
+
+  async function abrirTurno() {
+    const vendedor = document.getElementById('turno-vendedor').value.trim();
+    const base = parseFloat(document.getElementById('turno-base').value) || 0;
+    if (!vendedor) { alert('Escribe tu nombre'); return; }
+    const btn = event.target;
+    btn.disabled = true; btn.textContent = 'ABRIENDO...';
+    await db.from('turnos_caja').insert({ vendedor, base_apertura: base, estado: 'abierto', fecha: new Date().toISOString().split('T')[0] });
+    btn.disabled = false; btn.textContent = '🔓 ABRIR TURNO';
+    verificarTurno();
+  }
+
+  async function actualizarResumenCierre() {
+    if (!turnoActivo) return;
+    const { data: ventas } = await db.from('ventas').select('*').eq('fecha', turnoActivo.fecha).gte('creado_en', turnoActivo.hora_apertura);
+    if (!ventas) return;
+
+    let totalVentas=0, ganancia=0, efectivo=0, nequi=0, daviplata=0, tarjeta=0, transferencia=0, credito=0;
+    ventas.forEach(v => {
+      totalVentas += v.total; ganancia += v.ganancia;
+      if (v.metodo_pago==='efectivo') efectivo += v.abonado;
+      else if (v.metodo_pago==='nequi') nequi += v.abonado;
+      else if (v.metodo_pago==='daviplata') daviplata += v.abonado;
+      else if (v.metodo_pago==='tarjeta') tarjeta += v.abonado;
+      else if (v.metodo_pago==='transferencia') transferencia += v.abonado;
+      else if (v.metodo_pago==='credito') credito += v.abonado;
+    });
+
+    turnoActivo = { ...turnoActivo, total_efectivo:efectivo, total_nequi:nequi, total_daviplata:daviplata, total_tarjeta:tarjeta, total_transferencia:transferencia, total_credito:credito, total_ventas:totalVentas, ganancia };
+
+    document.getElementById('cierre-resumen').innerHTML = `
+      <div class="total-row"><span>💰 Total vendido</span><span style="color:var(--orange);font-weight:700">${fmt(totalVentas)}</span></div>
+      <div class="total-row"><span>📈 Ganancia</span><span style="color:var(--green)">${fmt(ganancia)}</span></div>
+      <div class="total-row"><span>💵 Efectivo</span><span>${fmt(efectivo)}</span></div>
+      <div class="total-row"><span>📱 Nequi</span><span>${fmt(nequi)}</span></div>
+      <div class="total-row"><span>📲 Daviplata</span><span>${fmt(daviplata)}</span></div>
+      <div class="total-row"><span>💳 Tarjeta</span><span>${fmt(tarjeta)}</span></div>
+      <div class="total-row"><span>🏦 Transferencia</span><span>${fmt(transferencia)}</span></div>
+      <div class="total-row"><span>📋 Crédito cobrado</span><span>${fmt(credito)}</span></div>
+      <div class="total-row"><span>🏦 Base apertura</span><span>${fmt(turnoActivo.base_apertura)}</span></div>`;
+
+    const resumenWasa = `*CIERRE TURNO CARMOTORS*\n👤 ${turnoActivo.vendedor}\n📅 ${turnoActivo.fecha}\n\n💰 Total: ${fmt(totalVentas)}\n📈 Ganancia: ${fmt(ganancia)}\n💵 Efectivo: ${fmt(efectivo)}\n📱 Nequi: ${fmt(nequi)}\n📲 Daviplata: ${fmt(daviplata)}\n💳 Tarjeta: ${fmt(tarjeta)}\n🏦 Base: ${fmt(turnoActivo.base_apertura)}`;
+    document.getElementById('btn-wasa-cierre').href = `https://wa.me/?text=${encodeURIComponent(resumenWasa)}`;
+  }
+
+  async function cerrarTurno() {
+    if (!turnoActivo) return;
+    const conteo = parseFloat(document.getElementById('conteo-fisico').value) || 0;
+    const notas = document.getElementById('turno-notas').value.trim();
+    const diferencia = conteo - (turnoActivo.base_apertura + turnoActivo.total_efectivo);
+    const btn = event.target;
+    btn.disabled = true; btn.textContent = 'CERRANDO...';
+    await db.from('turnos_caja').update({
+      estado: 'cerrado', hora_cierre: new Date().toISOString(),
+      total_efectivo: turnoActivo.total_efectivo, total_nequi: turnoActivo.total_nequi,
+      total_daviplata: turnoActivo.total_daviplata, total_tarjeta: turnoActivo.total_tarjeta,
+      total_transferencia: turnoActivo.total_transferencia, total_credito: turnoActivo.total_credito,
+      total_ventas: turnoActivo.total_ventas, ganancia: turnoActivo.ganancia,
+      conteo_fisico: conteo, diferencia, notas
+    }).eq('id', turnoActivo.id);
+    btn.disabled = false; btn.textContent = '🔒 CERRAR TURNO';
+    turnoActivo = null;
+    verificarTurno();
+  }
+
+  async function cargarHistorialTurnos() {
+    const { data } = await db.from('turnos_caja').select('*').order('hora_apertura', { ascending: false }).limit(10);
+    const cont = document.getElementById('lista-turnos');
+    if (!data || !data.length) { cont.innerHTML = '<div class="empty"><span>📋</span>Sin turnos registrados.</div>'; return; }
+    cont.innerHTML = data.map(t => `
+      <div class="venta-card ${t.estado==='abierto' ? '' : ''}">
         <div class="venta-top">
           <div>
-            <div class="venta-cliente">${v.clientes?.nombre || 'Mostrador'}</div>
-            <div class="venta-sub">${v.descripcion}</div>
-            <div class="venta-sub">${v.fecha}</div>
+            <div class="venta-cliente">👤 ${t.vendedor}</div>
+            <div class="venta-sub">📅 ${t.fecha} — ${t.hora_apertura?.substring(11,16)}</div>
+            ${t.notas ? `<div class="venta-sub">📝 ${t.notas}</div>` : ''}
           </div>
-          <div>
-            <div class="venta-total">${fmt(v.total)}</div>
-            <div class="saldo-txt">Saldo: ${fmt(v.saldo)}</div>
-            <span class="badge badge-${v.estado_pago}">${v.estado_pago}</span>
+          <div style="text-align:right">
+            <div class="venta-total">${fmt(t.total_ventas)}</div>
+            <div class="venta-ganancia">+${fmt(t.ganancia)}</div>
+            <span class="badge ${t.estado==='abierto' ? 'badge-parcial' : 'badge-pagado'}">${t.estado}</span>
           </div>
         </div>
-        <div class="acciones">
-          ${v.clientes?.telefono ? `<a class="btn-wasa" href="https://wa.me/57${v.clientes.telefono}?text=${encodeURIComponent('Hola '+v.clientes.nombre+', tienes saldo pendiente de '+fmt(v.saldo)+' en CARMOTORS 🏍️')}" target="_blank">📲 Recordar</a>` : ''}
-          <button class="btn-abono" onclick="registrarAbono('${v.id}',${v.saldo})">💵 Abonar</button>
-        </div>
+        ${t.diferencia !== 0 && t.estado==='cerrado' ? `<div class="venta-sub" style="margin-top:6px;color:${t.diferencia>0?'var(--green)':'#e07070'}">Diferencia caja: ${fmt(t.diferencia)}</div>` : ''}
       </div>`).join('');
+                                                                                                                             }
   }
 
   async function registrarAbono(venta_id, saldo_actual) {
