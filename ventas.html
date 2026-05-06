@@ -18,67 +18,65 @@
     header { background:var(--navy); border-bottom:2px solid var(--orange); padding:14px 20px; display:flex; align-items:center; gap:12px; }
     .logo-mark { width:36px; height:36px; background:var(--orange); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13px; color:var(--dark); flex-shrink:0; }
     header h1 { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; letter-spacing:2px; color:var(--cream); }
-    .tabs { display:flex; background:var(--navy); padding:0 16px; border-bottom:1px solid var(--border); overflow-x:auto; }
-    .tab-btn { padding:12px 16px; background:none; border:none; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:600; letter-spacing:1px; cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; white-space:nowrap; }
+    .tabs { display:flex; background:var(--navy); padding:0 8px; border-bottom:1px solid var(--border); overflow-x:auto; }
+    .tab-btn { padding:12px 14px; background:none; border:none; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600; letter-spacing:1px; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
     .tab-btn.active { color:var(--orange); border-bottom-color:var(--orange); }
     main { padding:16px; max-width:800px; margin:0 auto; }
     .section { display:none; }
     .section.active { display:block; }
-    .form-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px; margin-bottom:20px; }
-    .form-card h2 { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:600; letter-spacing:1px; color:var(--orange); margin-bottom:14px; text-transform:uppercase; }
-    label { display:block; font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
-    input, select { width:100%; background:var(--dark); border:1px solid var(--border); border-radius:6px; padding:9px 12px; color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:14px; outline:none; transition:border-color .2s; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:16px; }
+    .card h2 { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; color:var(--orange); margin-bottom:12px; text-transform:uppercase; letter-spacing:1px; }
+    label { display:block; font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; margin-top:10px; }
+    input, select { width:100%; background:var(--dark); border:1px solid var(--border); border-radius:6px; padding:9px 12px; color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:14px; outline:none; }
     input:focus, select:focus { border-color:var(--steel); }
     select option { background:var(--dark); }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
-    .form-row.full { grid-template-columns:1fr; }.metodos-pago { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0; }
-    .metodo-btn { background:var(--dark); border:2px solid var(--border); border-radius:8px; padding:10px 8px; text-align:center; cursor:pointer; transition:all .2s; }
-    .metodo-btn:hover { border-color:var(--steel); }
+    .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .metodos { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:10px; }
+    .metodo-btn { background:var(--dark); border:2px solid var(--border); border-radius:8px; padding:8px 4px; text-align:center; cursor:pointer; }
     .metodo-btn.active { border-color:var(--orange); background:#1a2a3a; }
-    .metodo-btn .icono { font-size:22px; display:block; margin-bottom:4px; }
-    .metodo-btn .nombre { font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600; color:var(--text); }
-    .btn-agregar { width:100%; padding:10px; background:var(--dark); border:2px dashed var(--border); border-radius:8px; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:600; cursor:pointer; margin:10px 0; transition:all .2s; }
-    .btn-agregar:hover { border-color:var(--steel); color:var(--steel); }
-    .btn-primary { width:100%; padding:13px; background:var(--orange); color:var(--dark); border:none; border-radius:8px; font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; letter-spacing:1px; cursor:pointer; margin-top:10px; transition:background .2s; }
-    .btn-primary:disabled { background:var(--border); cursor:not-allowed; }
-    .msg { padding:10px 14px; border-radius:6px; font-size:13px; margin-bottom:12px; display:none; }
-    .msg.ok  { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; display:block; }
+    .metodo-btn .ico { font-size:20px; display:block; }
+    .metodo-btn .nom { font-family:'Rajdhani',sans-serif; font-size:11px; color:var(--text); }
+    .btn-add { width:100%; padding:10px; background:var(--dark); border:2px dashed var(--border); border-radius:8px; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:600; cursor:pointer; margin-top:10px; }
+    .btn-main { width:100%; padding:13px; background:var(--orange); color:var(--dark); border:none; border-radius:8px; font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; cursor:pointer; margin-top:12px; }
+    .btn-main:disabled { background:var(--border); cursor:not-allowed; }
+    .btn-red { background:var(--red); color:white; }
+    .msg { padding:10px; border-radius:6px; font-size:13px; margin-bottom:10px; display:none; }
+    .msg.ok { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; display:block; }
     .msg.err { background:#3d1a1a; color:#e07070; border:1px solid #6a2a2a; display:block; }
-    .item-row { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
-    .item-desc { flex:1; }
-    .item-desc .nombre { font-size:14px; color:var(--cream); }
-    .item-desc .sub { font-size:11px; color:var(--muted); margin-top:2px; }
-    .item-precio { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:var(--orange); white-space:nowrap; }
-    .btn-del { background:none; border:none; color:var(--red); font-size:20px; cursor:pointer; padding:0 4px; }
-    .total-box { background:var(--navy); border:1px solid var(--orange); border-radius:8px; padding:14px; margin:12px 0; }
-    .total-row { display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:6px; }
-    .total-final { display:flex; justify-content:space-between; font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; color:var(--orange); margin-top:8px; border-top:1px solid var(--border); padding-top:8px; }
-    .resumen-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
-    .resumen-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center; }
-    .resumen-card .valor { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; color:var(--orange); }
-    .resumen-card .valor.green { color:var(--green); }
-    .resumen-card .label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-top:4px; }
-    .venta-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:10px; }
-    .venta-card.fiado { border-color:var(--red); }
-    .venta-card.parcial { border-color:var(--orange); }
-    .venta-top { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
-    .venta-cliente { font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; color:var(--cream); }
-    .venta-sub { font-size:12px; color:var(--muted); margin-top:2px; }
-    .venta-total { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; color:var(--orange); text-align:right; }
-    .venta-ganancia { font-size:11px; color:var(--green); text-align:right; }
-    .badge { display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; text-transform:uppercase; }
-    .badge-pagado  { background:#1a3d2b; color:var(--green); }
-    .badge-fiado   { background:#3d1a1a; color:#e07070; }
-    .badge-parcial { background:#3d3010; color:var(--orange); }
-    .saldo-txt { font-size:12px; color:#e07070; margin-top:6px; }
+    .item-row { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:10px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .item-nom { font-size:13px; color:var(--cream); }
+    .item-sub { font-size:11px; color:var(--muted); }
+    .item-precio { font-family:'Rajdhani',sans-serif; font-size:16px; color:var(--orange); font-weight:700; }
+    .btn-del { background:none; border:none; color:var(--red); font-size:18px; cursor:pointer; }
+    .total-box { background:var(--navy); border:1px solid var(--orange); border-radius:8px; padding:12px; margin-top:10px; }
+    .t-row { display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:4px; }
+    .t-final { display:flex; justify-content:space-between; font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; color:var(--orange); border-top:1px solid var(--border); padding-top:8px; margin-top:6px; }
+    .res-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+    .res-card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center; }
+    .res-val { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; color:var(--orange); }
+    .res-val.g { color:var(--green); }
+    .res-lbl { font-size:11px; color:var(--muted); text-transform:uppercase; margin-top:4px; }
+    .v-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:10px; }
+    .v-card.fiado { border-color:var(--red); }
+    .v-card.parcial { border-color:var(--orange); }
+    .v-top { display:flex; justify-content:space-between; align-items:flex-start; }
+    .v-nom { font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; color:var(--cream); }
+    .v-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+    .v-total { font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; color:var(--orange); text-align:right; }
+    .v-gan { font-size:11px; color:var(--green); text-align:right; }
+    .bdg { display:inline-block; font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; text-transform:uppercase; }
+    .bdg-pagado { background:#1a3d2b; color:var(--green); }
+    .bdg-fiado { background:#3d1a1a; color:#e07070; }
+    .bdg-parcial { background:#3d3010; color:var(--orange); }
+    .saldo-txt { font-size:12px; color:#e07070; margin-top:4px; }
     .acciones { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-    .btn-wasa { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; text-decoration:none; }
-    .btn-abono { background:#103040; color:var(--steel); border:1px solid var(--border); border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
-    .empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:14px; }
+    .btn-wasa { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; text-decoration:none; cursor:pointer; }
+    .btn-abo { background:#103040; color:var(--steel); border:1px solid var(--border); border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+    .empty { text-align:center; padding:40px 20px; color:var(--muted); }
     .empty span { display:block; font-size:32px; margin-bottom:8px; }
     .loading { text-align:center; padding:30px; color:var(--muted); font-size:13px; }
     .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--navy); border-top:2px solid var(--border); display:flex; z-index:100; }
-    .bottom-nav a { flex:1; display:flex; flex-direction:column; align-items:center; padding:8px 4px; text-decoration:none; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:600; letter-spacing:1px; gap:2px; }
+    .bottom-nav a { flex:1; display:flex; flex-direction:column; align-items:center; padding:8px 4px; text-decoration:none; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:600; gap:2px; }
     .bottom-nav a.active { color:var(--orange); border-top:2px solid var(--orange); margin-top:-2px; }
     .bottom-nav a span { font-size:20px; }
   </style>
@@ -89,7 +87,7 @@
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('nueva',this)">➕ Nueva venta</button>
+  <button class="tab-btn active" onclick="switchTab('nueva',this)">➕ Nueva</button>
   <button class="tab-btn" onclick="switchTab('hoy',this)">📊 Hoy</button>
   <button class="tab-btn" onclick="switchTab('fiados',this)">💳 Fiados</button>
   <button class="tab-btn" onclick="switchTab('caja',this)">🧾 Caja</button>
@@ -97,161 +95,114 @@
 
 <main>
 
-  <!-- ══ NUEVA VENTA ══ -->
+  <!-- NUEVA VENTA -->
   <div id="tab-nueva" class="section active">
-    <div class="form-card">
+    <div class="card">
       <h2>➕ Nueva venta</h2>
       <div id="msg-venta" class="msg"></div>
 
-      <div class="form-row full">
-        <div>
-          <label>Cliente (opcional)</label>
-          <select id="venta-cliente">
-            <option value="">Sin cliente / mostrador</option>
-          </select>
-        </div>
-      </div>
+      <label>Cliente (opcional)</label>
+      <select id="venta-cliente">
+        <option value="">Sin cliente / mostrador</option>
+      </select>
 
-      <div class="form-row full">
-        <div>
-          <label>Tipo de ítem</label>
-          <select id="item-tipo" onchange="cambiarTipo()">
-            <option value="servicio">🔧 Servicio / mano de obra</option>
-            <option value="repuesto">🔩 Repuesto del inventario</option>
-          </select>
-        </div>
-      </div>
+      <label>Tipo de ítem</label>
+      <select id="item-tipo" onchange="cambiarTipo()">
+        <option value="servicio">🔧 Servicio / mano de obra</option>
+        <option value="repuesto">🔩 Repuesto del inventario</option>
+      </select>
 
-      <div id="box-repuesto" style="display:none; margin-bottom:10px">
+      <div id="box-repuesto" style="display:none">
         <label>Repuesto</label>
-        <select id="item-repuesto" onchange="seleccionarRepuesto()">
+        <select id="item-repuesto" onchange="selRepuesto()">
           <option value="">Selecciona repuesto...</option>
         </select>
       </div>
 
-      <div id="box-desc" class="form-row full">
-        <div>
-          <label>Descripción del servicio</label>
-          <input id="item-desc" type="text" placeholder="Ej: Cambio de aceite, revisión frenos..."/>
-        </div>
-      </div>
+      <label>Descripción</label>
+      <input id="item-desc" type="text" placeholder="Ej: Cambio de aceite..."/>
 
-      <div class="form-row">
+      <div class="row2" style="margin-top:10px">
         <div>
           <label>Cantidad</label>
-          <input id="item-cantidad" type="number" value="1" min="1"/>
+          <input id="item-cant" type="number" value="1" min="1"/>
         </div>
         <div>
-          <label>Precio unitario ($)</label>
+          <label>Precio ($)</label>
           <input id="item-precio" type="number" placeholder="0"/>
         </div>
       </div>
 
-      <button class="btn-agregar" onclick="agregarItem()">+ AGREGAR ÍTEM A LA VENTA</button>
+      <button class="btn-add" onclick="agregarItem()">+ AGREGAR ÍTEM</button>
 
       <div id="items-lista"></div>
-
-      <div class="total-box" id="total-box" style="display:none">
-        <div class="total-row"><span>Items</span><span id="items-count">0</span></div>
-        <div class="total-row"><span>Ganancia estimada</span><span id="ganancia-txt" style="color:var(--green)">$0</span></div>
-        <div class="total-final"><span>TOTAL</span><span id="total-txt">$0</span></div>
+      <div id="total-box" class="total-box" style="display:none">
+        <div class="t-row"><span>Ítems</span><span id="items-cnt">0</span></div>
+        <div class="t-row"><span>Ganancia estimada</span><span id="gan-txt" style="color:var(--green)">$0</span></div>
+        <div class="t-final"><span>TOTAL</span><span id="tot-txt">$0</span></div>
       </div>
 
-      <label style="margin-top:14px; margin-bottom:8px; display:block">Método de pago</label>
-      <div class="metodos-pago">
-        <div class="metodo-btn active" onclick="selMetodo('efectivo',this)">
-          <span class="icono">💵</span>
-          <span class="nombre">Efectivo</span>
-        </div>
-        <div class="metodo-btn" onclick="selMetodo('nequi',this)">
-          <span class="icono">📱</span>
-          <span class="nombre">Nequi</span>
-        </div>
-        <div class="metodo-btn" onclick="selMetodo('daviplata',this)">
-          <span class="icono">📲</span>
-          <span class="nombre">Daviplata</span>
-        </div>
-        <div class="metodo-btn" onclick="selMetodo('tarjeta',this)">
-          <span class="icono">💳</span>
-          <span class="nombre">Tarjeta</span>
-        </div>
-        <div class="metodo-btn" onclick="selMetodo('transferencia',this)">
-          <span class="icono">🏦</span>
-          <span class="nombre">Transferencia</span>
-        </div>
-        <div class="metodo-btn" onclick="selMetodo('credito',this)">
-          <span class="icono">📋</span>
-          <span class="nombre">Crédito / Fiado</span>
-        </div>
+      <label>Método de pago</label>
+      <div class="metodos">
+        <div class="metodo-btn active" onclick="selMetodo('efectivo',this)"><span class="ico">💵</span><span class="nom">Efectivo</span></div>
+        <div class="metodo-btn" onclick="selMetodo('nequi',this)"><span class="ico">📱</span><span class="nom">Nequi</span></div>
+        <div class="metodo-btn" onclick="selMetodo('daviplata',this)"><span class="ico">📲</span><span class="nom">Daviplata</span></div>
+        <div class="metodo-btn" onclick="selMetodo('tarjeta',this)"><span class="ico">💳</span><span class="nom">Tarjeta</span></div>
+        <div class="metodo-btn" onclick="selMetodo('transferencia',this)"><span class="ico">🏦</span><span class="nom">Transfer.</span></div>
+        <div class="metodo-btn" onclick="selMetodo('credito',this)"><span class="ico">📋</span><span class="nom">Crédito</span></div>
       </div>
 
-      <div id="box-abono" style="display:none; margin-top:10px">
+      <div id="box-abono" style="display:none">
         <label>Abono inicial ($)</label>
         <input id="venta-abono" type="number" placeholder="0 = fiado completo"/>
       </div>
 
-      <button class="btn-primary" onclick="guardarVenta()">💰 REGISTRAR VENTA</button>
+      <button class="btn-main" onclick="guardarVenta()">💰 REGISTRAR VENTA</button>
     </div>
   </div>
 
-  <!-- ══ HOY ══ -->
+  <!-- HOY -->
   <div id="tab-hoy" class="section">
-    <div class="resumen-grid">
-      <div class="resumen-card"><div class="valor" id="res-total">$0</div><div class="label">Vendido hoy</div></div>
-      <div class="resumen-card"><div class="valor green" id="res-ganancia">$0</div><div class="label">Ganancia</div></div>
-      <div class="resumen-card"><div class="valor" id="res-servicios">$0</div><div class="label">Servicios</div></div>
-      <div class="resumen-card"><div class="valor" id="res-repuestos">$0</div><div class="label">Repuestos</div></div>
+    <div class="res-grid">
+      <div class="res-card"><div class="res-val" id="res-total">$0</div><div class="res-lbl">Vendido hoy</div></div>
+      <div class="res-card"><div class="res-val g" id="res-gan">$0</div><div class="res-lbl">Ganancia</div></div>
+      <div class="res-card"><div class="res-val" id="res-serv">$0</div><div class="res-lbl">Servicios</div></div>
+      <div class="res-card"><div class="res-val" id="res-rep">$0</div><div class="res-lbl">Repuestos</div></div>
     </div>
     <div id="lista-hoy"><div class="loading">Cargando...</div></div>
   </div>
-     <!-- ══ CAJA ══ -->
+
+  <!-- FIADOS -->
+  <div id="tab-fiados" class="section">
+    <div id="lista-fiados"><div class="loading">Cargando...</div></div>
+  </div>
+
+  <!-- CAJA -->
   <div id="tab-caja" class="section">
-    <div id="caja-estado"></div>
-     <div class="form-card" id="box-apertura">
+    <div class="card" id="box-apertura">
       <h2>🔓 Abrir turno</h2>
-      <div class="form-row full">
-        <div>
-          <label>Nombre del vendedor</label>
-          <input id="turno-vendedor" type="text" placeholder="Tu nombre"/>
-        </div>
-      </div>
-      <div class="form-row full">
-        <div>
-          <label>Base de apertura ($)</label>
-          <input id="turno-base" type="number" placeholder="Ej: 50000"/>
-        </div>
-      </div>
-      <button class="btn-primary" onclick="abrirTurno()">🔓 ABRIR TURNO</button>
+      <label>Vendedor</label>
+      <input id="turno-vendedor" type="text" placeholder="Tu nombre"/>
+      <label>Base de apertura ($)</label>
+      <input id="turno-base" type="number" placeholder="Ej: 50000"/>
+      <button class="btn-main" onclick="abrirTurno()">🔓 ABRIR TURNO</button>
     </div>
 
-    <div class="form-card" id="box-cierre" style="display:none">
+    <div class="card" id="box-cierre" style="display:none">
       <h2>🔒 Cerrar turno</h2>
       <div id="cierre-resumen"></div>
-      <div class="form-row full" style="margin-top:12px">
-        <div>
-          <label>Conteo físico de efectivo ($)</label>
-          <input id="conteo-fisico" type="number" placeholder="Cuánto hay en caja"/>
-        </div>
-      </div>
-      <div class="form-row full">
-        <div>
-          <label>Notas</label>
-          <input id="turno-notas" type="text" placeholder="Observaciones del turno..."/>
-        </div>
-      </div>
-      <button class="btn-primary" style="background:var(--red)" onclick="cerrarTurno()">🔒 CERRAR TURNO</button>
+      <label style="margin-top:12px">Conteo físico efectivo ($)</label>
+      <input id="conteo-fisico" type="number" placeholder="Cuánto hay en caja"/>
+      <label>Notas</label>
+      <input id="turno-notas" type="text" placeholder="Observaciones..."/>
+      <button class="btn-main btn-red" style="margin-top:12px" onclick="cerrarTurno()">🔒 CERRAR TURNO</button>
       <a id="btn-wasa-cierre" class="btn-wasa" style="display:block;text-align:center;padding:10px;margin-top:10px" href="#" target="_blank">📲 Enviar resumen WhatsApp</a>
     </div>
 
-    <div class="form-card">
-      <h2>📋 Historial de turnos</h2>
+    <div class="card">
+      <h2>📋 Historial turnos</h2>
       <div id="lista-turnos"><div class="loading">Cargando...</div></div>
-    </div> 
-  </div>
-
-  <!-- ══ FIADOS ══ -->
-  <div id="tab-fiados" class="section">
-    <div id="lista-fiados"><div class="loading">Cargando...</div></div>
+    </div>
   </div>
 
 </main>
@@ -273,7 +224,7 @@
   let metodoPago = 'efectivo';
   let turnoActivo = null;
 
-  function fmt(n) { return '$' + Number(n||0).toLocaleString('es-CO'); }
+  const fmt = n => '$' + Number(n||0).toLocaleString('es-CO');
 
   function switchTab(tab, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -282,7 +233,7 @@
     btn.classList.add('active');
     if (tab === 'hoy') cargarHoy();
     if (tab === 'fiados') cargarFiados();
-    if (tab === 'caja') verificarTurno();
+    if (tab === 'caja') cargarCaja();
   }
 
   function selMetodo(metodo, el) {
@@ -295,14 +246,13 @@
   function cambiarTipo() {
     const tipo = document.getElementById('item-tipo').value;
     document.getElementById('box-repuesto').style.display = tipo === 'repuesto' ? 'block' : 'none';
-    document.getElementById('box-desc').style.display = tipo === 'servicio' ? 'grid' : 'none';
-    if (tipo === 'repuesto') {
+    if (tipo === 'servicio') {
       document.getElementById('item-desc').value = '';
       document.getElementById('item-precio').value = '';
     }
   }
 
-  function seleccionarRepuesto() {
+  function selRepuesto() {
     const id = document.getElementById('item-repuesto').value;
     const art = articulos.find(a => a.id === id);
     if (art) {
@@ -314,354 +264,270 @@
   function agregarItem() {
     const tipo = document.getElementById('item-tipo').value;
     const desc = document.getElementById('item-desc').value.trim();
-    const cantidad = parseInt(document.getElementById('item-cantidad').value) || 1;
+    const cant = parseInt(document.getElementById('item-cant').value) || 1;
     const precio = parseFloat(document.getElementById('item-precio').value) || 0;
-
-    if (!desc) { mostrarMsg('msg-venta', '⚠️ Escribe la descripción del ítem.', 'err'); return; }
-    if (!precio) { mostrarMsg('msg-venta', '⚠️ Agrega el precio.', 'err'); return; }
-
+    if (!desc) { msg('msg-venta','⚠️ Escribe la descripción.','err'); return; }
+    if (!precio) { msg('msg-venta','⚠️ Agrega el precio.','err'); return; }
     let costo = 0, articulo_id = null;
     if (tipo === 'repuesto') {
       const id = document.getElementById('item-repuesto').value;
       const art = articulos.find(a => a.id === id);
-      if (art) { costo = art.costo || 0; articulo_id = art.id; }
+      if (art) { costo = art.costo||0; articulo_id = art.id; }
     }
-
-    items.push({ tipo, descripcion: desc, cantidad, precio_unitario: precio, costo_unitario: costo, subtotal: cantidad * precio, articulo_id });
+    items.push({ tipo, descripcion: desc, cantidad: cant, precio_unitario: precio, costo_unitario: costo, subtotal: cant*precio, articulo_id });
     document.getElementById('item-desc').value = '';
     document.getElementById('item-precio').value = '';
-    document.getElementById('item-cantidad').value = '1';
+    document.getElementById('item-cant').value = '1';
     document.getElementById('item-repuesto').value = '';
     renderItems();
   }
 
   function renderItems() {
     const lista = document.getElementById('items-lista');
-    const totalBox = document.getElementById('total-box');
-    if (!items.length) { lista.innerHTML = ''; totalBox.style.display = 'none'; return; }
-
-    let total = 0, ganancia = 0;
-    items.forEach(it => {
-      total += it.subtotal;
-      ganancia += (it.precio_unitario - it.costo_unitario) * it.cantidad;
-    });
-
-    lista.innerHTML = items.map((it, i) => `
+    const box = document.getElementById('total-box');
+    if (!items.length) { lista.innerHTML = ''; box.style.display = 'none'; return; }
+    let total = 0, gan = 0;
+    items.forEach(i => { total += i.subtotal; gan += (i.precio_unitario - i.costo_unitario) * i.cantidad; });
+    lista.innerHTML = items.map((it,i) => `
       <div class="item-row">
-        <div class="item-desc">
-          <div class="nombre">${it.tipo === 'repuesto' ? '🔩' : '🔧'} ${it.descripcion}</div>
-          <div class="sub">${it.cantidad} x ${fmt(it.precio_unitario)}</div>
+        <div>
+          <div class="item-nom">${it.tipo==='repuesto'?'🔩':'🔧'} ${it.descripcion}</div>
+          <div class="item-sub">${it.cantidad} x ${fmt(it.precio_unitario)}</div>
         </div>
         <div class="item-precio">${fmt(it.subtotal)}</div>
         <button class="btn-del" onclick="quitarItem(${i})">✕</button>
       </div>`).join('');
-
-    totalBox.style.display = 'block';
-    document.getElementById('items-count').textContent = items.length + ' ítem(s)';
-    document.getElementById('ganancia-txt').textContent = fmt(ganancia);
-    document.getElementById('total-txt').textContent = fmt(total);
+    box.style.display = 'block';
+    document.getElementById('items-cnt').textContent = items.length + ' ítem(s)';
+    document.getElementById('gan-txt').textContent = fmt(gan);
+    document.getElementById('tot-txt').textContent = fmt(total);
   }
 
-  function quitarItem(i) { items.splice(i, 1); renderItems(); }
+  function quitarItem(i) { items.splice(i,1); renderItems(); }
 
-  async function guardarVenta() {if (!turnoActivo) {
-      mostrarMsg('msg-venta', '⚠️ Debes abrir un turno de caja antes de vender.', 'err');
-      return;
-  }
-    if (!items.length) { mostrarMsg('msg-venta', '⚠️ Agrega al menos un ítem.', 'err'); return; }
+  async function guardarVenta() {
+    if (!items.length) { msg('msg-venta','⚠️ Agrega al menos un ítem.','err'); return; }
     const btn = event.target;
     btn.disabled = true; btn.textContent = 'GUARDANDO...';
-
-    const total = items.reduce((s,i) => s + i.subtotal, 0);
-    const ganancia = items.reduce((s,i) => s + (i.precio_unitario - i.costo_unitario) * i.cantidad, 0);
-    const abonado = metodoPago === 'credito' ? (parseFloat(document.getElementById('venta-abono').value) || 0) : total;
+    const total = items.reduce((s,i)=>s+i.subtotal,0);
+    const ganancia = items.reduce((s,i)=>s+(i.precio_unitario-i.costo_unitario)*i.cantidad,0);
+    const abonado = metodoPago==='credito' ? (parseFloat(document.getElementById('venta-abono').value)||0) : total;
     const saldo = total - abonado;
-    const estado_pago = saldo <= 0 ? 'pagado' : abonado > 0 ? 'parcial' : 'fiado';
-    const tipo = items.some(i=>i.tipo==='repuesto') && items.some(i=>i.tipo==='servicio') ? 'mixto' : items[0].tipo;
-    const cliente_id = document.getElementById('venta-cliente').value || null;
-    const descripcion = items.map(i => i.descripcion).join(', ');
-
-    const { data: venta, error } = await db.from('ventas').insert({
-      cliente_id, tipo, descripcion, total, ganancia,
-      estado_pago, metodo_pago: metodoPago, abonado, saldo,
-      fecha: new Date().toISOString().split('T')[0]
-    }).select().single();
-
-    if (error) {
-      btn.disabled = false; btn.textContent = '💰 REGISTRAR VENTA';
-      mostrarMsg('msg-venta', '❌ Error: ' + error.message, 'err'); return;
-    }
-
-    await db.from('venta_items').insert(items.map(i => ({ ...i, venta_id: venta.id })));
-    await db.from('pagos').insert({ venta_id: venta.id, monto: abonado, metodo: metodoPago, nota: 'Pago inicial' });
-
+    const estado_pago = saldo<=0?'pagado':abonado>0?'parcial':'fiado';
+    const tipo = items.some(i=>i.tipo==='repuesto')&&items.some(i=>i.tipo==='servicio')?'mixto':items[0].tipo;
+    const cliente_id = document.getElementById('venta-cliente').value||null;
+    const descripcion = items.map(i=>i.descripcion).join(', ');
+    const { data: venta, error } = await db.from('ventas').insert({ cliente_id, tipo, descripcion, total, ganancia, estado_pago, metodo_pago:metodoPago, abonado, saldo, fecha:new Date().toISOString().split('T')[0] }).select().single();
+    if (error) { btn.disabled=false; btn.textContent='💰 REGISTRAR VENTA'; msg('msg-venta','❌ '+error.message,'err'); return; }
+    await db.from('venta_items').insert(items.map(i=>({...i,venta_id:venta.id})));
+    await db.from('pagos').insert({venta_id:venta.id,monto:abonado,metodo:metodoPago,nota:'Pago inicial'});
     for (const it of items) {
       if (it.articulo_id) {
-        const art = articulos.find(a => a.id === it.articulo_id);
-        if (art) await db.from('articulos').update({ stock: Math.max(0, art.stock - it.cantidad) }).eq('id', art.id);
+        const art = articulos.find(a=>a.id===it.articulo_id);
+        if (art) await db.from('articulos').update({stock:Math.max(0,art.stock-it.cantidad)}).eq('id',art.id);
       }
     }
-
-    if (cliente_id && saldo > 0) {
-      const { data: cli } = await db.from('clientes').select('saldo_pendiente').eq('id', cliente_id).single();
-      if (cli) await db.from('clientes').update({ saldo_pendiente: (cli.saldo_pendiente||0) + saldo }).eq('id', cliente_id);
+    if (cliente_id && saldo>0) {
+      const {data:cli} = await db.from('clientes').select('saldo_pendiente').eq('id',cliente_id).single();
+      if (cli) await db.from('clientes').update({saldo_pendiente:(cli.saldo_pendiente||0)+saldo}).eq('id',cliente_id);
     }
-
-    items = [];
+    items=[];
     renderItems();
-    document.getElementById('venta-cliente').value = '';
-    document.getElementById('venta-abono').value = '';
-    document.getElementById('item-desc').value = '';
-    document.getElementById('item-precio').value = '';
-    document.getElementById('item-cantidad').value = '1';
-    btn.disabled = false; btn.textContent = '💰 REGISTRAR VENTA';
-    mostrarMsg('msg-venta', '✅ Venta registrada.', 'ok');
+    document.getElementById('venta-cliente').value='';
+    document.getElementById('venta-abono').value='';
+    document.getElementById('item-desc').value='';
+    document.getElementById('item-precio').value='';
+    document.getElementById('item-cant').value='1';
+    btn.disabled=false; btn.textContent='💰 REGISTRAR VENTA';
+    msg('msg-venta','✅ Venta registrada.','ok');
     await cargarArticulos();
   }
 
   async function cargarHoy() {
     const hoy = new Date().toISOString().split('T')[0];
-    const { data } = await db.from('ventas').select('*, clientes(nombre, telefono)').eq('fecha', hoy).order('creado_en', { ascending: false });
+    const {data} = await db.from('ventas').select('*,clientes(nombre,telefono)').eq('fecha',hoy).order('creado_en',{ascending:false});
     if (!data) return;
-    let total=0, ganancia=0, servicios=0, repuestos=0;
-    data.forEach(v => {
-      total += v.total; ganancia += v.ganancia;
-      if (v.tipo==='servicio') servicios += v.total;
-      if (v.tipo==='repuesto') repuestos += v.total;
-    });
-    document.getElementById('res-total').textContent = fmt(total);
-    document.getElementById('res-ganancia').textContent = fmt(ganancia);
-    document.getElementById('res-servicios').textContent = fmt(servicios);
-    document.getElementById('res-repuestos').textContent = fmt(repuestos);
-
-    const cont = document.getElementById('lista-hoy');
-    if (!data.length) { cont.innerHTML = '<div class="empty"><span>📭</span>Sin ventas hoy.</div>'; return; }
-    cont.innerHTML = data.map(v => `
-      <div class="venta-card ${v.estado_pago !== 'pagado' ? v.estado_pago : ''}">
-        <div class="venta-top">
+    let total=0,gan=0,serv=0,rep=0;
+    data.forEach(v=>{ total+=v.total; gan+=v.ganancia; if(v.tipo==='servicio')serv+=v.total; if(v.tipo==='repuesto')rep+=v.total; });
+    document.getElementById('res-total').textContent=fmt(total);
+    document.getElementById('res-gan').textContent=fmt(gan);
+    document.getElementById('res-serv').textContent=fmt(serv);
+    document.getElementById('res-rep').textContent=fmt(rep);
+    const cont=document.getElementById('lista-hoy');
+    if (!data.length){cont.innerHTML='<div class="empty"><span>📭</span>Sin ventas hoy.</div>';return;}
+    cont.innerHTML=data.map(v=>`
+      <div class="v-card ${v.estado_pago!=='pagado'?v.estado_pago:''}">
+        <div class="v-top">
           <div>
-            <div class="venta-cliente">${v.clientes?.nombre || 'Mostrador'}</div>
-            <div class="venta-sub">🔧 ${v.descripcion}</div>
-            <div class="venta-sub">💳 ${v.metodo_pago}</div>
+            <div class="v-nom">${v.clientes?.nombre||'Mostrador'}</div>
+            <div class="v-sub">🔧 ${v.descripcion}</div>
+            <div class="v-sub">💳 ${v.metodo_pago}</div>
           </div>
           <div>
-            <div class="venta-total">${fmt(v.total)}</div>
-            <div class="venta-ganancia">+${fmt(v.ganancia)}</div>
-            <span class="badge badge-${v.estado_pago}">${v.estado_pago}</span>
+            <div class="v-total">${fmt(v.total)}</div>
+            <div class="v-gan">+${fmt(v.ganancia)}</div>
+            <span class="bdg bdg-${v.estado_pago}">${v.estado_pago}</span>
           </div>
         </div>
-        ${v.saldo > 0 ? `<div class="saldo-txt">⚠️ Saldo: ${fmt(v.saldo)}</div>` : ''}
+        ${v.saldo>0?`<div class="saldo-txt">⚠️ Saldo: ${fmt(v.saldo)}</div>`:''}
         <div class="acciones">
-          ${v.clientes?.telefono ? `<a class="btn-wasa" href="https://wa.me/57${v.clientes.telefono}?text=${encodeURIComponent('*CARMOTORS*\nCliente: '+v.clientes.nombre+'\nServicio: '+v.descripcion+'\nTotal: '+fmt(v.total)+'\nGracias 🏍️')}" target="_blank">📲 WhatsApp</a>` : ''}
-          ${v.estado_pago !== 'pagado' ? `<button class="btn-abono" onclick="registrarAbono('${v.id}',${v.saldo})">💵 Abonar</button>` : ''}
+          ${v.clientes?.telefono?`<a class="btn-wasa" href="https://wa.me/57${v.clientes.telefono}?text=${encodeURIComponent('*CARMOTORS*\n'+v.descripcion+'\nTotal: '+fmt(v.total)+'\nGracias 🏍️')}" target="_blank">📲 WhatsApp</a>`:''}
+          ${v.estado_pago!=='pagado'?`<button class="btn-abo" onclick="registrarAbono('${v.id}',${v.saldo})">💵 Abonar</button>`:''}
         </div>
       </div>`).join('');
   }
 
-  async function verificarTurno() {
-    const boxApertura = document.getElementById('box-apertura');
-    const boxCierre = document.getElementById('box-cierre');
-    const estadoDiv = document.getElementById('caja-estado');
-    if (!boxApertura || !boxCierre || !estadoDiv) return;
-
-    if (turnoActivo) {
-      boxApertura.style.display = 'none';
-      boxCierre.style.display = 'block';
-      estadoDiv.innerHTML = `<div style="background:#1a3d2b;border:1px solid #2a6040;border-radius:8px;padding:12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center"><div><span style="color:var(--green);font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700">🟢 TURNO ABIERTO</span><div style="font-size:12px;color:var(--muted);margin-top:2px">Vendedor: ${turnoActivo.vendedor}</div></div><div style="text-align:right"><div style="color:var(--orange);font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700">Base: $${Number(turnoActivo.base_apertura).toLocaleString('es-CO')}</div></div></div>`;
-      await actualizarResumenCierre();
-    } else {
-      boxApertura.style.display = 'block';
-      boxCierre.style.display = 'none';
-      estadoDiv.innerHTML = `<div style="background:#3d1a1a;border:1px solid #6a2a2a;border-radius:8px;padding:12px;margin-bottom:14px"><span style="color:#e07070;font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700">🔴 CAJA CERRADA</span></div>`;
-    }
-    cargarHistorialTurnos();
-  }
-
-  async function abrirTurno() {
-    const vendedor = document.getElementById('turno-vendedor').value.trim();
-    const base = parseFloat(document.getElementById('turno-base').value) || 0;
-    if (!vendedor) { alert('Escribe tu nombre'); return; }
-    const btn = event.target;
-    btn.disabled = true; btn.textContent = 'ABRIENDO...';
-    await db.from('turnos_caja').insert({ vendedor, base_apertura: base, estado: 'abierto', fecha: new Date().toISOString().split('T')[0] });
-    btn.disabled = false; btn.textContent = '🔓 ABRIR TURNO';
-    verificarTurno();
-  }
-
-  async function actualizarResumenCierre() {
-    if (!turnoActivo) return;
-    const { data: ventas } = await db.from('ventas').select('*').eq('fecha', turnoActivo.fecha).gte('creado_en', turnoActivo.hora_apertura);
-    if (!ventas) return;
-
-    let totalVentas=0, ganancia=0, efectivo=0, nequi=0, daviplata=0, tarjeta=0, transferencia=0, credito=0;
-    ventas.forEach(v => {
-      totalVentas += v.total; ganancia += v.ganancia;
-      if (v.metodo_pago==='efectivo') efectivo += v.abonado;
-      else if (v.metodo_pago==='nequi') nequi += v.abonado;
-      else if (v.metodo_pago==='daviplata') daviplata += v.abonado;
-      else if (v.metodo_pago==='tarjeta') tarjeta += v.abonado;
-      else if (v.metodo_pago==='transferencia') transferencia += v.abonado;
-      else if (v.metodo_pago==='credito') credito += v.abonado;
-    });
-
-    turnoActivo = { ...turnoActivo, total_efectivo:efectivo, total_nequi:nequi, total_daviplata:daviplata, total_tarjeta:tarjeta, total_transferencia:transferencia, total_credito:credito, total_ventas:totalVentas, ganancia };
-
-    document.getElementById('cierre-resumen').innerHTML = `
-      <div class="total-row"><span>💰 Total vendido</span><span style="color:var(--orange);font-weight:700">${fmt(totalVentas)}</span></div>
-      <div class="total-row"><span>📈 Ganancia</span><span style="color:var(--green)">${fmt(ganancia)}</span></div>
-      <div class="total-row"><span>💵 Efectivo</span><span>${fmt(efectivo)}</span></div>
-      <div class="total-row"><span>📱 Nequi</span><span>${fmt(nequi)}</span></div>
-      <div class="total-row"><span>📲 Daviplata</span><span>${fmt(daviplata)}</span></div>
-      <div class="total-row"><span>💳 Tarjeta</span><span>${fmt(tarjeta)}</span></div>
-      <div class="total-row"><span>🏦 Transferencia</span><span>${fmt(transferencia)}</span></div>
-      <div class="total-row"><span>📋 Crédito cobrado</span><span>${fmt(credito)}</span></div>
-      <div class="total-row"><span>🏦 Base apertura</span><span>${fmt(turnoActivo.base_apertura)}</span></div>`;
-
-    const resumenWasa = `*CIERRE TURNO CARMOTORS*\n👤 ${turnoActivo.vendedor}\n📅 ${turnoActivo.fecha}\n\n💰 Total: ${fmt(totalVentas)}\n📈 Ganancia: ${fmt(ganancia)}\n💵 Efectivo: ${fmt(efectivo)}\n📱 Nequi: ${fmt(nequi)}\n📲 Daviplata: ${fmt(daviplata)}\n💳 Tarjeta: ${fmt(tarjeta)}\n🏦 Base: ${fmt(turnoActivo.base_apertura)}`;
-    document.getElementById('btn-wasa-cierre').href = `https://wa.me/?text=${encodeURIComponent(resumenWasa)}`;
-  }
-
-  async function cerrarTurno() {
-    if (!turnoActivo) return;
-    const conteo = parseFloat(document.getElementById('conteo-fisico').value) || 0;
-    const notas = document.getElementById('turno-notas').value.trim();
-    const diferencia = conteo - (turnoActivo.base_apertura + turnoActivo.total_efectivo);
-    const btn = event.target;
-    btn.disabled = true; btn.textContent = 'CERRANDO...';
-    await db.from('turnos_caja').update({
-      estado: 'cerrado', hora_cierre: new Date().toISOString(),
-      total_efectivo: turnoActivo.total_efectivo, total_nequi: turnoActivo.total_nequi,
-      total_daviplata: turnoActivo.total_daviplata, total_tarjeta: turnoActivo.total_tarjeta,
-      total_transferencia: turnoActivo.total_transferencia, total_credito: turnoActivo.total_credito,
-      total_ventas: turnoActivo.total_ventas, ganancia: turnoActivo.ganancia,
-      conteo_fisico: conteo, diferencia, notas
-    }).eq('id', turnoActivo.id);
-    btn.disabled = false; btn.textContent = '🔒 CERRAR TURNO';
-    turnoActivo = null;
-    verificarTurno();
-  }
-
-  async function cargarHistorialTurnos() {
-    const { data } = await db.from('turnos_caja').select('*').order('hora_apertura', { ascending: false }).limit(10);
-    const cont = document.getElementById('lista-turnos');
-    if (!data || !data.length) { cont.innerHTML = '<div class="empty"><span>📋</span>Sin turnos registrados.</div>'; return; }
-    cont.innerHTML = data.map(t => `
-      <div class="venta-card ${t.estado==='abierto' ? '' : ''}">
-        <div class="venta-top">
+  async function cargarFiados() {
+    const {data} = await db.from('ventas').select('*,clientes(nombre,telefono)').neq('estado_pago','pagado').order('creado_en',{ascending:false});
+    const cont=document.getElementById('lista-fiados');
+    if (!data||!data.length){cont.innerHTML='<div class="empty"><span>✅</span>Sin fiados.</div>';return;}
+    cont.innerHTML=data.map(v=>`
+      <div class="v-card fiado">
+        <div class="v-top">
           <div>
-            <div class="venta-cliente">👤 ${t.vendedor}</div>
-            <div class="venta-sub">📅 ${t.fecha} — ${t.hora_apertura?.substring(11,16)}</div>
-            ${t.notas ? `<div class="venta-sub">📝 ${t.notas}</div>` : ''}
+            <div class="v-nom">${v.clientes?.nombre||'Mostrador'}</div>
+            <div class="v-sub">${v.descripcion}</div>
+            <div class="v-sub">${v.fecha}</div>
           </div>
-          <div style="text-align:right">
-            <div class="venta-total">${fmt(t.total_ventas)}</div>
-            <div class="venta-ganancia">+${fmt(t.ganancia)}</div>
-            <span class="badge ${t.estado==='abierto' ? 'badge-parcial' : 'badge-pagado'}">${t.estado}</span>
+          <div>
+            <div class="v-total">${fmt(v.total)}</div>
+            <div class="saldo-txt">Saldo: ${fmt(v.saldo)}</div>
+            <span class="bdg bdg-${v.estado_pago}">${v.estado_pago}</span>
           </div>
         </div>
-        ${t.diferencia !== 0 && t.estado==='cerrado' ? `<div class="venta-sub" style="margin-top:6px;color:${t.diferencia>0?'var(--green)':'#e07070'}">Diferencia caja: ${fmt(t.diferencia)}</div>` : ''}
+        <div class="acciones">
+          ${v.clientes?.telefono?`<a class="btn-wasa" href="https://wa.me/57${v.clientes.telefono}?text=${encodeURIComponent('Hola, tienes saldo de '+fmt(v.saldo)+' en CARMOTORS 🏍️')}" target="_blank">📲 Recordar</a>`:''}
+          <button class="btn-abo" onclick="registrarAbono('${v.id}',${v.saldo})">💵 Abonar</button>
+        </div>
       </div>`).join('');
-                                                                                                                             }
   }
 
   async function registrarAbono(venta_id, saldo_actual) {
     const monto = parseFloat(prompt(`Saldo: ${fmt(saldo_actual)}\n¿Cuánto abona?`));
-    if (!monto || monto <= 0) return;
-    const abono = Math.min(monto, saldo_actual);
-    const nuevo_saldo = saldo_actual - abono;
-    const metodo = prompt('Método: efectivo, nequi, daviplata, tarjeta') || 'efectivo';
-    await db.from('pagos').insert({ venta_id, monto: abono, metodo, nota: 'Abono' });
-    const { data: v } = await db.from('ventas').select('abonado, cliente_id').eq('id', venta_id).single();
-    await db.from('ventas').update({ abonado: (v.abonado||0)+abono, saldo: nuevo_saldo, estado_pago: nuevo_saldo<=0?'pagado':'parcial' }).eq('id', venta_id);
+    if (!monto||monto<=0) return;
+    const abono = Math.min(monto,saldo_actual);
+    const nuevo_saldo = saldo_actual-abono;
+    const metodo = prompt('Método: efectivo, nequi, daviplata, tarjeta')||'efectivo';
+    await db.from('pagos').insert({venta_id,monto:abono,metodo,nota:'Abono'});
+    const {data:v} = await db.from('ventas').select('abonado,cliente_id').eq('id',venta_id).single();
+    await db.from('ventas').update({abonado:(v.abonado||0)+abono,saldo:nuevo_saldo,estado_pago:nuevo_saldo<=0?'pagado':'parcial'}).eq('id',venta_id);
     if (v.cliente_id) {
-      const { data: cli } = await db.from('clientes').select('saldo_pendiente').eq('id', v.cliente_id).single();
-      if (cli) await db.from('clientes').update({ saldo_pendiente: Math.max(0,(cli.saldo_pendiente||0)-abono) }).eq('id', v.cliente_id);
+      const {data:cli} = await db.from('clientes').select('saldo_pendiente').eq('id',v.cliente_id).single();
+      if (cli) await db.from('clientes').update({saldo_pendiente:Math.max(0,(cli.saldo_pendiente||0)-abono)}).eq('id',v.cliente_id);
     }
     cargarHoy(); cargarFiados();
   }
 
-  async function cargarArticulos() {
-    const { data } = await db.from('articulos').select('*').order('nombre');
-    articulos = data || [];
-    const sel = document.getElementById('item-repuesto');
-    sel.innerHTML = '<option value="">Selecciona repuesto...</option>';
-    articulos.forEach(a => {
-      sel.innerHTML += `<option value="${a.id}">${a.nombre} — Stock: ${a.stock} — ${fmt(a.precio)}</option>`;
-    });
+  async function cargarCaja() {
+    const hoy = new Date().toISOString().split('T')[0];
+    const {data} = await db.from('turnos_caja').select('*').eq('fecha',hoy).order('hora_apertura',{ascending:false}).limit(1);
+    turnoActivo = data&&data.length ? data[0] : null;
+    const boxA = document.getElementById('box-apertura');
+    const boxC = document.getElementById('box-cierre');
+    if (turnoActivo && turnoActivo.estado==='abierto') {
+      boxA.style.display='none'; boxC.style.display='block';
+      await actualizarResumen();
+    } else {
+      boxA.style.display='block'; boxC.style.display='none';
+    }
+    cargarHistorial();
   }
-  async function cargarCierre() {
-    const fecha = document.getElementById('caja-fecha').value || new Date().toISOString().split('T')[0];
-    const { data } = await db.from('ventas').select('*, clientes(nombre)').eq('fecha', fecha).order('creado_en', { ascending: false });
-    const cont = document.getElementById('cierre-resultado');
-    if (!data || !data.length) { cont.innerHTML = '<div class="empty"><span>📭</span>Sin ventas ese día.</div>'; return; }
 
-    let total=0, ganancia=0, efectivo=0, nequi=0, daviplata=0, tarjeta=0, transferencia=0, credito=0, servicios=0, repuestos=0, fiados=0;
-    data.forEach(v => {
-      total += v.total; ganancia += v.ganancia;
-      if (v.metodo_pago==='efectivo') efectivo += v.abonado;
-      else if (v.metodo_pago==='nequi') nequi += v.abonado;
-      else if (v.metodo_pago==='daviplata') daviplata += v.abonado;
-      else if (v.metodo_pago==='tarjeta') tarjeta += v.abonado;
-      else if (v.metodo_pago==='transferencia') transferencia += v.abonado;
-      else if (v.metodo_pago==='credito') credito += v.abonado;
-      if (v.tipo==='servicio'||v.tipo==='mixto') servicios += v.total;
-      if (v.tipo==='repuesto') repuestos += v.total;
-      if (v.estado_pago!=='pagado') fiados += v.saldo;
+  async function abrirTurno() {
+    const vendedor = document.getElementById('turno-vendedor').value.trim();
+    const base = parseFloat(document.getElementById('turno-base').value)||0;
+    if (!vendedor) { alert('Escribe tu nombre'); return; }
+    const btn=event.target; btn.disabled=true; btn.textContent='ABRIENDO...';
+    await db.from('turnos_caja').insert({vendedor,base_apertura:base,estado:'abierto',fecha:new Date().toISOString().split('T')[0]});
+    btn.disabled=false; btn.textContent='🔓 ABRIR TURNO';
+    cargarCaja();
+  }
+
+  async function actualizarResumen() {
+    if (!turnoActivo) return;
+    const {data:ventas} = await db.from('ventas').select('*').eq('fecha',turnoActivo.fecha).gte('creado_en',turnoActivo.hora_apertura);
+    if (!ventas) return;
+    let total=0,gan=0,ef=0,nq=0,dp=0,tj=0,tr=0,cr=0;
+    ventas.forEach(v=>{
+      total+=v.total; gan+=v.ganancia;
+      if(v.metodo_pago==='efectivo')ef+=v.abonado;
+      else if(v.metodo_pago==='nequi')nq+=v.abonado;
+      else if(v.metodo_pago==='daviplata')dp+=v.abonado;
+      else if(v.metodo_pago==='tarjeta')tj+=v.abonado;
+      else if(v.metodo_pago==='transferencia')tr+=v.abonado;
+      else if(v.metodo_pago==='credito')cr+=v.abonado;
     });
+    document.getElementById('cierre-resumen').innerHTML=`
+      <div class="t-row"><span>💰 Total vendido</span><span style="color:var(--orange)">${fmt(total)}</span></div>
+      <div class="t-row"><span>📈 Ganancia</span><span style="color:var(--green)">${fmt(gan)}</span></div>
+      <div class="t-row"><span>💵 Efectivo</span><span>${fmt(ef)}</span></div>
+      <div class="t-row"><span>📱 Nequi</span><span>${fmt(nq)}</span></div>
+      <div class="t-row"><span>📲 Daviplata</span><span>${fmt(dp)}</span></div>
+      <div class="t-row"><span>💳 Tarjeta</span><span>${fmt(tj)}</span></div>
+      <div class="t-row"><span>🏦 Transferencia</span><span>${fmt(tr)}</span></div>
+      <div class="t-row"><span>📋 Crédito</span><span>${fmt(cr)}</span></div>
+      <div class="t-row"><span>🏦 Base apertura</span><span>${fmt(turnoActivo.base_apertura)}</span></div>`;
+    const wasa=`*CIERRE CARMOTORS*\n👤 ${turnoActivo.vendedor}\n📅 ${turnoActivo.fecha}\n💰 Total: ${fmt(total)}\n📈 Ganancia: ${fmt(gan)}\n💵 Efectivo: ${fmt(ef)}\n📱 Nequi: ${fmt(nq)}\n📲 Daviplata: ${fmt(dp)}\n💳 Tarjeta: ${fmt(tj)}\n🏦 Base: ${fmt(turnoActivo.base_apertura)}`;
+    document.getElementById('btn-wasa-cierre').href=`https://wa.me/?text=${encodeURIComponent(wasa)}`;
+    turnoActivo={...turnoActivo,total_ventas:total,ganancia:gan,total_efectivo:ef,total_nequi:nq,total_daviplata:dp,total_tarjeta:tj,total_transferencia:tr,total_credito:cr};
+  }
 
-    const resumen = `*CIERRE DE CAJA CARMOTORS*\n📅 ${fecha}\n\n💰 Total vendido: ${fmt(total)}\n📈 Ganancia: ${fmt(ganancia)}\n\n*Por método:*\n💵 Efectivo: ${fmt(efectivo)}\n📱 Nequi: ${fmt(nequi)}\n📲 Daviplata: ${fmt(daviplata)}\n💳 Tarjeta: ${fmt(tarjeta)}\n🏦 Transferencia: ${fmt(transferencia)}\n📋 Crédito cobrado: ${fmt(credito)}\n\n*Por tipo:*\n🔧 Servicios: ${fmt(servicios)}\n🔩 Repuestos: ${fmt(repuestos)}\n\n⚠️ Fiados pendientes: ${fmt(fiados)}`;
+  async function cerrarTurno() {
+    if (!turnoActivo) return;
+    const conteo=parseFloat(document.getElementById('conteo-fisico').value)||0;
+    const notas=document.getElementById('turno-notas').value.trim();
+    const diferencia=conteo-(turnoActivo.base_apertura+turnoActivo.total_efectivo);
+    const btn=event.target; btn.disabled=true; btn.textContent='CERRANDO...';
+    await db.from('turnos_caja').update({estado:'cerrado',hora_cierre:new Date().toISOString(),total_efectivo:turnoActivo.total_efectivo,total_nequi:turnoActivo.total_nequi,total_daviplata:turnoActivo.total_daviplata,total_tarjeta:turnoActivo.total_tarjeta,total_transferencia:turnoActivo.total_transferencia,total_credito:turnoActivo.total_credito,total_ventas:turnoActivo.total_ventas,ganancia:turnoActivo.ganancia,conteo_fisico:conteo,diferencia,notas}).eq('id',turnoActivo.id);
+    btn.disabled=false; btn.textContent='🔒 CERRAR TURNO';
+    turnoActivo=null;
+    cargarCaja();
+  }
 
-    cont.innerHTML = `
-      <div class="form-card">
-        <div class="resumen-grid">
-          <div class="resumen-card"><div class="valor">${fmt(total)}</div><div class="label">Total vendido</div></div>
-          <div class="resumen-card"><div class="valor green">${fmt(ganancia)}</div><div class="label">Ganancia</div></div>
-        </div>
-        <div style="margin-bottom:14px">
-          <div class="total-row" style="margin-bottom:8px"><span>💵 Efectivo</span><span style="color:var(--text)">${fmt(efectivo)}</span></div>
-          <div class="total-row" style="margin-bottom:8px"><span>📱 Nequi</span><span style="color:var(--text)">${fmt(nequi)}</span></div>
-          <div class="total-row" style="margin-bottom:8px"><span>📲 Daviplata</span><span style="color:var(--text)">${fmt(daviplata)}</span></div>
-          <div class="total-row" style="margin-bottom:8px"><span>💳 Tarjeta</span><span style="color:var(--text)">${fmt(tarjeta)}</span></div>
-          <div class="total-row" style="margin-bottom:8px"><span>🏦 Transferencia</span><span style="color:var(--text)">${fmt(transferencia)}</span></div>
-          <div class="total-row" style="margin-bottom:8px"><span>🔧 Servicios</span><span style="color:var(--text)">${fmt(servicios)}</span></div>
-          <div class="total-row" style="margin-bottom:8px"><span>🔩 Repuestos</span><span style="color:var(--text)">${fmt(repuestos)}</span></div>
-          <div class="total-row"><span>⚠️ Fiados pendientes</span><span style="color:#e07070">${fmt(fiados)}</span></div>
-        </div>
-        <a class="btn-wasa" style="display:block;text-align:center;padding:10px" href="https://wa.me/?text=${encodeURIComponent(resumen)}" target="_blank">📲 Enviar resumen por WhatsApp</a>
-      </div>
-      ${data.map(v => `
-        <div class="venta-card">
-          <div class="venta-top">
-            <div>
-              <div class="venta-cliente">${v.clientes?.nombre || 'Mostrador'}</div>
-              <div class="venta-sub">${v.descripcion}</div>
-              <div class="venta-sub">💳 ${v.metodo_pago}</div>
-            </div>
-            <div>
-              <div class="venta-total">${fmt(v.total)}</div>
-              <div class="venta-ganancia">+${fmt(v.ganancia)}</div>
-              <span class="badge badge-${v.estado_pago}">${v.estado_pago}</span>
-            </div>
+  async function cargarHistorial() {
+    const {data} = await db.from('turnos_caja').select('*').order('hora_apertura',{ascending:false}).limit(10);
+    const cont=document.getElementById('lista-turnos');
+    if (!data||!data.length){cont.innerHTML='<div class="empty"><span>📋</span>Sin turnos.</div>';return;}
+    cont.innerHTML=data.map(t=>`
+      <div class="v-card">
+        <div class="v-top">
+          <div>
+            <div class="v-nom">👤 ${t.vendedor}</div>
+            <div class="v-sub">📅 ${t.fecha} ${t.hora_apertura?.substring(11,16)}</div>
+            ${t.notas?`<div class="v-sub">📝 ${t.notas}</div>`:''}
           </div>
-        </div>`).join('')}`;
-  }
-  async function cargarSelectClientes() {
-    const { data } = await db.from('clientes').select('id, nombre, saldo_pendiente').order('nombre');
-    const sel = document.getElementById('venta-cliente');
-    sel.innerHTML = '<option value="">Sin cliente / mostrador</option>';
-    if (data) data.forEach(c => {
-      sel.innerHTML += `<option value="${c.id}">${c.nombre}${c.saldo_pendiente > 0 ? ' ⚠️' : ''}</option>`;
-    });
+          <div>
+            <div class="v-total">${fmt(t.total_ventas)}</div>
+            <div class="v-gan">+${fmt(t.ganancia)}</div>
+            <span class="bdg ${t.estado==='abierto'?'bdg-parcial':'bdg-pagado'}">${t.estado}</span>
+          </div>
+        </div>
+        ${t.diferencia&&t.estado==='cerrado'?`<div class="v-sub" style="color:${t.diferencia>0?'var(--green)':'#e07070'}">Diferencia: ${fmt(t.diferencia)}</div>`:''}
+      </div>`).join('');
   }
 
-  function mostrarMsg(id, txt, tipo) {
-    const el = document.getElementById(id);
-    el.textContent = txt; el.className = 'msg ' + tipo;
-    setTimeout(() => { el.className = 'msg'; }, 3500);
+  async function cargarArticulos() {
+    const {data} = await db.from('articulos').select('*').order('nombre');
+    articulos=data||[];
+    const sel=document.getElementById('item-repuesto');
+    sel.innerHTML='<option value="">Selecciona repuesto...</option>';
+    articulos.forEach(a=>{ sel.innerHTML+=`<option value="${a.id}">${a.nombre} — Stock:${a.stock} — ${fmt(a.precio)}</option>`; });
+  }
+
+  async function cargarSelectClientes() {
+    const {data} = await db.from('clientes').select('id,nombre,saldo_pendiente').order('nombre');
+    const sel=document.getElementById('venta-cliente');
+    sel.innerHTML='<option value="">Sin cliente / mostrador</option>';
+    if (data) data.forEach(c=>{ sel.innerHTML+=`<option value="${c.id}">${c.nombre}${c.saldo_pendiente>0?' ⚠️':''}</option>`; });
+  }
+
+  function msg(id,txt,tipo) {
+    const el=document.getElementById(id);
+    el.textContent=txt; el.className='msg '+tipo;
+    setTimeout(()=>{el.className='msg';},3500);
   }
 
   async function init() {
-    await verificarTurno();
     await cargarArticulos();
     await cargarSelectClientes();
     cargarHoy();
