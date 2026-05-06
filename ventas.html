@@ -459,12 +459,10 @@
   }
 
   async function verificarTurno() {
-    const hoy = new Date().toISOString().split('T')[0];
-    const { data } = await db.from('turnos_caja').select('*').eq('estado','abierto').eq('fecha',hoy).order('hora_apertura', { ascending: false }).limit(1);
-    turnoActivo = data && data.length ? data[0] : null;
     const boxApertura = document.getElementById('box-apertura');
     const boxCierre = document.getElementById('box-cierre');
     const estadoDiv = document.getElementById('caja-estado');
+    if (!boxApertura || !boxCierre || !estadoDiv) return;
 
     if (turnoActivo) {
       boxApertura.style.display = 'none';
