@@ -301,8 +301,7 @@
 
         <label>Método de pago</label>
         <div class="metodos">
-          ${['efectivo💵','nequi📱','daviplata📲','tarjeta💳','transferencia🏦','credito📋'].map(m => {
-            const [nom,ico] = m.split(/(?=\p{Emoji})/u);
+          ${[['efectivo','💵'],['nequi','📱'],['daviplata','📲'],['tarjeta','💳'],['transferencia','🏦'],['credito','📋']].map(([nom,ico]) => {
             return `<div class="metodo-btn ${c.metodo===nom?'active':''}" onclick="selMetodo(${c.id},'${nom}',this)"><span class="ico">${ico||'💵'}</span><span class="nom">${nom}</span></div>`;
           }).join('')}
         </div>
