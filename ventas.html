@@ -225,7 +225,7 @@ function renderTabs() {
   var btnNuevo = document.createElement('button');
   btnNuevo.className = 'btn-nuevo';
   btnNuevo.textContent = '+ Nueva venta';
-  btnNuevo.onclick = nuevoCarrito;
+  btnNuevo.onclick = function(){ nuevoCarrito(); };
   bar.appendChild(btnNuevo);
   carritos.forEach(function(c) {
     var tab = document.createElement('div');
