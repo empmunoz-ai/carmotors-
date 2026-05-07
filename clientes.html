@@ -57,3 +57,218 @@
     .bnav a span { font-size:20px; }
   </style>
 </head>
+  <body>
+<header>
+  <div class="lm">CM</div>
+  <h1>CARMOTORS</h1>
+</header>
+
+<div class="tabs">
+  <button class="tbtn active" onclick="sw('lista',this)">👥 Lista</button>
+  <button class="tbtn" onclick="sw('nuevo',this)">➕ Nuevo</button>
+</div>
+
+<main>
+
+<div id="sec-lista" class="sec active">
+  <div id="lista-clientes"><div class="loading">Cargando...</div></div>
+</div>
+
+<div id="sec-nuevo" class="sec">
+  <div class="card">
+    <div class="ctitle">➕ Nuevo cliente</div>
+    <div id="msg" class="msg"></div>
+    <label class="fl">Nombre</label>
+    <input type="text" id="cnombre" placeholder="Juan Perez"/>
+    <label class="fl">Telefono</label>
+    <input type="text" id="ctelefono" placeholder="3001234567"/>
+    <label class="fl">Email</label>
+    <input type="email" id="cemail" placeholder="juan@email.com"/>
+    <label class="fl">Vehiculo (marca/modelo)</label>
+    <input type="text" id="cvehiculo" placeholder="Honda CB 110"/>
+    <label class="fl">Placa</label>
+    <input type="text" id="cplaca" placeholder="ABC123"/>
+    <label class="fl">Notas</label>
+    <input type="text" id="cnotas" placeholder="Cliente habitual, paga a tiempo..."/>
+    <button class="btnmain" onclick="guardarCliente()">✅ GUARDAR CLIENTE</button>
+  </div>
+</div>
+
+<div id="sec-detalle" class="sec">
+  <div class="card">
+    <div class="ctitle" id="detalle-titulo">Cliente</div>
+    <div id="msg2" class="msg"></div>
+    <div id="detalle-info" class="clidet"></div>
+    <div class="cliact">
+      <button class="btnact" onclick="volverLista()">← VOLVER</button>
+      <button class="btnact btnred" onclick="eliminarCliente()">🗑️ ELIMINAR</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">📋 Historial de ventas</div>
+    <div id="detalle-historial"><div class="loading">Cargando...</div></div>
+  </div>
+</div>
+
+</main>
+
+<nav class="bnav">
+  <a href="index.html"><span>🏠</span>PANEL</a>
+  <a href="ventas.html"><span>💰</span>VENTAS</a>
+  <a href="clientes.html" class="on"><span>👥</span>CLIENTES</a>
+  <a href="agendar.html"><span>📅</span>AGENDA</a>
+  <a href="admin.html"><span>⚙️</span>ADMIN</a>
+</nav>
+    <script>
+const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let clientes = [];
+let clienteActual = null;
+
+const fmt = n => '$' + Number(n||0).toLocaleString('es-CO');
+
+function sw(sec, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  btn.classList.add('active');
+  if (sec === 'lista') cargarLista();
+}
+
+async function cargarLista() {
+  const res = await db.from('clientes').select('*').order('nombre');
+  clientes = res.data || [];
+  const cont = document.getElementById('lista-clientes');
+  if (!clientes.length) { cont.innerHTML = '<div class="empty"><span>👥</span>Sin clientes aún.</div>'; return; }
+  cont.innerHTML = '';
+  clientes.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'clicard';
+    card.onclick = () => mostrarDetalle(c.id);
+    let html = '<div class="clinom">' + c.nombre + '</div>';
+    html += '<div class="clisub">📱 ' + (c.telefono || 'Sin teléfono') + '</div>';
+    if (c.vehiculo) html += '<div class="clisub">🏍️ ' + c.vehiculo + (c.placa ? ' - ' + c.placa : '') + '</div>';
+    if (c.saldo_pendiente > 0) html += '<div class="clibdg">Debe ' + fmt(c.saldo_pendiente) + '</div>';
+    else html += '<div class="clibdg clibdgo">Al día</div>';
+    card.innerHTML = html;
+    cont.appendChild(card);
+  });
+}
+
+async function mostrarDetalle(id) {
+  clienteActual = clientes.find(c => c.id === id);
+  if (!clienteActual) return;
+  document.getElementById('sec-lista').classList.remove('active');
+  document.getElementById('sec-detalle').classList.add('active');
+  document.getElementById('detalle-titulo').textContent = clienteActual.nombre;
+  const info = document.getElementById('detalle-info');
+  info.innerHTML = '';
+  const rows = [
+    ['Nombre', clienteActual.nombre],
+    ['Teléfono', clienteActual.telefono || '-'],
+    ['Email', clienteActual.email || '-'],
+    ['Vehículo', clienteActual.vehiculo || '-'],
+    ['Placa', clienteActual.placa || '-'],
+    ['Saldo pendiente', fmt(clienteActual.saldo_pendiente || 0)],
+    ['Próximo servicio', clienteActual.proximo_servicio || '-'],
+    ['Notas', clienteActual.notas || '-']
+  ];
+  rows.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'det-row';
+    const lbl = document.createElement('span');
+    lbl.className = 'det-lbl';
+    lbl.textContent = r[0];
+    const val = document.createElement('span');
+    val.className = 'det-val';
+    val.textContent = r[1];
+    row.appendChild(lbl);
+    row.appendChild(val);
+    info.appendChild(row);
+  });
+  cargarHistorial();
+}
+
+async function cargarHistorial() {
+  if (!clienteActual) return;
+  const res = await db.from('ventas').select('*').eq('cliente_id', clienteActual.id).order('creado_en', { ascending: false }).limit(10);
+  const ventas = res.data || [];
+  const cont = document.getElementById('detalle-historial');
+  if (!ventas.length) { cont.innerHTML = '<div class="empty"><span>📭</span>Sin ventas.</div>'; return; }
+  cont.innerHTML = '';
+  ventas.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'hiscard';
+    let html = '<div class="hisnom">💰 ' + fmt(v.total) + ' - ' + v.descripcion + '</div>';
+    html += '<div class="hissub">📅 ' + v.fecha + ' | 💳 ' + v.metodo_pago + ' | Estado: ' + v.estado_pago + '</div>';
+    if (v.saldo > 0) html += '<div class="hissub">Saldo: ' + fmt(v.saldo) + '</div>';
+    card.innerHTML = html;
+    cont.appendChild(card);
+  });
+}
+
+async function guardarCliente() {
+  const nombre = document.getElementById('cnombre').value.trim();
+  const telefono = document.getElementById('ctelefono').value.trim();
+  const email = document.getElementById('cemail').value.trim();
+  const vehiculo = document.getElementById('cvehiculo').value.trim();
+  const placa = document.getElementById('cplaca').value.trim();
+  const notas = document.getElementById('cnotas').value.trim();
+  if (!nombre) { msg('⚠️ Nombre requerido.', 'err', 'msg'); return; }
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'GUARDANDO...';
+  const res = await db.from('clientes').insert({ nombre, telefono: telefono || null, email: email || null, vehiculo: vehiculo || null, placa: placa || null, notas: notas || null, saldo_pendiente: 0 }).select().single();
+  if (res.error) { btn.disabled = false; btn.textContent = '✅ GUARDAR CLIENTE'; msg('❌ ' + res.error.message, 'err', 'msg'); return; }
+  btn.disabled = false;
+  btn.textContent = '✅ GUARDAR CLIENTE';
+  msg('✅ Cliente guardado.', 'ok', 'msg');
+  document.getElementById('cnombre').value = '';
+  document.getElementById('ctelefono').value = '';
+  document.getElementById('cemail').value = '';
+  document.getElementById('cvehiculo').value = '';
+  document.getElementById('cplaca').value = '';
+  document.getElementById('cnotas').value = '';
+  await cargarLista();
+}
+
+async function eliminarCliente() {
+  if (!clienteActual) return;
+  if (!confirm('⚠️ Eliminar a ' + clienteActual.nombre + '? Esto no se puede deshacer.')) return;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'ELIMINANDO...';
+  await db.from('clientes').delete().eq('id', clienteActual.id);
+  btn.disabled = false;
+  btn.textContent = '🗑️ ELIMINAR';
+  clienteActual = null;
+  await cargarLista();
+  document.getElementById('sec-detalle').classList.remove('active');
+  document.getElementById('sec-lista').classList.add('active');
+}
+
+function volverLista() {
+  clienteActual = null;
+  document.getElementById('sec-detalle').classList.remove('active');
+  document.getElementById('sec-lista').classList.add('active');
+  cargarLista();
+}
+
+function msg(txt, tipo, el) {
+  const msg_el = document.getElementById(el || 'msg');
+  msg_el.textContent = txt;
+  msg_el.className = 'msg ' + (tipo === 'ok' ? 'msgok' : 'msgerr');
+  setTimeout(() => { msg_el.className = 'msg'; }, 3500);
+}
+
+async function init() {
+  await cargarLista();
+}
+
+init();
+</script>
+</body>
+</html>
