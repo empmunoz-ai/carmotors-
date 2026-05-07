@@ -164,29 +164,7 @@
   <a href="agendar.html"><span>📅</span>AGENDA</a>
   <a href="admin.html"><span>⚙️</span>ADMIN</a>
 </nav>
-<script>
-  const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
-  const { createClient } = supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  let articulos = [];
-  let clientes = [];
-  let turnoActivo = null;
-  let carritos = [];
-  let carritoActivo = null;
-
-  const fmt = n => '$' + Number(n||0).toLocaleString('es-CO');
-
-  function switchMain(tab, btn) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.tab-main-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    btn.classList.add('active');
-    if (tab === 'hoy') cargarHoy();
-    if (tab === 'fiados') cargarFiados();
-    if (tab === 'caja') cargarCaja();
-  }
 
   // ══ SISTEMA DE CARRITOS ══
 
