@@ -362,7 +362,7 @@ async function cargarHoy() {
     html += '<div><div class="vtot">' + fmt(v.total) + '</div><div class="vgan">+' + fmt(v.ganancia) + '</div><span class="bdg ' + (v.estado_pago === 'pagado' ? 'bpag' : v.estado_pago === 'fiado' ? 'bfia' : 'bpar') + '">' + v.estado_pago + '</span></div></div>';
     if (v.saldo > 0) html += '<div class="stxt">Saldo: ' + fmt(v.saldo) + '</div>';
     html += '<div class="acc">';
-    if (telCli) html += '<a class="bwasa" href="https://wa.me/57' + telCli + '?text=' + encodeURIComponent('*CARMOTORS*\n' + v.descripcion + '\nTotal: ' + fmt(v.total) + '\nGracias') + '" target="_blank">📲 WhatsApp</a>';
+    if (telCli) html += '<button class="bwasa" onclick="wasaVenta(\'' + v.id + '\',\'57' + telCli + '\',' + v.total + ')">📲 WhatsApp</button>';
     if (v.estado_pago !== 'pagado') html += '<button class="babo" onclick="abono(\'' + v.id + '\',' + v.saldo + ')">💵 Abonar</button>';
     html += '</div>';
     card.innerHTML = html;
@@ -520,7 +520,17 @@ async function cargarSelectClientes() {
     sel.appendChild(opt);
   });
 }
-
+async function wasaVenta(venta_id, tel, total) {
+  const res = await db.from('venta_items').select('*').eq('venta_id', venta_id);
+  const its = res.data || [];
+  let txt = '*CARMOTORS*\n';
+  its.forEach(function(it) {
+    txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + ': ' + fmt(it.precio_unitario * it.cantidad) + '\n';
+  });
+  txt += '─────────────\n';
+  txt += 'TOTAL: ' + fmt(total) + '\nGracias 🙏';
+  window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(txt), '_blank');
+    }
 function msg(txt, tipo) {
   const el = document.getElementById('msg');
   el.textContent = txt;
