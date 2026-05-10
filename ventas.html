@@ -405,8 +405,8 @@ async function abono(venta_id, saldo_actual) {
     const cRes = await db.from('clientes').select('saldo_pendiente').eq('id', v.cliente_id).single();
     if (cRes.data) await db.from('clientes').update({ saldo_pendiente: Math.max(0, (cRes.data.saldo_pendiente || 0) - abono) }).eq('id', v.cliente_id);
   }
-  cargarHoy();
-  cargarFiados();
+  await cargarHoy();
+await cargarFiados();
 }
 
 async function cargarCaja() {
