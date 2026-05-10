@@ -550,7 +550,17 @@ async function verificarTurno() {
   const hoy = new Date().toISOString().split('T')[0];
   const res = await db.from('turnos_caja').select('*').eq('fecha', hoy).eq('estado', 'abierto').order('hora_apertura', { ascending: false }).limit(1);
   turnoActivo = (res.data && res.data.length) ? res.data[0] : null;
-}
+  const btnGuardar = document.querySelector('.btnmain');
+  if (!turnoActivo) {
+    const aviso = document.createElement('div');
+    aviso.className = 'msg msgerr';
+    aviso.style.display = 'block';
+    aviso.innerHTML = '⚠️ No hay caja abierta. <a href="#" onclick="document.querySelector(\'.tbtn:last-child\').click()" style="color:var(--orange)">Abrir caja →</a>';
+    document.getElementById('sec-nueva').prepend(aviso);
+    if (btnGuardar) btnGuardar.disabled = true;
+  } else {
+    if (btnGuardar) btnGuardar.disabled = false;
+  }
 }
 
 init();
