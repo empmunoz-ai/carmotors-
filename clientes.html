@@ -399,7 +399,39 @@ async function cargarHistorialMoto() {
     cont.appendChild(card);
   });
 }
+function mostrarEdicionMoto() {
+  const form = document.getElementById('form-editar-moto');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  if (form.style.display === 'block') {
+    document.getElementById('emarca').value = motoActual.marca || '';
+    document.getElementById('emodelo').value = motoActual.modelo || '';
+    document.getElementById('eplaca').value = motoActual.placa || '';
+    document.getElementById('eanio').value = motoActual.anio || '';
+    document.getElementById('ecolor').value = motoActual.color || '';
+    document.getElementById('ekm').value = motoActual.kilometraje || '';
+    document.getElementById('enotas').value = motoActual.notas || '';
+  }
+}
 
+async function guardarEdicionMoto() {
+  if (!motoActual) return;
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'GUARDANDO...';
+  const res = await db.from('motos').update({
+    marca: document.getElementById('emarca').value.trim(),
+    modelo: document.getElementById('emodelo').value.trim(),
+    placa: document.getElementById('eplaca').value.trim(),
+    anio: document.getElementById('eanio').value.trim(),
+    color: document.getElementById('ecolor').value.trim(),
+    kilometraje: document.getElementById('ekm').value.trim(),
+    notas: document.getElementById('enotas').value.trim()
+  }).eq('id', motoActual.id).select().single();
+  btn.disabled = false; btn.textContent = '💾 GUARDAR CAMBIOS';
+  if (res.error) { alert('❌ ' + res.error.message); return; }
+  motoActual = res.data;
+  document.getElementById('form-editar-moto').style.display = 'none';
+  mostrarMoto(motoActual.id);
+  }
 async function eliminarMoto() {
   if (!motoActual) return;
   if (!confirm('⚠️ Eliminar esta moto y su historial?')) return;
