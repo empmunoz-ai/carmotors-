@@ -565,6 +565,39 @@ async function wasaVenta(venta_id, tel, total) {
   txt += 'TOTAL: ' + fmt(total) + '\n\nGracias por confiar en nosotros 🙏\nAnte cualquier inquietud estamos a sus órdenes.\nCARMOTORS — Mecánicos de Confianza 🏍️';
   window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(txt), '_blank');
     }
+    
+    async function abonarTodo(cliente_id, nombre, telefono, total_saldo) {
+  if (!turnoActivo) { alert('⚠️ Abre la caja primero.'); return; }
+  const monto = parseFloat(prompt(nombre + ' debe: ' + fmt(total_saldo) + '\n¿Cuánto abona?'));
+  if (!monto || monto <= 0) return;
+  const metodo2 = prompt('Metodo: efectivo, nequi, daviplata, tarjeta') || 'efectivo';
+  const res = await db.from('ventas').select('*').eq('cliente_id', cliente_id).neq('estado_pago', 'pagado').order('fecha', { ascending: true });
+  const ventas = res.data || [];
+  let restante = monto;
+  for (let v of ventas) {
+    if (restante <= 0) break;
+    const pago = Math.min(restante, v.saldo);
+    const nuevo_saldo = v.saldo - pago;
+    const nuevo_abonado = (v.abonado || 0) + pago;
+    const estado = nuevo_saldo <= 0 ? 'pagado' : 'parcial';
+    await db.from('ventas').update({ saldo: nuevo_saldo, abonado: nuevo_abonado, estado_pago: estado }).eq('id', v.id);
+    await db.from('pagos').insert({ venta_id: v.id, monto: pago, metodo: metodo2, nota: 'Abono grupal' });
+    restante -= pago;
+  }
+  const cliRes = await db.from('clientes').select('saldo_pendiente, saldo_favor').eq('id', cliente_id).single();
+  const cli = cliRes.data;
+  let nuevo_pendiente = Math.max(0, (cli.saldo_pendiente || 0) - monto);
+  let nuevo_favor = cli.saldo_favor || 0;
+  if (restante > 0) {
+    nuevo_favor = (cli.saldo_favor || 0) + restante;
+    alert('✅ Todas las facturas pagadas!\n💚 Saldo a favor: ' + fmt(restante));
+  } else {
+    alert('✅ Abono registrado.\n💰 Saldo restante: ' + fmt(total_saldo - monto));
+  }
+  await db.from('clientes').update({ saldo_pendiente: nuevo_pendiente, saldo_favor: nuevo_favor }).eq('id', cliente_id);
+  await cargarHoy();
+  await cargarFiados();
+    }
 function msg(txt, tipo) {
   const el = document.getElementById('msg');
   el.textContent = txt;
