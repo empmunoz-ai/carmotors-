@@ -382,21 +382,35 @@ async function cargarHoy() {
 }
 
 async function cargarFiados() {
-  const res = await db.from('ventas').select('*, clientes(nombre, telefono)').neq('estado_pago', 'pagado').order('creado_en', { ascending: false });
+  const res = await db.from('ventas').select('*, clientes(nombre, telefono)').neq('estado_pago', 'pagado').order('fecha', { ascending: true });
   const data = res.data || [];
   const cont = document.getElementById('lista-fiados');
   if (!data.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin fiados.</div>'; return; }
-  cont.innerHTML = '';
+  const grupos = {};
   data.forEach(v => {
-    const nomCli = v.clientes?.nombre || 'Mostrador';
-    const telCli = v.clientes?.telefono || '';
+    const key = v.cliente_id || 'mostrador';
+    const nom = v.clientes?.nombre || 'Mostrador';
+    const tel = v.clientes?.telefono || '';
+    if (!grupos[key]) grupos[key] = { nombre: nom, telefono: tel, cliente_id: v.cliente_id, ventas: [], total_saldo: 0 };
+    grupos[key].ventas.push(v);
+    grupos[key].total_saldo += v.saldo || 0;
+  });
+  cont.innerHTML = '';
+  Object.values(grupos).forEach(g => {
     const card = document.createElement('div');
     card.className = 'vc vcf';
-    let html = '<div class="vtop"><div><div class="vnom">' + nomCli + '</div><div class="vsub">' + v.descripcion + '</div><div class="vsub">' + v.fecha + '</div></div>';
-    html += '<div><div class="vtot">' + fmt(v.total) + '</div><div class="stxt">Saldo: ' + fmt(v.saldo) + '</div><span class="bdg ' + (v.estado_pago === 'fiado' ? 'bfia' : 'bpar') + '">' + v.estado_pago + '</span></div></div>';
-    html += '<div class="acc">';
-    if (telCli) html += '<a class="bwasa" href="https://wa.me/57' + telCli + '?text=' + encodeURIComponent('Tienes saldo de ' + fmt(v.saldo) + ' en CARMOTORS') + '" target="_blank">📲 Recordar</a>';
-    html += '<button class="babo" onclick="abono(\'' + v.id + '\',' + v.saldo + ')">💵 Abonar</button></div>';
+    let html = '<div class="vtop"><div><div class="vnom">' + g.nombre + '</div>';
+    html += '<div class="vsub">' + g.ventas.length + ' factura(s) pendiente(s)</div></div>';
+    html += '<div><div class="vtot">' + fmt(g.total_saldo) + '</div><div class="stxt">Total debe</div></div></div>';
+    html += '<div style="margin-top:8px">';
+    g.ventas.forEach(v => {
+      html += '<div class="hiscard" style="margin-top:6px"><div class="hisnom">' + v.descripcion + '</div>';
+      html += '<div class="hissub">📅 ' + v.fecha + ' | Saldo: ' + fmt(v.saldo) + ' | <span class="bdg ' + (v.estado_pago === 'fiado' ? 'bfia' : 'bpar') + '">' + v.estado_pago + '</span></div></div>';
+    });
+    html += '</div><div class="acc" style="margin-top:10px">';
+    if (g.telefono) html += '<a class="bwasa" href="https://wa.me/57' + g.telefono + '?text=' + encodeURIComponent('Hola ' + g.nombre + ', tienes un saldo pendiente de ' + fmt(g.total_saldo) + ' en CARMOTORS. Por favor comunícate con nosotros. Gracias 🙏') + '" target="_blank">📲 Recordar</a>';
+    if (g.cliente_id) html += '<button class="babo" onclick="abonarTodo(\'' + g.cliente_id + '\',\'' + g.nombre + '\',\'' + g.telefono + '\',' + g.total_saldo + ')">💵 Abonar</button>';
+    html += '</div>';
     card.innerHTML = html;
     cont.appendChild(card);
   });
