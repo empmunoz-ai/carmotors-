@@ -432,6 +432,7 @@ async function abrirTurno() {
   await db.from('turnos_caja').insert({ vendedor, base_apertura: base, estado: 'abierto', fecha: new Date().toISOString().split('T')[0] });
   btn.disabled = false;
   btn.textContent = '🔓 ABRIR TURNO';
+  await verificarTurno();
   cargarCaja();
 }
 
