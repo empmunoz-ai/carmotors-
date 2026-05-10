@@ -528,7 +528,7 @@ async function wasaVenta(venta_id, tel, total) {
     txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + ': ' + fmt(it.precio_unitario * it.cantidad) + '\n';
   });
   txt += '─────────────\n';
-  txt += 'TOTAL: ' + fmt(total) + '\nGracias 🙏';
+  txt += 'TOTAL: ' + fmt(total) + '\n\nGracias por confiar en nosotros 🙏\nAnte cualquier inquietud estamos a sus órdenes.\nCARMOTORS — Mecánicos de Confianza 🏍️';
   window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(txt), '_blank');
     }
 function msg(txt, tipo) {
