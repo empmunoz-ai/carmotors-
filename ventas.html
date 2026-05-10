@@ -407,8 +407,6 @@ async function abono(venta_id, saldo_actual) {
     const cRes = await db.from('clientes').select('saldo_pendiente').eq('id', v.cliente_id).single();
     if (cRes.data) await db.from('clientes').update({ saldo_pendiente: Math.max(0, (cRes.data.saldo_pendiente || 0) - abonoMonto) }).eq('id', v.cliente_id);
   }
-  const ganParcial = (v.ganancia / v.total) * abonoMonto;
-  await db.from('ventas').insert({ cliente_id: v.cliente_id || null, tipo: 'abono', descripcion: 'Abono fiado', total: abonoMonto, ganancia: ganParcial, estado_pago: 'pagado', metodo_pago: metodo2, abonado: abonoMonto, saldo: 0, fecha: new Date().toISOString().split('T')[0] });
   await cargarHoy();
   await cargarFiados();
 }
@@ -440,8 +438,9 @@ async function abrirTurno() {
 
 async function actualizarResumen() {
   if (!turnoActivo) return;
-  const res = await db.from('ventas').select('*').eq('fecha', turnoActivo.fecha).gte('creado_en', turnoActivo.hora_apertura);
-  const ventas = res.data || [];
+  const res = await db.from('pagos').select('*').gte('fecha', turnoActivo.hora_apertura);
+  const res2 = await db.from('ventas').select('*').eq('fecha', turnoActivo.fecha).gte('creado_en', turnoActivo.hora_apertura).eq('estado_pago', 'pagado');
+   const ventas = res.data || [];
   let total = 0, gan = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0;
   ventas.forEach(v => {
     total += v.total;
