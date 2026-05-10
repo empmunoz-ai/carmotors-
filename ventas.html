@@ -541,8 +541,16 @@ function msg(txt, tipo) {
 async function init() {
   await cargarArticulos();
   await cargarSelectClientes();
+  await verificarTurno();
   renderMetodos();
   cargarHoy();
+}
+
+async function verificarTurno() {
+  const hoy = new Date().toISOString().split('T')[0];
+  const res = await db.from('turnos_caja').select('*').eq('fecha', hoy).eq('estado', 'abierto').order('hora_apertura', { ascending: false }).limit(1);
+  turnoActivo = (res.data && res.data.length) ? res.data[0] : null;
+}
 }
 
 init();
