@@ -242,7 +242,8 @@ function addItem() {
 function renderItems() {
   const lista = document.getElementById('lista-items');
   const tbox = document.getElementById('totalbox');
-  if (!items.length) { lista.innerHTML = ''; tbox.style.display = 'none'; return; }
+  lista.innerHTML = '';
+if (!items.length) { tbox.style.display = 'none'; return; }
   let total = 0, gan = 0;
   items.forEach((it, i) => {
     total += it.subtotal;
