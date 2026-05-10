@@ -142,9 +142,27 @@
     <div class="ctitle" id="moto-titulo">Hoja de vida</div>
     <div id="moto-info"></div>
     <div class="acc">
-      <button class="btnsmall" onclick="volverDetalle()">← VOLVER</button>
-      <button class="btnsmall btnred" onclick="eliminarMoto()">🗑️ ELIMINAR</button>
-    </div>
+  <button class="btnsmall" onclick="volverDetalle()">← VOLVER</button>
+  <button class="btnsmall btngreen" onclick="mostrarEdicionMoto()">✏️ EDITAR</button>
+  <button class="btnsmall btnred" onclick="eliminarMoto()">🗑️ ELIMINAR</button>
+</div>
+<div id="form-editar-moto" style="display:none;margin-top:12px">
+  <div class="r2">
+    <div><label class="fl">Marca</label><input type="text" id="emarca"/></div>
+    <div><label class="fl">Modelo</label><input type="text" id="emodelo"/></div>
+  </div>
+  <div class="r2">
+    <div><label class="fl">Placa</label><input type="text" id="eplaca"/></div>
+    <div><label class="fl">Año</label><input type="text" id="eanio"/></div>
+  </div>
+  <div class="r2">
+    <div><label class="fl">Color</label><input type="text" id="ecolor"/></div>
+    <div><label class="fl">Kilometraje</label><input type="text" id="ekm"/></div>
+  </div>
+  <label class="fl">Notas</label>
+  <input type="text" id="enotas"/>
+  <button class="btnmain" onclick="guardarEdicionMoto()">💾 GUARDAR CAMBIOS</button>
+</div>
   </div>
   <div class="card">
     <div class="ctitle">📸 Fotos</div>
