@@ -438,22 +438,23 @@ async function abrirTurno() {
 
 async function actualizarResumen() {
   if (!turnoActivo) return;
-  const res = await db.from('pagos').select('*').gte('fecha', turnoActivo.hora_apertura);
-  const res2 = await db.from('ventas').select('*').eq('fecha', turnoActivo.fecha).gte('creado_en', turnoActivo.hora_apertura).eq('estado_pago', 'pagado');
-   const ventas = res.data || [];
-  let total = 0, gan = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0;
-  ventas.forEach(v => {
-    total += v.total;
-    gan += v.ganancia;
-    if (v.metodo_pago === 'efectivo') ef += v.abonado;
-    else if (v.metodo_pago === 'nequi') nq += v.abonado;
-    else if (v.metodo_pago === 'daviplata') dp += v.abonado;
-    else if (v.metodo_pago === 'tarjeta') tj += v.abonado;
-    else if (v.metodo_pago === 'transferencia') tr += v.abonado;
-    else if (v.metodo_pago === 'credito') cr += v.abonado;
+  const res = await db.from('pagos').select('*').gte('creado_en', turnoActivo.hora_apertura);
+  const pagos_data = res.data || [];
+  let total = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0;
+  pagos_data.forEach(p => {
+    total += p.monto;
+    if (p.metodo === 'efectivo') ef += p.monto;
+    else if (p.metodo === 'nequi') nq += p.monto;
+    else if (p.metodo === 'daviplata') dp += p.monto;
+    else if (p.metodo === 'tarjeta') tj += p.monto;
+    else if (p.metodo === 'transferencia') tr += p.monto;
+    else if (p.metodo === 'credito') cr += p.monto;
   });
+  const res2 = await db.from('ventas').select('ganancia').eq('fecha', turnoActivo.fecha).gte('creado_en', turnoActivo.hora_apertura);
+  const gan = (res2.data || []).reduce((s, v) => s + (v.ganancia || 0), 0);
   turnoActivo = Object.assign({}, turnoActivo, { total_ventas: total, ganancia: gan, total_efectivo: ef, total_nequi: nq, total_daviplata: dp, total_tarjeta: tj, total_transferencia: tr, total_credito: cr });
-  document.getElementById('cresumen').innerHTML = '<div class="tr"><span>Total</span><span style="color:var(--orange)">' + fmt(total) + '</span></div>' +
+  document.getElementById('cresumen').innerHTML =
+    '<div class="tr"><span>Total cobrado</span><span style="color:var(--orange)">' + fmt(total) + '</span></div>' +
     '<div class="tr"><span>Ganancia</span><span style="color:var(--green)">' + fmt(gan) + '</span></div>' +
     '<div class="tr"><span>Efectivo</span><span>' + fmt(ef) + '</span></div>' +
     '<div class="tr"><span>Nequi</span><span>' + fmt(nq) + '</span></div>' +
