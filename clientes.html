@@ -22,32 +22,42 @@
     .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:16px; }
     .ctitle { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; color:var(--orange); margin-bottom:12px; text-transform:uppercase; }
     .fl { display:block; font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; margin-top:10px; }
-    input, select { width:100%; background:var(--dark); border:1px solid var(--border); border-radius:6px; padding:9px 12px; color:var(--text); font-size:14px; outline:none; }
+    input, select, textarea { width:100%; background:var(--dark); border:1px solid var(--border); border-radius:6px; padding:9px 12px; color:var(--text); font-size:14px; outline:none; font-family:'IBM Plex Sans',sans-serif; }
     select option { background:var(--dark); }
     .r2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .btnmain { width:100%; padding:13px; background:var(--orange); color:var(--dark); border:none; border-radius:8px; font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; cursor:pointer; margin-top:12px; }
     .btnmain:disabled { background:var(--border); }
-    .btnred { background:var(--red); color:white; }
+    .btnsmall { background:#103040; color:var(--steel); border:1px solid var(--border); border-radius:6px; padding:7px 14px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+    .btnred { background:#3d1a1a; color:#e07070; border:1px solid #6a2a2a; }
+    .btngreen { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; }
     .msg { padding:10px; border-radius:6px; font-size:13px; margin-bottom:10px; display:none; }
     .msgok { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; display:block; }
     .msgerr { background:#3d1a1a; color:#e07070; border:1px solid #6a2a2a; display:block; }
     .clicard { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:10px; cursor:pointer; transition:border-color 0.2s; }
     .clicard:hover { border-color:var(--orange); }
-    .clicard.sel { border-color:var(--orange); background:#1a2a3a; }
     .clinom { font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; color:var(--cream); }
     .clisub { font-size:12px; color:var(--muted); margin-top:4px; }
-    .clibdg { display:inline-block; font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; text-transform:uppercase; background:#3d1a1a; color:#e07070; margin-top:6px; }
-    .clibdgo { background:#1a3d2b; color:var(--green); }
-    .clidet { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:10px; }
-    .det-row { display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; }
+    .bdg { display:inline-block; font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; text-transform:uppercase; margin-top:6px; }
+    .bdgred { background:#3d1a1a; color:#e07070; }
+    .bdggreen { background:#1a3d2b; color:var(--green); }
+    .bdgorange { background:#3d2a10; color:var(--orange); }
+    .det-row { display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid var(--border); }
     .det-lbl { color:var(--muted); }
-    .det-val { color:var(--cream); font-weight:600; }
-    .cliact { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-    .btnact { background:#103040; color:var(--steel); border:1px solid var(--border); border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
-    .btnwasa { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; text-decoration:none; }
-    .hiscard { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:10px; margin-top:8px; font-size:12px; }
-    .hisnom { color:var(--cream); font-weight:600; }
-    .hissub { color:var(--muted); margin-top:2px; }
+    .det-val { color:var(--cream); font-weight:600; text-align:right; }
+    .acc { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .motocard { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:12px; margin-top:10px; cursor:pointer; transition:border-color 0.2s; display:flex; align-items:center; gap:12px; }
+    .motocard:hover { border-color:var(--orange); }
+    .moto-foto { width:60px; height:60px; border-radius:6px; object-fit:cover; background:var(--navy); display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; overflow:hidden; }
+    .moto-foto img { width:100%; height:100%; object-fit:cover; }
+    .moto-info { flex:1; }
+    .moto-nom { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700; color:var(--cream); }
+    .moto-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+    .hiscard { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:12px; margin-top:8px; }
+    .hisnom { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; color:var(--orange); }
+    .hissub { font-size:12px; color:var(--muted); margin-top:4px; }
+    .foto-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:10px; }
+    .foto-thumb { width:100%; aspect-ratio:1; border-radius:6px; object-fit:cover; cursor:pointer; }
+    .foto-add { width:100%; aspect-ratio:1; border-radius:6px; background:var(--dark); border:2px dashed var(--border); display:flex; align-items:center; justify-content:center; font-size:24px; cursor:pointer; color:var(--muted); }
     .empty { text-align:center; padding:40px 20px; color:var(--muted); }
     .empty span { display:block; font-size:32px; margin-bottom:8px; }
     .loading { text-align:center; padding:30px; color:var(--muted); font-size:13px; }
@@ -57,7 +67,7 @@
     .bnav a span { font-size:20px; }
   </style>
 </head>
-  <body>
+<body>
 <header>
   <div class="lm">CM</div>
   <h1>CARMOTORS</h1>
@@ -84,29 +94,66 @@
     <input type="text" id="ctelefono" placeholder="3001234567"/>
     <label class="fl">Email</label>
     <input type="email" id="cemail" placeholder="juan@email.com"/>
-    <label class="fl">Vehiculo (marca/modelo)</label>
-    <input type="text" id="cvehiculo" placeholder="Honda CB 110"/>
-    <label class="fl">Placa</label>
-    <input type="text" id="cplaca" placeholder="ABC123"/>
     <label class="fl">Notas</label>
-    <input type="text" id="cnotas" placeholder="Cliente habitual, paga a tiempo..."/>
+    <input type="text" id="cnotas" placeholder="Cliente habitual..."/>
     <button class="btnmain" onclick="guardarCliente()">✅ GUARDAR CLIENTE</button>
   </div>
 </div>
 
 <div id="sec-detalle" class="sec">
   <div class="card">
-    <div class="ctitle" id="detalle-titulo">Cliente</div>
+    <div class="ctitle" id="det-titulo">Cliente</div>
     <div id="msg2" class="msg"></div>
-    <div id="detalle-info" class="clidet"></div>
-    <div class="cliact">
-      <button class="btnact" onclick="volverLista()">← VOLVER</button>
-      <button class="btnact btnred" onclick="eliminarCliente()">🗑️ ELIMINAR</button>
+    <div id="det-info"></div>
+    <div class="acc">
+      <button class="btnsmall" onclick="volverLista()">← VOLVER</button>
+      <button class="btnsmall btnred" onclick="eliminarCliente()">🗑️ ELIMINAR</button>
     </div>
   </div>
   <div class="card">
-    <div class="ctitle">📋 Historial de ventas</div>
-    <div id="detalle-historial"><div class="loading">Cargando...</div></div>
+    <div class="ctitle">🏍️ Motos</div>
+    <div id="lista-motos"><div class="loading">Cargando...</div></div>
+    <button class="btnmain" style="background:#103040;color:var(--steel)" onclick="mostrarFormMoto()">+ AGREGAR MOTO</button>
+    <div id="form-moto" style="display:none;margin-top:12px">
+      <div id="msg3" class="msg"></div>
+      <div class="r2">
+        <div><label class="fl">Marca</label><input type="text" id="mmarca" placeholder="Honda"/></div>
+        <div><label class="fl">Modelo</label><input type="text" id="mmodelo" placeholder="CB 110"/></div>
+      </div>
+      <div class="r2">
+        <div><label class="fl">Placa</label><input type="text" id="mplaca" placeholder="ABC123"/></div>
+        <div><label class="fl">Año</label><input type="text" id="manio" placeholder="2020"/></div>
+      </div>
+      <div class="r2">
+        <div><label class="fl">Color</label><input type="text" id="mcolor" placeholder="Rojo"/></div>
+        <div><label class="fl">Kilometraje</label><input type="text" id="mkm" placeholder="15000"/></div>
+      </div>
+      <label class="fl">Foto de la moto</label>
+      <input type="file" id="mfoto" accept="image/*"/>
+      <label class="fl">Notas</label>
+      <input type="text" id="mnotas" placeholder="Estado general..."/>
+      <button class="btnmain" onclick="guardarMoto()">🏍️ GUARDAR MOTO</button>
+    </div>
+  </div>
+</div>
+
+<div id="sec-moto" class="sec">
+  <div class="card">
+    <div class="ctitle" id="moto-titulo">Hoja de vida</div>
+    <div id="moto-info"></div>
+    <div class="acc">
+      <button class="btnsmall" onclick="volverDetalle()">← VOLVER</button>
+      <button class="btnsmall btnred" onclick="eliminarMoto()">🗑️ ELIMINAR</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ctitle">📸 Fotos</div>
+    <div class="foto-grid" id="fotos-grid"></div>
+    <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="subirFoto()"/>
+  </div>
+  <div class="card">
+    <div class="ctitle">📋 Historial de órdenes</div>
+    <div id="moto-historial"><div class="loading">Cargando...</div></div>
   </div>
 </div>
 
@@ -116,10 +163,10 @@
   <a href="index.html"><span>🏠</span>PANEL</a>
   <a href="ventas.html"><span>💰</span>VENTAS</a>
   <a href="clientes.html" class="on"><span>👥</span>CLIENTES</a>
-  <a href="agendar.html"><span>📅</span>AGENDA</a>
+  <a href="ordenes.html"><span>📋</span>ÓRDENES</a>
   <a href="admin.html"><span>⚙️</span>ADMIN</a>
 </nav>
-    <script>
+<script>
 const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
 const { createClient } = supabase;
@@ -127,6 +174,7 @@ const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let clientes = [];
 let clienteActual = null;
+let motoActual = null;
 
 const fmt = n => '$' + Number(n||0).toLocaleString('es-CO');
 
@@ -134,12 +182,12 @@ function sw(sec, btn) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('active');
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (sec === 'lista') cargarLista();
 }
 
 async function cargarLista() {
-  const res = await db.from('clientes').select('*').order('nombre');
+  const res = await db.from('clientes').select('*, motos(id)').order('nombre');
   clientes = res.data || [];
   const cont = document.getElementById('lista-clientes');
   if (!clientes.length) { cont.innerHTML = '<div class="empty"><span>👥</span>Sin clientes aún.</div>'; return; }
@@ -150,9 +198,9 @@ async function cargarLista() {
     card.onclick = () => mostrarDetalle(c.id);
     let html = '<div class="clinom">' + c.nombre + '</div>';
     html += '<div class="clisub">📱 ' + (c.telefono || 'Sin teléfono') + '</div>';
-    if (c.vehiculo) html += '<div class="clisub">🏍️ ' + c.vehiculo + (c.placa ? ' - ' + c.placa : '') + '</div>';
-    if (c.saldo_pendiente > 0) html += '<div class="clibdg">Debe ' + fmt(c.saldo_pendiente) + '</div>';
-    else html += '<div class="clibdg clibdgo">Al día</div>';
+    html += '<div class="clisub">🏍️ ' + (c.motos ? c.motos.length : 0) + ' moto(s) registrada(s)</div>';
+    if (c.saldo_pendiente > 0) html += '<div class="bdg bdgred">Debe ' + fmt(c.saldo_pendiente) + '</div>';
+    else html += '<div class="bdg bdggreen">Al día</div>';
     card.innerHTML = html;
     cont.appendChild(card);
   });
@@ -161,107 +209,232 @@ async function cargarLista() {
 async function mostrarDetalle(id) {
   clienteActual = clientes.find(c => c.id === id);
   if (!clienteActual) return;
-  document.getElementById('sec-lista').classList.remove('active');
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-detalle').classList.add('active');
-  document.getElementById('detalle-titulo').textContent = clienteActual.nombre;
-  const info = document.getElementById('detalle-info');
+  document.getElementById('det-titulo').textContent = clienteActual.nombre;
+  const info = document.getElementById('det-info');
   info.innerHTML = '';
   const rows = [
     ['Nombre', clienteActual.nombre],
     ['Teléfono', clienteActual.telefono || '-'],
     ['Email', clienteActual.email || '-'],
-    ['Vehículo', clienteActual.vehiculo || '-'],
-    ['Placa', clienteActual.placa || '-'],
     ['Saldo pendiente', fmt(clienteActual.saldo_pendiente || 0)],
-    ['Próximo servicio', clienteActual.proximo_servicio || '-'],
     ['Notas', clienteActual.notas || '-']
   ];
   rows.forEach(r => {
     const row = document.createElement('div');
     row.className = 'det-row';
-    const lbl = document.createElement('span');
-    lbl.className = 'det-lbl';
-    lbl.textContent = r[0];
-    const val = document.createElement('span');
-    val.className = 'det-val';
-    val.textContent = r[1];
-    row.appendChild(lbl);
-    row.appendChild(val);
+    const lbl = document.createElement('span'); lbl.className = 'det-lbl'; lbl.textContent = r[0];
+    const val = document.createElement('span'); val.className = 'det-val'; val.textContent = r[1];
+    row.appendChild(lbl); row.appendChild(val);
     info.appendChild(row);
   });
-  cargarHistorial();
+  cargarMotos();
 }
 
-async function cargarHistorial() {
+async function cargarMotos() {
   if (!clienteActual) return;
-  const res = await db.from('ventas').select('*').eq('cliente_id', clienteActual.id).order('creado_en', { ascending: false }).limit(10);
-  const ventas = res.data || [];
-  const cont = document.getElementById('detalle-historial');
-  if (!ventas.length) { cont.innerHTML = '<div class="empty"><span>📭</span>Sin ventas.</div>'; return; }
+  const res = await db.from('motos').select('*').eq('cliente_id', clienteActual.id).order('creado_en');
+  const motos = res.data || [];
+  const cont = document.getElementById('lista-motos');
+  if (!motos.length) { cont.innerHTML = '<div class="empty"><span>🏍️</span>Sin motos registradas.</div>'; return; }
   cont.innerHTML = '';
-  ventas.forEach(v => {
+  motos.forEach(m => {
     const card = document.createElement('div');
-    card.className = 'hiscard';
-    let html = '<div class="hisnom">💰 ' + fmt(v.total) + ' - ' + v.descripcion + '</div>';
-    html += '<div class="hissub">📅 ' + v.fecha + ' | 💳 ' + v.metodo_pago + ' | Estado: ' + v.estado_pago + '</div>';
-    if (v.saldo > 0) html += '<div class="hissub">Saldo: ' + fmt(v.saldo) + '</div>';
-    card.innerHTML = html;
+    card.className = 'motocard';
+    card.onclick = () => mostrarMoto(m.id);
+    const fotoDiv = document.createElement('div');
+    fotoDiv.className = 'moto-foto';
+    if (m.foto_url) {
+      const img = document.createElement('img');
+      img.src = m.foto_url;
+      fotoDiv.appendChild(img);
+    } else {
+      fotoDiv.textContent = '🏍️';
+    }
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'moto-info';
+    infoDiv.innerHTML = '<div class="moto-nom">' + m.marca + ' ' + m.modelo + '</div>' +
+      '<div class="moto-sub">🔖 ' + (m.placa || 'Sin placa') + ' | 📅 ' + (m.anio || '-') + '</div>' +
+      '<div class="moto-sub">🎨 ' + (m.color || '-') + ' | 📍 ' + (m.kilometraje ? m.kilometraje + ' km' : '-') + '</div>';
+    card.appendChild(fotoDiv);
+    card.appendChild(infoDiv);
     cont.appendChild(card);
   });
+}
+
+function mostrarFormMoto() {
+  const form = document.getElementById('form-moto');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+async function guardarMoto() {
+  const marca = document.getElementById('mmarca').value.trim();
+  const modelo = document.getElementById('mmodelo').value.trim();
+  const placa = document.getElementById('mplaca').value.trim();
+  const anio = document.getElementById('manio').value.trim();
+  const color = document.getElementById('mcolor').value.trim();
+  const kilometraje = document.getElementById('mkm').value.trim();
+  const notas = document.getElementById('mnotas').value.trim();
+  const fotoFile = document.getElementById('mfoto').files[0];
+  if (!marca || !modelo) { msg('⚠️ Marca y modelo requeridos.', 'err', 'msg3'); return; }
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'GUARDANDO...';
+  let foto_url = null;
+  if (fotoFile) {
+    const ext = fotoFile.name.split('.').pop();
+    const path = clienteActual.id + '/' + Date.now() + '.' + ext;
+    const up = await db.storage.from('motos').upload(path, fotoFile, { upsert: true });
+    if (!up.error) {
+      const pub = db.storage.from('motos').getPublicUrl(path);
+      foto_url = pub.data.publicUrl;
+    }
+  }
+  const res = await db.from('motos').insert({ cliente_id: clienteActual.id, marca, modelo, placa: placa || null, anio: anio || null, color: color || null, kilometraje: kilometraje || null, notas: notas || null, foto_url }).select().single();
+  if (res.error) { btn.disabled = false; btn.textContent = '🏍️ GUARDAR MOTO'; msg('❌ ' + res.error.message, 'err', 'msg3'); return; }
+  btn.disabled = false; btn.textContent = '🏍️ GUARDAR MOTO';
+  document.getElementById('form-moto').style.display = 'none';
+  document.getElementById('mmarca').value = '';
+  document.getElementById('mmodelo').value = '';
+  document.getElementById('mplaca').value = '';
+  document.getElementById('manio').value = '';
+  document.getElementById('mcolor').value = '';
+  document.getElementById('mkm').value = '';
+  document.getElementById('mnotas').value = '';
+  document.getElementById('mfoto').value = '';
+  msg('✅ Moto guardada.', 'ok', 'msg2');
+  cargarMotos();
+}
+
+async function mostrarMoto(id) {
+  const res = await db.from('motos').select('*').eq('id', id).single();
+  motoActual = res.data;
+  if (!motoActual) return;
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-moto').classList.add('active');
+  document.getElementById('moto-titulo').textContent = motoActual.marca + ' ' + motoActual.modelo;
+  const info = document.getElementById('moto-info');
+  info.innerHTML = '';
+  const rows = [
+    ['Placa', motoActual.placa || '-'],
+    ['Año', motoActual.anio || '-'],
+    ['Color', motoActual.color || '-'],
+    ['Kilometraje', motoActual.kilometraje ? motoActual.kilometraje + ' km' : '-'],
+    ['Notas', motoActual.notas || '-']
+  ];
+  rows.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'det-row';
+    const lbl = document.createElement('span'); lbl.className = 'det-lbl'; lbl.textContent = r[0];
+    const val = document.createElement('span'); val.className = 'det-val'; val.textContent = r[1];
+    row.appendChild(lbl); row.appendChild(val);
+    info.appendChild(row);
+  });
+  cargarFotos();
+  cargarHistorialMoto();
+}
+
+async function cargarFotos() {
+  if (!motoActual) return;
+  const res = await db.storage.from('motos').list(clienteActual.id + '/moto-' + motoActual.id);
+  const archivos = res.data || [];
+  const grid = document.getElementById('fotos-grid');
+  grid.innerHTML = '';
+  archivos.forEach(f => {
+    const url = db.storage.from('motos').getPublicUrl(clienteActual.id + '/moto-' + motoActual.id + '/' + f.name).data.publicUrl;
+    const img = document.createElement('img');
+    img.className = 'foto-thumb';
+    img.src = url;
+    img.onclick = () => window.open(url, '_blank');
+    grid.appendChild(img);
+  });
+  const add = document.createElement('div');
+  add.className = 'foto-add';
+  add.textContent = '+';
+  add.onclick = () => document.getElementById('foto-input').click();
+  grid.appendChild(add);
+}
+
+async function subirFoto() {
+  const file = document.getElementById('foto-input').files[0];
+  if (!file || !motoActual) return;
+  const ext = file.name.split('.').pop();
+  const path = clienteActual.id + '/moto-' + motoActual.id + '/' + Date.now() + '.' + ext;
+  await db.storage.from('motos').upload(path, file, { upsert: true });
+  cargarFotos();
+}
+
+async function cargarHistorialMoto() {
+  if (!motoActual) return;
+  const res = await db.from('ordenes_trabajo').select('*').eq('moto_id', motoActual.id).order('creado_en', { ascending: false });
+  const ordenes = res.data || [];
+  const cont = document.getElementById('moto-historial');
+  if (!ordenes.length) { cont.innerHTML = '<div class="empty"><span>📋</span>Sin órdenes aún.</div>'; return; }
+  cont.innerHTML = '';
+  ordenes.forEach(o => {
+    const card = document.createElement('div');
+    card.className = 'hiscard';
+    const est = o.estado === 'abierta' ? '🟢' : o.estado === 'proceso' ? '🟡' : '✅';
+    card.innerHTML = '<div class="hisnom">' + est + ' ' + o.descripcion + '</div>' +
+      '<div class="hissub">📅 ' + (o.creado_en ? o.creado_en.substring(0,10) : '-') + ' | Estado: ' + o.estado + '</div>' +
+      (o.total ? '<div class="hissub">💰 Total: ' + fmt(o.total) + '</div>' : '');
+    cont.appendChild(card);
+  });
+}
+
+async function eliminarMoto() {
+  if (!motoActual) return;
+  if (!confirm('⚠️ Eliminar esta moto y su historial?')) return;
+  await db.from('motos').delete().eq('id', motoActual.id);
+  motoActual = null;
+  volverDetalle();
 }
 
 async function guardarCliente() {
   const nombre = document.getElementById('cnombre').value.trim();
   const telefono = document.getElementById('ctelefono').value.trim();
   const email = document.getElementById('cemail').value.trim();
-  const vehiculo = document.getElementById('cvehiculo').value.trim();
-  const placa = document.getElementById('cplaca').value.trim();
   const notas = document.getElementById('cnotas').value.trim();
   if (!nombre) { msg('⚠️ Nombre requerido.', 'err', 'msg'); return; }
   const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'GUARDANDO...';
-  const res = await db.from('clientes').insert({ nombre, telefono: telefono || null, email: email || null, vehiculo: vehiculo || null, placa: placa || null, notas: notas || null, saldo_pendiente: 0 }).select().single();
+  btn.disabled = true; btn.textContent = 'GUARDANDO...';
+  const res = await db.from('clientes').insert({ nombre, telefono: telefono || null, email: email || null, notas: notas || null, saldo_pendiente: 0 }).select().single();
   if (res.error) { btn.disabled = false; btn.textContent = '✅ GUARDAR CLIENTE'; msg('❌ ' + res.error.message, 'err', 'msg'); return; }
-  btn.disabled = false;
-  btn.textContent = '✅ GUARDAR CLIENTE';
+  btn.disabled = false; btn.textContent = '✅ GUARDAR CLIENTE';
   msg('✅ Cliente guardado.', 'ok', 'msg');
   document.getElementById('cnombre').value = '';
   document.getElementById('ctelefono').value = '';
   document.getElementById('cemail').value = '';
-  document.getElementById('cvehiculo').value = '';
-  document.getElementById('cplaca').value = '';
   document.getElementById('cnotas').value = '';
   await cargarLista();
 }
 
 async function eliminarCliente() {
   if (!clienteActual) return;
-  if (!confirm('⚠️ Eliminar a ' + clienteActual.nombre + '? Esto no se puede deshacer.')) return;
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'ELIMINANDO...';
+  if (!confirm('⚠️ Eliminar a ' + clienteActual.nombre + '?')) return;
   await db.from('clientes').delete().eq('id', clienteActual.id);
-  btn.disabled = false;
-  btn.textContent = '🗑️ ELIMINAR';
   clienteActual = null;
-  await cargarLista();
-  document.getElementById('sec-detalle').classList.remove('active');
-  document.getElementById('sec-lista').classList.add('active');
+  volverLista();
 }
 
 function volverLista() {
   clienteActual = null;
-  document.getElementById('sec-detalle').classList.remove('active');
-  document.getElementById('sec-lista').classList.add('active');
-  cargarLista();
+  sw('lista', document.querySelector('.tbtn'));
+}
+
+function volverDetalle() {
+  motoActual = null;
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-detalle').classList.add('active');
+  cargarMotos();
 }
 
 function msg(txt, tipo, el) {
-  const msg_el = document.getElementById(el || 'msg');
-  msg_el.textContent = txt;
-  msg_el.className = 'msg ' + (tipo === 'ok' ? 'msgok' : 'msgerr');
-  setTimeout(() => { msg_el.className = 'msg'; }, 3500);
+  const el_msg = document.getElementById(el || 'msg');
+  if (!el_msg) return;
+  el_msg.textContent = txt;
+  el_msg.className = 'msg ' + (tipo === 'ok' ? 'msgok' : 'msgerr');
+  setTimeout(() => { el_msg.className = 'msg'; }, 3500);
 }
 
 async function init() {
