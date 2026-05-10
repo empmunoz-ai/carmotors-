@@ -346,7 +346,13 @@ async function cargarHoy() {
   const res = await db.from('ventas').select('*, clientes(nombre, telefono)').eq('fecha', hoy).order('creado_en', { ascending: false });
   const data = res.data || [];
   let total = 0, gan = 0, serv = 0, rep = 0;
-  data.forEach(v => { total += v.total; gan += v.ganancia; if (v.tipo === 'servicio') serv += v.total; if (v.tipo === 'repuesto') rep += v.total; });
+  data.forEach(v => {
+  const cobrado = v.estado_pago === 'pagado' ? v.total : (v.abonado || 0);
+  total += cobrado;
+  if (v.estado_pago === 'pagado') gan += v.ganancia;
+  if (v.tipo === 'servicio') serv += cobrado;
+  if (v.tipo === 'repuesto') rep += cobrado;
+});
   document.getElementById('rtot').textContent = fmt(total);
   document.getElementById('rgan').textContent = fmt(gan);
   document.getElementById('rserv').textContent = fmt(serv);
