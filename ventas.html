@@ -294,6 +294,7 @@ function renderMetodos() {
 }
 
 async function guardar() {
+  if (!turnoActivo) { msg('⚠️ Abre la caja primero en la pestaña Caja.', 'err'); return; }
   if (!items.length) { msg('⚠️ Agrega al menos un item.', 'err'); return; }
   const btn = event.target;
   btn.disabled = true;
@@ -392,6 +393,7 @@ async function cargarFiados() {
 }
 
 async function abono(venta_id, saldo_actual) {
+  if (!turnoActivo) { alert('⚠️ Abre la caja primero.'); return; }
   const monto = parseFloat(prompt('Saldo: ' + fmt(saldo_actual) + '\nCuanto abona?'));
   if (!monto || monto <= 0) return;
   const abono = Math.min(monto, saldo_actual);
