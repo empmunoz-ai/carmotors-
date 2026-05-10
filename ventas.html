@@ -269,6 +269,10 @@ function renderItems() {
     row.appendChild(pr);
     row.appendChild(del);
     lista.appendChild(row);
+    const btnAdd = document.querySelector('.btnadd');
+if (btnAdd) btnAdd.style.background = items.length > 0 ? '#1a3d2b' : 'var(--dark)';
+if (btnAdd) btnAdd.style.color = items.length > 0 ? 'var(--green)' : 'var(--muted)';
+if (btnAdd) btnAdd.style.borderColor = items.length > 0 ? '#2a6040' : 'var(--border)';
   });
   document.getElementById('tcnt').textContent = items.length;
   document.getElementById('tgan').textContent = fmt(gan);
