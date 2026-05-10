@@ -396,19 +396,21 @@ async function abono(venta_id, saldo_actual) {
   if (!turnoActivo) { alert('⚠️ Abre la caja primero.'); return; }
   const monto = parseFloat(prompt('Saldo: ' + fmt(saldo_actual) + '\nCuanto abona?'));
   if (!monto || monto <= 0) return;
-  const abono = Math.min(monto, saldo_actual);
-  const nuevo_saldo = saldo_actual - abono;
+  const abonoMonto = Math.min(monto, saldo_actual);
+  const nuevo_saldo = saldo_actual - abonoMonto;
   const metodo2 = prompt('Metodo: efectivo, nequi, daviplata, tarjeta') || 'efectivo';
-  await db.from('pagos').insert({ venta_id, monto: abono, metodo: metodo2, nota: 'Abono' });
-  const vRes = await db.from('ventas').select('abonado, cliente_id').eq('id', venta_id).single();
+  await db.from('pagos').insert({ venta_id, monto: abonoMonto, metodo: metodo2, nota: 'Abono' });
+  const vRes = await db.from('ventas').select('abonado, cliente_id, total, ganancia').eq('id', venta_id).single();
   const v = vRes.data;
-  await db.from('ventas').update({ abonado: (v.abonado || 0) + abono, saldo: nuevo_saldo, estado_pago: nuevo_saldo <= 0 ? 'pagado' : 'parcial' }).eq('id', venta_id);
+  await db.from('ventas').update({ abonado: (v.abonado || 0) + abonoMonto, saldo: nuevo_saldo, estado_pago: nuevo_saldo <= 0 ? 'pagado' : 'parcial' }).eq('id', venta_id);
   if (v.cliente_id) {
     const cRes = await db.from('clientes').select('saldo_pendiente').eq('id', v.cliente_id).single();
-    if (cRes.data) await db.from('clientes').update({ saldo_pendiente: Math.max(0, (cRes.data.saldo_pendiente || 0) - abono) }).eq('id', v.cliente_id);
+    if (cRes.data) await db.from('clientes').update({ saldo_pendiente: Math.max(0, (cRes.data.saldo_pendiente || 0) - abonoMonto) }).eq('id', v.cliente_id);
   }
+  const ganParcial = (v.ganancia / v.total) * abonoMonto;
+  await db.from('ventas').insert({ cliente_id: v.cliente_id || null, tipo: 'abono', descripcion: 'Abono fiado', total: abonoMonto, ganancia: ganParcial, estado_pago: 'pagado', metodo_pago: metodo2, abonado: abonoMonto, saldo: 0, fecha: new Date().toISOString().split('T')[0] });
   await cargarHoy();
-await cargarFiados();
+  await cargarFiados();
 }
 
 async function cargarCaja() {
