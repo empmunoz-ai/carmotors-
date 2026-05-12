@@ -347,7 +347,9 @@ async function guardar() {
 }
 
 async function cargarHoy() {
-  const hoy = new Date().toISOString().split('T')[0];
+  const ahora = new Date();
+ahora.setHours(ahora.getHours() - 5);
+const hoy = ahora.toISOString().split('T')[0];
   const res = await db.from('ventas').select('*, clientes(nombre, telefono)').eq('fecha', hoy).order('creado_en', { ascending: false });
   const data = res.data || [];
   let total = 0, gan = 0, serv = 0, rep = 0;
