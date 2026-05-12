@@ -560,7 +560,8 @@ async function wasaVenta(venta_id, tel, total) {
   const its = res.data || [];
   let txt = '*CARMOTORS*\n';
   its.forEach(function(it) {
-    txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + ': ' + fmt(it.precio_unitario * it.cantidad) + '\n';
+  const cant = it.cantidad > 1 ? ' (x' + it.cantidad + ')' : '';
+txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ': ' + fmt(it.precio_unitario * it.cantidad) + '\n';  
   });
   txt += '─────────────\n';
   txt += 'TOTAL: ' + fmt(total) + '\n\nGracias por confiar en nosotros 🙏\nAnte cualquier inquietud estamos a sus órdenes.\nCARMOTORS — Mecánicos de Confianza 🏍️';
