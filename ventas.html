@@ -470,18 +470,24 @@ async function actualizarResumen() {
   const ahora = new Date();
 ahora.setHours(ahora.getHours() - 5);
 const hoy = ahora.toISOString().split('T')[0];
-const res = await db.from('pagos').select('*').gte('creado_en', hoy);
-const pagos_data = res.data || [];
+const resVentas = await db.from('ventas').select('*').eq('fecha', hoy);
+const ventasHoy = resVentas.data || [];
+const ventaIds = ventasHoy.map(v => v.id);
+let gan = ventasHoy.reduce((s, v) => s + (v.ganancia || 0), 0);
 let total = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0;
-pagos_data.forEach(p => {
-  total += p.monto;
-  if (p.metodo === 'efectivo') ef += p.monto;
-  else if (p.metodo === 'nequi') nq += p.monto;
-  else if (p.metodo === 'daviplata') dp += p.monto;
-  else if (p.metodo === 'tarjeta') tj += p.monto;
-  else if (p.metodo === 'transferencia') tr += p.monto;
-  else if (p.metodo === 'credito') cr += p.monto;
-});
+if (ventaIds.length) {
+  const resPagos = await db.from('pagos').select('*').in('venta_id', ventaIds);
+  const pagos_data = resPagos.data || [];
+  pagos_data.forEach(p => {
+    total += p.monto;
+    if (p.metodo === 'efectivo') ef += p.monto;
+    else if (p.metodo === 'nequi') nq += p.monto;
+    else if (p.metodo === 'daviplata') dp += p.monto;
+    else if (p.metodo === 'tarjeta') tj += p.monto;
+    else if (p.metodo === 'transferencia') tr += p.monto;
+    else if (p.metodo === 'credito') cr += p.monto;
+  });
+}
 const res2 = await db.from('ventas').select('total, ganancia').eq('fecha', hoy);
 const gan = (res2.data || []).reduce((s, v) => {
   if (!v.total || !v.ganancia) return s;
