@@ -488,13 +488,6 @@ if (ventaIds.length) {
     else if (p.metodo === 'credito') cr += p.monto;
   });
 }
-const res2 = await db.from('ventas').select('total, ganancia').eq('fecha', hoy);
-const gan = (res2.data || []).reduce((s, v) => {
-  if (!v.total || !v.ganancia) return s;
-  const margen = v.ganancia / v.total;
-  const cobrado = Math.min(v.total, total);
-  return s + (margen * cobrado);
-}, 0);
   turnoActivo = Object.assign({}, turnoActivo, { total_ventas: total, ganancia: gan, total_efectivo: ef, total_nequi: nq, total_daviplata: dp, total_tarjeta: tj, total_transferencia: tr, total_credito: cr });
   document.getElementById('cresumen').innerHTML =
     '<div class="tr"><span>Total cobrado</span><span style="color:var(--orange)">' + fmt(total) + '</span></div>' +
