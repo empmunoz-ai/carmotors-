@@ -354,8 +354,9 @@ async function cargarHoy() {
   data.forEach(v => {
   const cobrado = v.estado_pago === 'pagado' ? v.total : (v.abonado || 0);
   total += cobrado;
-  if (v.estado_pago === 'pagado') gan += v.ganancia;
-  if (v.tipo === 'servicio') serv += cobrado;
+  if (v.estado_pago !== 'pagado') html += '<button class="babo" onclick="abono(\'' + v.id + '\',' + v.saldo + ')">💵 Abonar</button>';
+html += '<button class="babo" onclick="editarVenta(\'' + v.id + '\')">✏️ Editar</button>';
+    if (v.tipo === 'servicio') serv += cobrado;
   if (v.tipo === 'repuesto') rep += cobrado;
 });
   document.getElementById('rtot').textContent = fmt(total);
@@ -599,6 +600,33 @@ txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ':
   await db.from('clientes').update({ saldo_pendiente: nuevo_pendiente, saldo_favor: nuevo_favor }).eq('id', cliente_id);
   await cargarHoy();
   await cargarFiados();
+    }
+    async function editarVenta(venta_id) {
+  const res = await db.from('venta_items').select('*').eq('venta_id', venta_id);
+  const its = res.data || [];
+  let txt = 'Items actuales:\n';
+  its.forEach((it, i) => {
+    txt += (i+1) + '. ' + it.descripcion + ' x' + it.cantidad + ' = ' + fmt(it.subtotal) + '\n';
+  });
+  txt += '\n¿Qué quieres agregar? (descripcion,precio)\nEj: Cambio aceite,15000';
+  const input = prompt(txt);
+  if (!input) return;
+  const partes = input.split(',');
+  if (partes.length < 2) { alert('Formato incorrecto. Usa: descripcion,precio'); return; }
+  const desc = partes[0].trim();
+  const precio = parseFloat(partes[1].trim()) || 0;
+  if (!desc || !precio) { alert('Datos incompletos.'); return; }
+  const cant = 1;
+  const subtotal = precio * cant;
+  await db.from('venta_items').insert({ venta_id, tipo: 'servicio', descripcion: desc, cantidad: cant, precio_unitario: precio, costo_unitario: 0, subtotal });
+  const vRes = await db.from('ventas').select('total, abonado, saldo, estado_pago').eq('id', venta_id).single();
+  const v = vRes.data;
+  const nuevo_total = (v.total || 0) + subtotal;
+  const nuevo_saldo = nuevo_total - (v.abonado || 0);
+  const estado = nuevo_saldo <= 0 ? 'pagado' : v.abonado > 0 ? 'parcial' : v.estado_pago;
+  await db.from('ventas').update({ total: nuevo_total, saldo: nuevo_saldo, estado_pago: estado }).eq('id', venta_id);
+  alert('✅ Item agregado. Total nuevo: ' + fmt(nuevo_total));
+  await cargarHoy();
     }
 function msg(txt, tipo) {
   const el = document.getElementById('msg');
