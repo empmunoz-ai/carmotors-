@@ -479,8 +479,11 @@ async function actualizarResumen() {
     else if (p.metodo === 'transferencia') tr += p.monto;
     else if (p.metodo === 'credito') cr += p.monto;
   });
-  const res2 = await db.from('ventas').select('total, ganancia').eq('fecha', turnoActivo.fecha).gte('creado_en', turnoActivo.hora_apertura);
-const gan = (res2.data || []).reduce((s, v) => {
+  const ahora = new Date();
+ahora.setHours(ahora.getHours() - 5);
+const hoy = ahora.toISOString().split('T')[0];
+const res = await db.from('pagos').select('*').gte('creado_en', hoy);
+  const gan = (res2.data || []).reduce((s, v) => {
   if (!v.total || !v.ganancia) return s;
   const margen = v.ganancia / v.total;
   const cobrado = Math.min(v.total, total);
