@@ -351,6 +351,8 @@ const fecha = ahora2.toISOString().split('T')[0];
 async function cargarHoy() {
   const ahora = new Date();
 ahora.setHours(ahora.getHours() - 5);
+  const ahora = new Date();
+ahora.setHours(ahora.getHours() - 5);
 const hoy = ahora.toISOString().split('T')[0];
   const res = await db.from('ventas').select('*, clientes(nombre, telefono)').eq('fecha', hoy).order('creado_en', { ascending: false });
   const data = res.data || [];
