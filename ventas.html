@@ -358,9 +358,7 @@ const hoy = ahora.toISOString().split('T')[0];
   data.forEach(v => {
   const cobrado = v.estado_pago === 'pagado' ? v.total : (v.abonado || 0);
   total += cobrado;
-  if (v.estado_pago !== 'pagado') html += '<button class="babo" onclick="abono(\'' + v.id + '\',' + v.saldo + ')">💵 Abonar</button>';
-html += '<button class="babo" onclick="editarVenta(\'' + v.id + '\')">✏️ Editar</button>';
-    if (v.tipo === 'servicio') serv += cobrado;
+  if (v.tipo === 'servicio') serv += cobrado;
   if (v.tipo === 'repuesto') rep += cobrado;
 });
   document.getElementById('rtot').textContent = fmt(total);
@@ -381,7 +379,8 @@ html += '<button class="babo" onclick="editarVenta(\'' + v.id + '\')">✏️ Edi
     html += '<div class="acc">';
     if (telCli) html += '<button class="bwasa" onclick="wasaVenta(\'' + v.id + '\',\'57' + telCli + '\',' + v.total + ')">📲 WhatsApp</button>';
     if (v.estado_pago !== 'pagado') html += '<button class="babo" onclick="abono(\'' + v.id + '\',' + v.saldo + ')">💵 Abonar</button>';
-    html += '</div>';
+html += '<button class="babo" onclick="editarVenta(\'' + v.id + '\')">✏️ Editar</button>';
+html += '</div>';
     card.innerHTML = html;
     cont.appendChild(card);
   });
