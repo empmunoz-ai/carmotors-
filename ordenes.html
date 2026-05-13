@@ -25,6 +25,7 @@
     input, select { width:100%; background:var(--dark); border:1px solid var(--border); border-radius:6px; padding:9px 12px; color:var(--text); font-size:14px; outline:none; }
     select option { background:var(--dark); }
     .r2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .r3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
     .btnmain { width:100%; padding:13px; background:var(--orange); color:var(--dark); border:none; border-radius:8px; font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; cursor:pointer; margin-top:12px; }
     .btnmain:disabled { background:var(--border); }
     .btnsmall { background:#103040; color:var(--steel); border:1px solid var(--border); border-radius:6px; padding:7px 14px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
@@ -33,6 +34,10 @@
     .msg { padding:10px; border-radius:6px; font-size:13px; margin-bottom:10px; display:none; }
     .msgok { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; display:block; }
     .msgerr { background:#3d1a1a; color:#e07070; border:1px solid #6a2a2a; display:block; }
+    .moto-found { background:var(--dark); border:2px solid var(--green); border-radius:8px; padding:12px; margin-top:10px; display:none; }
+    .moto-found .nom { font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; color:var(--cream); }
+    .moto-found .sub { font-size:12px; color:var(--muted); margin-top:4px; }
+    .moto-new { background:var(--dark); border:2px dashed var(--border); border-radius:8px; padding:12px; margin-top:10px; display:none; }
     .orcard { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:10px; cursor:pointer; transition:border-color 0.2s; }
     .orcard:hover { border-color:var(--orange); }
     .ortit { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:var(--cream); }
@@ -53,20 +58,18 @@
     .filtros { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
     .fbtn { background:var(--dark); border:2px solid var(--border); border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; cursor:pointer; color:var(--muted); }
     .fbtn.on { border-color:var(--orange); color:var(--orange); }
-    .motosel { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:10px; margin-top:8px; display:flex; align-items:center; gap:10px; cursor:pointer; }
-    .motosel.on { border-color:var(--orange); }
-    .motosel span { font-size:20px; }
-    .motonom { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; color:var(--cream); }
-    .motosub { font-size:11px; color:var(--muted); }
-    .empty { text-align:center; padding:40px 20px; color:var(--muted); }
-    .empty span { display:block; font-size:32px; margin-bottom:8px; }
-    .loading { text-align:center; padding:30px; color:var(--muted); font-size:13px; }
-    .acc { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
     .metodos { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:10px; }
     .mbtn { background:var(--dark); border:2px solid var(--border); border-radius:8px; padding:8px 4px; text-align:center; cursor:pointer; }
     .mbtn.on { border-color:var(--orange); background:#1a2a3a; }
     .mbtn .ico { font-size:20px; display:block; }
     .mbtn .nom { font-family:'Rajdhani',sans-serif; font-size:11px; }
+    .search-row { display:flex; gap:8px; margin-top:4px; }
+    .search-row input { flex:1; }
+    .search-row button { background:var(--orange); border:none; border-radius:6px; padding:9px 16px; font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; color:var(--dark); cursor:pointer; flex-shrink:0; }
+    .empty { text-align:center; padding:40px 20px; color:var(--muted); }
+    .empty span { display:block; font-size:32px; margin-bottom:8px; }
+    .loading { text-align:center; padding:30px; color:var(--muted); font-size:13px; }
+    .acc { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
     .bnav { position:fixed; bottom:0; left:0; right:0; background:var(--navy); border-top:2px solid var(--border); display:flex; z-index:100; }
     .bnav a { flex:1; display:flex; flex-direction:column; align-items:center; padding:8px 4px; text-decoration:none; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:600; gap:2px; }
     .bnav a.on { color:var(--orange); border-top:2px solid var(--orange); margin-top:-2px; }
@@ -74,7 +77,8 @@
   </style>
 </head>
 
-  <body>
+
+ <body>
 <header>
   <div class="lm">📋</div>
   <h1>ÓRDENES</h1>
@@ -99,19 +103,52 @@
 
 <div id="sec-nueva" class="sec">
   <div class="card">
-    <div class="ctitle">➕ Nueva orden</div>
+    <div class="ctitle">🔍 Buscar moto por placa</div>
     <div id="msg" class="msg"></div>
-    <label class="fl">Cliente</label>
-    <select id="ocliente" onchange="chCliente()">
-      <option value="">Selecciona cliente...</option>
-    </select>
-    <div id="box-motos" style="display:none">
-      <label class="fl">Moto</label>
-      <div id="lista-motos-sel"></div>
+    <div class="search-row">
+      <input type="text" id="busca-placa" placeholder="Ej: ELL55E" style="text-transform:uppercase"/>
+      <button onclick="buscarMoto()">BUSCAR</button>
     </div>
-    <label class="fl">Descripcion de la orden</label>
-    <input type="text" id="odesc" placeholder="Diagnóstico general, cambio de aceite..."/>
-    <button class="btnmain" onclick="crearOrden()">✅ CREAR ORDEN</button>
+
+    <div class="moto-found" id="moto-found">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:28px">🏍️</span>
+        <div>
+          <div class="nom" id="found-nom">—</div>
+          <div class="sub" id="found-sub">—</div>
+        </div>
+        <span style="margin-left:auto;color:var(--green);font-size:20px">✅</span>
+      </div>
+    </div>
+
+    <div class="moto-new" id="moto-new">
+      <div style="color:var(--orange);font-family:Rajdhani,sans-serif;font-weight:700;margin-bottom:10px">🏍️ Registrar moto nueva</div>
+      <div class="r2">
+        <div><label class="fl">Marca</label><input type="text" id="nmarca" placeholder="Honda"/></div>
+        <div><label class="fl">Modelo</label><input type="text" id="nmodelo" placeholder="CB 110"/></div>
+      </div>
+      <div class="r2">
+        <div><label class="fl">Color</label><input type="text" id="ncolor" placeholder="Rojo"/></div>
+        <div><label class="fl">Año</label><input type="text" id="nanio" placeholder="2020"/></div>
+      </div>
+      <label class="fl">Cliente dueño (opcional)</label>
+      <select id="ncliente">
+        <option value="">Sin cliente registrado</option>
+      </select>
+    </div>
+
+    <div id="box-cliente-orden" style="display:none">
+      <label class="fl">Cliente que trae la moto</label>
+      <select id="ocliente">
+        <option value="">Sin cliente / mostrador</option>
+      </select>
+    </div>
+
+    <div id="box-desc" style="display:none">
+      <label class="fl">Descripcion de la orden</label>
+      <input type="text" id="odesc" placeholder="Diagnóstico, cambio de aceite..."/>
+      <button class="btnmain" onclick="crearOrden()">✅ CREAR ORDEN</button>
+    </div>
   </div>
 </div>
 
@@ -179,22 +216,18 @@
   <a href="clientes.html"><span>👥</span>CLIENTES</a>
   <a href="ordenes.html" class="on"><span>📋</span>ÓRDENES</a>
   <a href="admin.html"><span>⚙️</span>ADMIN</a>
-  </nav>
+      </nav>
 
-
-    <script>
+  <script>
 const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
 const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let ordenes = [];
-let articulos = [];
-let clientes = [];
-let ordenActual = null;
-let items = [];
+let ordenes = [], articulos = [], clientes = [];
+let ordenActual = null, items = [];
 let filtroActual = 'todas';
-let motoSeleccionada = null;
+let motoActual = null;
 let metodoPago = 'efectivo';
 
 const fmt = n => '$' + Number(n||0).toLocaleString('es-CO');
@@ -205,7 +238,7 @@ function sw(sec, btn) {
   document.getElementById('sec-' + sec).classList.add('active');
   if (btn) btn.classList.add('active');
   if (sec === 'lista') cargarOrdenes();
-  if (sec === 'nueva') { motoSeleccionada = null; document.getElementById('box-motos').style.display = 'none'; }
+  if (sec === 'nueva') resetNueva();
 }
 
 function filt(estado, btn) {
@@ -213,6 +246,71 @@ function filt(estado, btn) {
   document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   cargarOrdenes();
+}
+
+function resetNueva() {
+  motoActual = null;
+  document.getElementById('busca-placa').value = '';
+  document.getElementById('moto-found').style.display = 'none';
+  document.getElementById('moto-new').style.display = 'none';
+  document.getElementById('box-cliente-orden').style.display = 'none';
+  document.getElementById('box-desc').style.display = 'none';
+  document.getElementById('odesc').value = '';
+  document.getElementById('msg').className = 'msg';
+}
+
+async function buscarMoto() {
+  const placa = document.getElementById('busca-placa').value.trim().toUpperCase();
+  if (!placa) { msg('⚠️ Escribe una placa.', 'err', 'msg'); return; }
+  const res = await db.from('motos').select('*, clientes(nombre)').ilike('placa', placa).limit(1);
+  const found = res.data && res.data.length ? res.data[0] : null;
+  if (found) {
+    motoActual = found;
+    document.getElementById('found-nom').textContent = found.marca + ' ' + found.modelo + (found.color ? ' — ' + found.color : '');
+    document.getElementById('found-sub').textContent = '🔖 ' + found.placa + (found.clientes ? ' | 👤 ' + found.clientes.nombre : ' | Sin dueño registrado');
+    document.getElementById('moto-found').style.display = 'block';
+    document.getElementById('moto-new').style.display = 'none';
+    document.getElementById('box-cliente-orden').style.display = 'block';
+    document.getElementById('box-desc').style.display = 'block';
+  } else {
+    motoActual = null;
+    document.getElementById('moto-found').style.display = 'none';
+    document.getElementById('moto-new').style.display = 'block';
+    document.getElementById('box-cliente-orden').style.display = 'none';
+    document.getElementById('box-desc').style.display = 'block';
+    document.getElementById('nmarca').focus();
+  }
+}
+
+async function crearOrden() {
+  const descripcion = document.getElementById('odesc').value.trim();
+  if (!descripcion) { msg('⚠️ Describe la orden.', 'err', 'msg'); return; }
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'CREANDO...';
+  let moto_id = motoActual ? motoActual.id : null;
+  let cliente_id = null;
+  if (!motoActual) {
+    const marca = document.getElementById('nmarca').value.trim();
+    const modelo = document.getElementById('nmodelo').value.trim();
+    const color = document.getElementById('ncolor').value.trim();
+    const anio = document.getElementById('nanio').value.trim();
+    const ncliente = document.getElementById('ncliente').value;
+    if (!marca || !modelo) { btn.disabled = false; btn.textContent = '✅ CREAR ORDEN'; msg('⚠️ Marca y modelo requeridos.', 'err', 'msg'); return; }
+    const placa = document.getElementById('busca-placa').value.trim().toUpperCase();
+    const mRes = await db.from('motos').insert({ marca, modelo, placa: placa || null, color: color || null, anio: anio || null, cliente_id: ncliente || null }).select().single();
+    if (mRes.error) { btn.disabled = false; btn.textContent = '✅ CREAR ORDEN'; msg('❌ ' + mRes.error.message, 'err', 'msg'); return; }
+    moto_id = mRes.data.id;
+    cliente_id = ncliente || null;
+  } else {
+    cliente_id = document.getElementById('ocliente').value || motoActual.cliente_id || null;
+  }
+  const vehiculo = motoActual ? motoActual.marca + ' ' + motoActual.modelo : document.getElementById('nmarca').value + ' ' + document.getElementById('nmodelo').value;
+  const placa = motoActual ? motoActual.placa : document.getElementById('busca-placa').value.trim().toUpperCase();
+  const res = await db.from('ordenes_trabajo').insert({ cliente_id, moto_id, vehiculo, placa: placa || null, descripcion, estado: 'abierta' }).select().single();
+  btn.disabled = false; btn.textContent = '✅ CREAR ORDEN';
+  if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg'); return; }
+  msg('✅ Orden creada.', 'ok', 'msg');
+  setTimeout(() => { resetNueva(); sw('lista', document.querySelector('.tbtn')); }, 1000);
 }
 
 async function cargarOrdenes() {
@@ -228,11 +326,11 @@ async function cargarOrdenes() {
     card.className = 'orcard';
     card.onclick = () => mostrarDetalle(o.id);
     const est = o.estado === 'abierta' ? '🟢' : o.estado === 'proceso' ? '🟡' : o.estado === 'terminada' ? '✅' : '💰';
-    const bdgclass = o.estado === 'abierta' ? 'orbdga' : o.estado === 'proceso' ? 'orbdgp' : o.estado === 'terminada' ? 'orbdgt' : 'orbdgx';
-    let html = '<div class="ortit">' + (o.clientes?.nombre || 'Sin cliente') + '</div>';
-    html += '<div class="orsub">🏍️ ' + o.vehiculo + (o.placa ? ' — ' + o.placa : '') + '</div>';
+    const bdg = o.estado === 'abierta' ? 'orbdga' : o.estado === 'proceso' ? 'orbdgp' : o.estado === 'terminada' ? 'orbdgt' : 'orbdgx';
+    let html = '<div class="ortit">🏍️ ' + o.vehiculo + (o.placa ? ' — ' + o.placa : '') + '</div>';
+    if (o.clientes?.nombre) html += '<div class="orsub">👤 ' + o.clientes.nombre + '</div>';
     html += '<div class="orsub">📝 ' + o.descripcion + '</div>';
-    html += '<div class="orbdg ' + bdgclass + '">' + est + ' ' + o.estado + '</div>';
+    html += '<div class="orbdg ' + bdg + '">' + est + ' ' + o.estado + '</div>';
     card.innerHTML = html;
     cont.appendChild(card);
   });
@@ -241,66 +339,17 @@ async function cargarOrdenes() {
 async function cargarClientes() {
   const res = await db.from('clientes').select('id, nombre').order('nombre');
   clientes = res.data || [];
-  const sel = document.getElementById('ocliente');
-  sel.innerHTML = '<option value="">Selecciona cliente...</option>';
-  clientes.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = c.nombre;
-    sel.appendChild(opt);
+  ['ocliente', 'ncliente'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const def = id === 'ocliente' ? '<option value="">Sin cliente / mostrador</option>' : '<option value="">Sin cliente registrado</option>';
+    sel.innerHTML = def;
+    clientes.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id; opt.textContent = c.nombre;
+      sel.appendChild(opt);
+    });
   });
-}
-
-async function chCliente() {
-  const cid = document.getElementById('ocliente').value;
-  motoSeleccionada = null;
-  if (!cid) { document.getElementById('box-motos').style.display = 'none'; return; }
-  const res = await db.from('motos').select('*').eq('cliente_id', cid);
-  const motos = res.data || [];
-  const box = document.getElementById('box-motos');
-  const lista = document.getElementById('lista-motos-sel');
-  lista.innerHTML = '';
-  if (!motos.length) { box.style.display = 'none'; return; }
-  box.style.display = 'block';
-  motos.forEach(m => {
-    const div = document.createElement('div');
-    div.className = 'motosel';
-    div.id = 'msel-' + m.id;
-    div.onclick = () => selMoto(m);
-    div.innerHTML = '<span>🏍️</span><div><div class="motonom">' + m.marca + ' ' + m.modelo + '</div><div class="motosub">' + (m.placa || 'Sin placa') + ' | ' + (m.color || '') + '</div></div>';
-    lista.appendChild(div);
-  });
-}
-
-function selMoto(m) {
-  motoSeleccionada = m;
-  document.querySelectorAll('.motosel').forEach(d => d.classList.remove('on'));
-  document.getElementById('msel-' + m.id).classList.add('on');
-  document.getElementById('odesc').focus();
-}
-
-async function crearOrden() {
-  const cliente_id = document.getElementById('ocliente').value;
-  const descripcion = document.getElementById('odesc').value.trim();
-  if (!cliente_id) { msg('⚠️ Selecciona un cliente.', 'err', 'msg'); return; }
-  if (!motoSeleccionada) { msg('⚠️ Selecciona una moto.', 'err', 'msg'); return; }
-  if (!descripcion) { msg('⚠️ Describe la orden.', 'err', 'msg'); return; }
-  const btn = event.target;
-  btn.disabled = true; btn.textContent = 'CREANDO...';
-  const res = await db.from('ordenes_trabajo').insert({
-    cliente_id, moto_id: motoSeleccionada.id,
-    vehiculo: motoSeleccionada.marca + ' ' + motoSeleccionada.modelo,
-    placa: motoSeleccionada.placa || null,
-    descripcion, estado: 'abierta'
-  }).select().single();
-  btn.disabled = false; btn.textContent = '✅ CREAR ORDEN';
-  if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg'); return; }
-  msg('✅ Orden creada.', 'ok', 'msg');
-  document.getElementById('ocliente').value = '';
-  document.getElementById('odesc').value = '';
-  document.getElementById('box-motos').style.display = 'none';
-  motoSeleccionada = null;
-  await cargarOrdenes();
 }
 
 async function cargarArticulos() {
@@ -322,16 +371,15 @@ async function mostrarDetalle(id) {
   items = [];
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-detalle').classList.add('active');
-  document.getElementById('det-titulo').textContent = (ordenActual.clientes?.nombre || 'Sin cliente') + ' — ' + ordenActual.vehiculo;
+  document.getElementById('det-titulo').textContent = '🏍️ ' + ordenActual.vehiculo + (ordenActual.placa ? ' — ' + ordenActual.placa : '');
   document.getElementById('detstado').value = ordenActual.estado;
   const info = document.getElementById('det-info');
   info.innerHTML = '';
   const rows = [
-    ['Cliente', ordenActual.clientes?.nombre || '-'],
+    ['Cliente', ordenActual.clientes?.nombre || 'Sin cliente'],
     ['Vehículo', ordenActual.vehiculo],
     ['Placa', ordenActual.placa || '-'],
     ['Descripción', ordenActual.descripcion],
-    ['Estado', ordenActual.estado],
     ['Creado', ordenActual.creado_en?.substring(0,10) || '-']
   ];
   rows.forEach(r => {
@@ -345,12 +393,9 @@ async function mostrarDetalle(id) {
   const btnConv = document.getElementById('btnconvertir');
   const boxConv = document.getElementById('box-convertir');
   if (ordenActual.estado === 'terminada') {
-    btnConv.style.display = 'block';
-    boxConv.style.display = 'block';
-    renderMetodosOrden();
+    btnConv.style.display = 'block'; boxConv.style.display = 'block'; renderMetodosOrden();
   } else {
-    btnConv.style.display = 'none';
-    boxConv.style.display = 'none';
+    btnConv.style.display = 'none'; boxConv.style.display = 'none';
   }
   await cargarItemsOrden();
   await cargarArticulos();
@@ -365,8 +410,7 @@ function renderMetodosOrden() {
     btn.className = 'mbtn' + (metodoPago === nom ? ' on' : '');
     btn.innerHTML = '<span class="ico">' + ico + '</span><span class="nom">' + nom + '</span>';
     btn.onclick = () => {
-      metodoPago = nom;
-      renderMetodosOrden();
+      metodoPago = nom; renderMetodosOrden();
       document.getElementById('box-abono-orden').style.display = metodoPago === 'credito' ? 'block' : 'none';
     };
     box.appendChild(btn);
@@ -374,7 +418,6 @@ function renderMetodosOrden() {
 }
 
 async function cargarItemsOrden() {
-  if (!ordenActual) return;
   const res = await db.from('orden_items').select('*').eq('orden_id', ordenActual.id);
   items = res.data || [];
   renderItems();
@@ -385,8 +428,7 @@ function chTipo() {
 }
 
 function chRep() {
-  const id = document.getElementById('drep').value;
-  const art = articulos.find(a => a.id === id);
+  const art = articulos.find(a => a.id === document.getElementById('drep').value);
   if (art) { document.getElementById('ddesc').value = art.nombre; document.getElementById('dprecio').value = art.precio; }
 }
 
@@ -404,8 +446,7 @@ async function addItem() {
   if (!precio) { msg('⚠️ Precio requerido.', 'err', 'msg2'); return; }
   let costo = 0, articulo_id = null;
   if (tipo === 'repuesto') {
-    const id = document.getElementById('drep').value;
-    const art = articulos.find(a => a.id === id);
+    const art = articulos.find(a => a.id === document.getElementById('drep').value);
     if (art) { costo = art.costo || 0; articulo_id = art.id; }
   }
   const item = { tipo, descripcion: desc, cantidad: cant, precio_unitario: precio, costo_unitario: costo, subtotal: cant * precio, articulo_id };
@@ -428,8 +469,7 @@ function renderItems() {
   let total = 0;
   items.forEach((it, i) => {
     total += it.subtotal;
-    const row = document.createElement('div');
-    row.className = 'oirow';
+    const row = document.createElement('div'); row.className = 'oirow';
     const info = document.createElement('div');
     const nom = document.createElement('div'); nom.className = 'oinom';
     nom.textContent = (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion;
@@ -461,12 +501,9 @@ async function cambiarEstado() {
   const btnConv = document.getElementById('btnconvertir');
   const boxConv = document.getElementById('box-convertir');
   if (estado === 'terminada') {
-    btnConv.style.display = 'block';
-    boxConv.style.display = 'block';
-    renderMetodosOrden();
+    btnConv.style.display = 'block'; boxConv.style.display = 'block'; renderMetodosOrden();
   } else {
-    btnConv.style.display = 'none';
-    boxConv.style.display = 'none';
+    btnConv.style.display = 'none'; boxConv.style.display = 'none';
   }
   msg('✅ Estado actualizado.', 'ok', 'msg2');
 }
@@ -486,11 +523,11 @@ async function convertirVenta() {
   const fecha = ahora.toISOString().split('T')[0];
   const btn = event.target;
   btn.disabled = true; btn.textContent = 'PROCESANDO...';
-  const vRes = await db.from('ventas').insert({ cliente_id: ordenActual.cliente_id, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodoPago, abonado, saldo, fecha }).select().single();
+  const vRes = await db.from('ventas').insert({ cliente_id: ordenActual.cliente_id || null, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodoPago, abonado, saldo, fecha }).select().single();
   if (vRes.error) { btn.disabled = false; btn.textContent = '💰 COBRAR'; msg('❌ ' + vRes.error.message, 'err', 'msg2'); return; }
   const venta = vRes.data;
   await db.from('venta_items').insert(items.map(i => ({ ...i, venta_id: venta.id })));
-  await db.from('pagos').insert({ venta_id: venta.id, monto: abonado, metodo: metodoPago, nota: 'Pago orden #' + ordenActual.id });
+  await db.from('pagos').insert({ venta_id: venta.id, monto: abonado, metodo: metodoPago, nota: 'Orden #' + ordenActual.id });
   for (let i of items) {
     if (i.articulo_id) {
       const art = articulos.find(a => a.id === i.articulo_id);
@@ -504,7 +541,7 @@ async function convertirVenta() {
   await db.from('ordenes_trabajo').update({ estado: 'pagada' }).eq('id', ordenActual.id);
   btn.disabled = false; btn.textContent = '💰 COBRAR';
   msg('✅ Venta registrada.', 'ok', 'msg2');
-  volverLista();
+  setTimeout(() => volverLista(), 1000);
 }
 
 async function eliminarOrden() {
@@ -540,3 +577,4 @@ init();
 </script>
 </body>
 </html>
+   
