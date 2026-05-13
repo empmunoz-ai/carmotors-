@@ -129,7 +129,12 @@
     <label class="fl">Descripcion</label>
     <input type="text" id="ddesc" placeholder="Cambio de aceite..."/>
     <div class="r2" style="margin-top:10px">
-      <div><label class="fl">Cantidad</label><input type="number" id="dcant" value="1" min="1"/></div>
+      <div><label class="fl">Cantidad</label>
+<div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+  <button type="button" onclick="cambiarCantO(-1)" style="width:36px;height:36px;background:var(--dark);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0">−</button>
+  <input type="number" id="dcant" value="1" min="1" style="text-align:center"/>
+  <button type="button" onclick="cambiarCantO(1)" style="width:36px;height:36px;background:var(--dark);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0">+</button>
+</div></div>
       <div><label class="fl">Precio ($)</label><input type="number" id="dprecio" placeholder="0"/></div>
     </div>
     <button class="btnmain" style="margin-top:10px; background:#103040; color:var(--steel)" onclick="addItem()">+ AGREGAR ITEM</button>
@@ -460,6 +465,12 @@ function volverLista() {
   cargarOrdenes();
 }
 
+  function cambiarCantO(n) {
+  const inp = document.getElementById('dcant');
+  const val = parseInt(inp.value) || 1;
+  inp.value = Math.max(1, val + n);
+  }
+  
 function msg(txt, tipo, el) {
   const el_msg = document.getElementById(el);
   el_msg.textContent = txt;
