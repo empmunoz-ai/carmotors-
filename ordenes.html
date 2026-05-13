@@ -526,7 +526,16 @@ async function convertirVenta() {
   const vRes = await db.from('ventas').insert({ cliente_id: ordenActual.cliente_id || null, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodoPago, abonado, saldo, fecha }).select().single();
   if (vRes.error) { btn.disabled = false; btn.textContent = '💰 COBRAR'; msg('❌ ' + vRes.error.message, 'err', 'msg2'); return; }
   const venta = vRes.data;
-  await db.from('venta_items').insert(items.map(i => ({ ...i, venta_id: venta.id })));
+  await db.from('venta_items').insert(items.map(i => ({
+  venta_id: venta.id,
+  tipo: i.tipo,
+  descripcion: i.descripcion,
+  cantidad: i.cantidad,
+  precio_unitario: i.precio_unitario,
+  costo_unitario: i.costo_unitario,
+  subtotal: i.subtotal,
+  articulo_id: i.articulo_id || null
+})));
   await db.from('pagos').insert({ venta_id: venta.id, monto: abonado, metodo: metodoPago, nota: 'Orden #' + ordenActual.id });
   for (let i of items) {
     if (i.articulo_id) {
