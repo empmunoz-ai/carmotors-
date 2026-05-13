@@ -471,13 +471,13 @@ async function actualizarResumen() {
   const ahora = new Date();
 ahora.setHours(ahora.getHours() - 5);
 const hoy = ahora.toISOString().split('T')[0];
-const resVentas = await db.from('ventas').select('*').eq('fecha', hoy);
-const ventasHoy = resVentas.data || [];
+const resVentas = await db.from('ventas').select('*').eq('fecha', hoy).gte('creado_en', turnoActivo.hora_apertura);
+  const ventasHoy = resVentas.data || [];
 const ventaIds = ventasHoy.map(v => v.id);
 let gan = ventasHoy.reduce((s, v) => s + (v.ganancia || 0), 0);
 let total = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0;
 if (ventaIds.length) {
-  const resPagos = await db.from('pagos').select('*').in('venta_id', ventaIds);
+  const resPagos = await db.from('pagos').select('*').in('venta_id', ventaIds).gte('creado_en', turnoActivo.hora_apertura);
   const pagos_data = resPagos.data || [];
   pagos_data.forEach(p => {
     total += p.monto;
