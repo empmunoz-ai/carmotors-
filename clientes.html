@@ -384,7 +384,7 @@ async function subirFoto() {
 
 async function cargarHistorialMoto() {
   if (!motoActual) return;
-  const res = await db.from('ordenes_trabajo').select('*').eq('moto_id', motoActual.id).order('creado_en', { ascending: false });
+  const res = await db.from('ordenes_trabajo').select('*, orden_items(*)').eq('moto_id', motoActual.id).order('creado_en', { ascending: false });
   const ordenes = res.data || [];
   const cont = document.getElementById('moto-historial');
   if (!ordenes.length) { cont.innerHTML = '<div class="empty"><span>📋</span>Sin órdenes aún.</div>'; return; }
@@ -392,13 +392,22 @@ async function cargarHistorialMoto() {
   ordenes.forEach(o => {
     const card = document.createElement('div');
     card.className = 'hiscard';
-    const est = o.estado === 'abierta' ? '🟢' : o.estado === 'proceso' ? '🟡' : '✅';
-    card.innerHTML = '<div class="hisnom">' + est + ' ' + o.descripcion + '</div>' +
-      '<div class="hissub">📅 ' + (o.creado_en ? o.creado_en.substring(0,10) : '-') + ' | Estado: ' + o.estado + '</div>' +
-      (o.total ? '<div class="hissub">💰 Total: ' + fmt(o.total) + '</div>' : '');
+    const est = o.estado === 'abierta' ? '🟢' : o.estado === 'proceso' ? '🟡' : o.estado === 'pagada' ? '💰' : '✅';
+    const total = (o.orden_items || []).reduce((s, i) => s + (i.subtotal || 0), 0);
+    let html = '<div class="hisnom">' + est + ' ' + o.descripcion + '</div>';
+    html += '<div class="hissub">📅 ' + (o.creado_en ? o.creado_en.substring(0,10) : '-') + ' | Estado: ' + o.estado + '</div>';
+    if (o.orden_items && o.orden_items.length) {
+      o.orden_items.forEach(it => {
+        html += '<div class="hissub">' + (it.tipo === 'repuesto' ? '🔩' : '🔧') + ' ' + it.descripcion + ' x' + it.cantidad + ' — ' + fmt(it.subtotal) + '</div>';
+      });
+      html += '<div class="hissub" style="color:var(--orange);font-weight:700;margin-top:4px">💰 Total: ' + fmt(total) + '</div>';
+    }
+    card.innerHTML = html;
     cont.appendChild(card);
   });
 }
+  
+  
 function mostrarEdicionMoto() {
   const form = document.getElementById('form-editar-moto');
   form.style.display = form.style.display === 'none' ? 'block' : 'none';
