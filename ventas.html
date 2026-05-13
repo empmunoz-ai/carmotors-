@@ -358,6 +358,7 @@ const hoy = ahora.toISOString().split('T')[0];
   data.forEach(v => {
   const cobrado = v.estado_pago === 'pagado' ? v.total : (v.abonado || 0);
   total += cobrado;
+  gan += v.ganancia || 0;
   if (v.tipo === 'servicio') serv += cobrado;
   if (v.tipo === 'repuesto') rep += cobrado;
 });
