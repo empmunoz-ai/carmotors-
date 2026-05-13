@@ -10,10 +10,10 @@
     :root { --navy:#1B3A5C; --steel:#4A8FB5; --red:#C0392B; --orange:#E8821A; --cream:#F5F0E8; --dark:#0f2236; --card:#1e3f60; --border:#2a5278; --text:#d4e8f5; --muted:#7aaec8; --green:#5ddb8c; }
     * { box-sizing:border-box; margin:0; padding:0; }
     body { background:var(--dark); color:var(--text); font-family:'IBM Plex Sans',sans-serif; min-height:100vh; padding-bottom:70px; }
-    header { background:var(--navy); border-bottom:2px solid var(--orange); padding:14px 20px; display:flex; align-items:center; gap:12px; }
-    .lm { width:36px; height:36px; background:var(--orange); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13px; color:var(--dark); }
+    header { background:var(--navy); border-bottom:2px solid var(--orange); padding:14px 20px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:99; }
+    .lm { width:36px; height:36px; background:var(--dark); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--orange); }
     h1 { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; letter-spacing:2px; color:var(--cream); }
-    .tabs { display:flex; background:var(--navy); border-bottom:1px solid var(--border); overflow-x:auto; }
+    .tabs { display:flex; background:var(--navy); border-bottom:1px solid var(--border); overflow-x:auto; position:sticky; top:64px; z-index:98; }
     .tbtn { padding:12px 14px; background:none; border:none; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; }
     .tbtn.active { color:var(--orange); border-bottom-color:var(--orange); }
     main { padding:16px; max-width:800px; margin:0 auto; }
@@ -27,7 +27,7 @@
     .r2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .btnmain { width:100%; padding:13px; background:var(--orange); color:var(--dark); border:none; border-radius:8px; font-family:'Rajdhani',sans-serif; font-size:17px; font-weight:700; cursor:pointer; margin-top:12px; }
     .btnmain:disabled { background:var(--border); }
-    .btnsmall { background:#103040; color:var(--steel); border:1px solid var(--border); border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
+    .btnsmall { background:#103040; color:var(--steel); border:1px solid var(--border); border-radius:6px; padding:7px 14px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; cursor:pointer; }
     .btngreen { background:#1a3d2b; color:var(--green); border:1px solid #2a6040; }
     .btnred { background:#3d1a1a; color:#e07070; border:1px solid #6a2a2a; }
     .msg { padding:10px; border-radius:6px; font-size:13px; margin-bottom:10px; display:none; }
@@ -37,10 +37,11 @@
     .orcard:hover { border-color:var(--orange); }
     .ortit { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; color:var(--cream); }
     .orsub { font-size:12px; color:var(--muted); margin-top:4px; }
-    .orbdg { display:inline-block; font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; text-transform:uppercase; margin-top:6px; background:#3d3010; color:var(--orange); }
+    .orbdg { display:inline-block; font-size:11px; font-weight:700; padding:3px 8px; border-radius:20px; text-transform:uppercase; margin-top:6px; }
     .orbdga { background:#1a3d2b; color:var(--green); }
     .orbdgp { background:#103040; color:var(--steel); }
     .orbdgt { background:#1a2a3a; color:#a0b8d4; }
+    .orbdgx { background:#3d2a10; color:var(--orange); }
     .oirow { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:10px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
     .oinom { font-size:13px; color:var(--cream); }
     .oisub { font-size:11px; color:var(--muted); }
@@ -52,20 +53,31 @@
     .filtros { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
     .fbtn { background:var(--dark); border:2px solid var(--border); border-radius:6px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:13px; cursor:pointer; color:var(--muted); }
     .fbtn.on { border-color:var(--orange); color:var(--orange); }
+    .motosel { background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:10px; margin-top:8px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+    .motosel.on { border-color:var(--orange); }
+    .motosel span { font-size:20px; }
+    .motonom { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; color:var(--cream); }
+    .motosub { font-size:11px; color:var(--muted); }
     .empty { text-align:center; padding:40px 20px; color:var(--muted); }
     .empty span { display:block; font-size:32px; margin-bottom:8px; }
     .loading { text-align:center; padding:30px; color:var(--muted); font-size:13px; }
     .acc { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .metodos { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:10px; }
+    .mbtn { background:var(--dark); border:2px solid var(--border); border-radius:8px; padding:8px 4px; text-align:center; cursor:pointer; }
+    .mbtn.on { border-color:var(--orange); background:#1a2a3a; }
+    .mbtn .ico { font-size:20px; display:block; }
+    .mbtn .nom { font-family:'Rajdhani',sans-serif; font-size:11px; }
     .bnav { position:fixed; bottom:0; left:0; right:0; background:var(--navy); border-top:2px solid var(--border); display:flex; z-index:100; }
     .bnav a { flex:1; display:flex; flex-direction:column; align-items:center; padding:8px 4px; text-decoration:none; color:var(--muted); font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:600; gap:2px; }
     .bnav a.on { color:var(--orange); border-top:2px solid var(--orange); margin-top:-2px; }
     .bnav a span { font-size:20px; }
   </style>
 </head>
-<body>
+
+  <body>
 <header>
-  <div class="lm">CM</div>
-  <h1>ÓRDENES CARMOTORS</h1>
+  <div class="lm">📋</div>
+  <h1>ÓRDENES</h1>
 </header>
 
 <div class="tabs">
@@ -77,10 +89,10 @@
 
 <div id="sec-lista" class="sec active">
   <div class="filtros">
-    <button class="fbtn on" onclick="filt('todas')">Todas</button>
-    <button class="fbtn" onclick="filt('abierta')">Abierta</button>
-    <button class="fbtn" onclick="filt('proceso')">En proceso</button>
-    <button class="fbtn" onclick="filt('terminada')">Terminada</button>
+    <button class="fbtn on" onclick="filt('todas',this)">Todas</button>
+    <button class="fbtn" onclick="filt('abierta',this)">Abierta</button>
+    <button class="fbtn" onclick="filt('proceso',this)">En proceso</button>
+    <button class="fbtn" onclick="filt('terminada',this)">Terminada</button>
   </div>
   <div id="lista-ordenes"><div class="loading">Cargando...</div></div>
 </div>
@@ -93,10 +105,10 @@
     <select id="ocliente" onchange="chCliente()">
       <option value="">Selecciona cliente...</option>
     </select>
-    <label class="fl">Vehiculo</label>
-    <input type="text" id="ovehiculo" placeholder="Honda CB 110"/>
-    <label class="fl">Placa</label>
-    <input type="text" id="oplaca" placeholder="ABC123"/>
+    <div id="box-motos" style="display:none">
+      <label class="fl">Moto</label>
+      <div id="lista-motos-sel"></div>
+    </div>
     <label class="fl">Descripcion de la orden</label>
     <input type="text" id="odesc" placeholder="Diagnóstico general, cambio de aceite..."/>
     <button class="btnmain" onclick="crearOrden()">✅ CREAR ORDEN</button>
@@ -114,7 +126,6 @@
       <option value="proceso">🟡 En proceso</option>
       <option value="terminada">✅ Terminada</option>
     </select>
-    
     <label class="fl">Tipo de item</label>
     <select id="dtipo" onchange="chTipo()">
       <option value="servicio">🔧 Servicio</option>
@@ -130,25 +141,31 @@
     <input type="text" id="ddesc" placeholder="Cambio de aceite..."/>
     <div class="r2" style="margin-top:10px">
       <div><label class="fl">Cantidad</label>
-<div style="display:flex;align-items:center;gap:8px;margin-top:4px">
-  <button type="button" onclick="cambiarCantO(-1)" style="width:36px;height:36px;background:var(--dark);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0">−</button>
-  <input type="number" id="dcant" value="1" min="1" style="text-align:center"/>
-  <button type="button" onclick="cambiarCantO(1)" style="width:36px;height:36px;background:var(--dark);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0">+</button>
-</div></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <button type="button" onclick="cambiarCantO(-1)" style="width:36px;height:36px;background:var(--dark);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0">−</button>
+          <input type="number" id="dcant" value="1" min="1" style="text-align:center"/>
+          <button type="button" onclick="cambiarCantO(1)" style="width:36px;height:36px;background:var(--dark);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:20px;cursor:pointer;flex-shrink:0">+</button>
+        </div>
+      </div>
       <div><label class="fl">Precio ($)</label><input type="number" id="dprecio" placeholder="0"/></div>
     </div>
-    <button class="btnmain" style="margin-top:10px; background:#103040; color:var(--steel)" onclick="addItem()">+ AGREGAR ITEM</button>
-    
+    <button class="btnmain" style="margin-top:10px;background:#103040;color:var(--steel)" onclick="addItem()">+ AGREGAR ITEM</button>
     <div id="det-items"></div>
     <div id="det-total" class="otbox" style="display:none">
       <div class="otr"><span>Items</span><span id="dcnt">0</span></div>
-      <div class="otr"><span>Ganancia</span><span id="dgan" style="color:var(--green)">$0</span></div>
       <div class="otf"><span>TOTAL</span><span id="dtot">$0</span></div>
     </div>
-
+    <div id="box-convertir" style="display:none;margin-top:12px">
+      <label class="fl">Metodo de pago</label>
+      <div class="metodos" id="metodos-orden"></div>
+      <div id="box-abono-orden" style="display:none">
+        <label class="fl">Abono inicial ($)</label>
+        <input type="number" id="dabono" placeholder="0 = fiado completo"/>
+      </div>
+    </div>
     <div class="acc">
       <button class="btnsmall" onclick="volverLista()">← VOLVER</button>
-      <button class="btnsmall btngreen" id="btnconvertir" style="display:none" onclick="convertirVenta()">💰 CONVERTIR A VENTA</button>
+      <button class="btnsmall btngreen" id="btnconvertir" style="display:none" onclick="convertirVenta()">💰 COBRAR</button>
       <button class="btnsmall btnred" onclick="eliminarOrden()">🗑️ ELIMINAR</button>
     </div>
   </div>
@@ -162,8 +179,10 @@
   <a href="clientes.html"><span>👥</span>CLIENTES</a>
   <a href="ordenes.html" class="on"><span>📋</span>ÓRDENES</a>
   <a href="admin.html"><span>⚙️</span>ADMIN</a>
-</nav>
-<script>
+  </nav>
+
+
+    <script>
 const SUPABASE_URL = 'https://ozpinusbfjjuvkcgkpgr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im96cGludXNiZmpqdXZrY2drcGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTU1NjAsImV4cCI6MjA5MzE3MTU2MH0.AGWaOo4RWnOCt9WlIwL1OFBsFTcKlV4mdFI5ytSpLbs';
 const { createClient } = supabase;
@@ -175,6 +194,8 @@ let clientes = [];
 let ordenActual = null;
 let items = [];
 let filtroActual = 'todas';
+let motoSeleccionada = null;
+let metodoPago = 'efectivo';
 
 const fmt = n => '$' + Number(n||0).toLocaleString('es-CO');
 
@@ -182,19 +203,20 @@ function sw(sec, btn) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('active');
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (sec === 'lista') cargarOrdenes();
+  if (sec === 'nueva') { motoSeleccionada = null; document.getElementById('box-motos').style.display = 'none'; }
 }
 
-function filt(estado) {
+function filt(estado, btn) {
   filtroActual = estado;
   document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('on'));
-  event.target.classList.add('on');
+  btn.classList.add('on');
   cargarOrdenes();
 }
 
 async function cargarOrdenes() {
-  let query = db.from('ordenes_trabajo').select('*, clientes(nombre, telefono)');
+  let query = db.from('ordenes_trabajo').select('*, clientes(nombre)');
   if (filtroActual !== 'todas') query = query.eq('estado', filtroActual);
   const res = await query.order('creado_en', { ascending: false });
   ordenes = res.data || [];
@@ -205,15 +227,80 @@ async function cargarOrdenes() {
     const card = document.createElement('div');
     card.className = 'orcard';
     card.onclick = () => mostrarDetalle(o.id);
-    const est = o.estado === 'abierta' ? '🟢' : o.estado === 'proceso' ? '🟡' : '✅';
-    const bdgclass = o.estado === 'abierta' ? 'orbdga' : o.estado === 'proceso' ? 'orbdgp' : 'orbdgt';
+    const est = o.estado === 'abierta' ? '🟢' : o.estado === 'proceso' ? '🟡' : o.estado === 'terminada' ? '✅' : '💰';
+    const bdgclass = o.estado === 'abierta' ? 'orbdga' : o.estado === 'proceso' ? 'orbdgp' : o.estado === 'terminada' ? 'orbdgt' : 'orbdgx';
     let html = '<div class="ortit">' + (o.clientes?.nombre || 'Sin cliente') + '</div>';
-    html += '<div class="orsub">🏍️ ' + o.vehiculo + (o.placa ? ' - ' + o.placa : '') + '</div>';
+    html += '<div class="orsub">🏍️ ' + o.vehiculo + (o.placa ? ' — ' + o.placa : '') + '</div>';
     html += '<div class="orsub">📝 ' + o.descripcion + '</div>';
     html += '<div class="orbdg ' + bdgclass + '">' + est + ' ' + o.estado + '</div>';
     card.innerHTML = html;
     cont.appendChild(card);
   });
+}
+
+async function cargarClientes() {
+  const res = await db.from('clientes').select('id, nombre').order('nombre');
+  clientes = res.data || [];
+  const sel = document.getElementById('ocliente');
+  sel.innerHTML = '<option value="">Selecciona cliente...</option>';
+  clientes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.nombre;
+    sel.appendChild(opt);
+  });
+}
+
+async function chCliente() {
+  const cid = document.getElementById('ocliente').value;
+  motoSeleccionada = null;
+  if (!cid) { document.getElementById('box-motos').style.display = 'none'; return; }
+  const res = await db.from('motos').select('*').eq('cliente_id', cid);
+  const motos = res.data || [];
+  const box = document.getElementById('box-motos');
+  const lista = document.getElementById('lista-motos-sel');
+  lista.innerHTML = '';
+  if (!motos.length) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  motos.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'motosel';
+    div.id = 'msel-' + m.id;
+    div.onclick = () => selMoto(m);
+    div.innerHTML = '<span>🏍️</span><div><div class="motonom">' + m.marca + ' ' + m.modelo + '</div><div class="motosub">' + (m.placa || 'Sin placa') + ' | ' + (m.color || '') + '</div></div>';
+    lista.appendChild(div);
+  });
+}
+
+function selMoto(m) {
+  motoSeleccionada = m;
+  document.querySelectorAll('.motosel').forEach(d => d.classList.remove('on'));
+  document.getElementById('msel-' + m.id).classList.add('on');
+  document.getElementById('odesc').focus();
+}
+
+async function crearOrden() {
+  const cliente_id = document.getElementById('ocliente').value;
+  const descripcion = document.getElementById('odesc').value.trim();
+  if (!cliente_id) { msg('⚠️ Selecciona un cliente.', 'err', 'msg'); return; }
+  if (!motoSeleccionada) { msg('⚠️ Selecciona una moto.', 'err', 'msg'); return; }
+  if (!descripcion) { msg('⚠️ Describe la orden.', 'err', 'msg'); return; }
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'CREANDO...';
+  const res = await db.from('ordenes_trabajo').insert({
+    cliente_id, moto_id: motoSeleccionada.id,
+    vehiculo: motoSeleccionada.marca + ' ' + motoSeleccionada.modelo,
+    placa: motoSeleccionada.placa || null,
+    descripcion, estado: 'abierta'
+  }).select().single();
+  btn.disabled = false; btn.textContent = '✅ CREAR ORDEN';
+  if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg'); return; }
+  msg('✅ Orden creada.', 'ok', 'msg');
+  document.getElementById('ocliente').value = '';
+  document.getElementById('odesc').value = '';
+  document.getElementById('box-motos').style.display = 'none';
+  motoSeleccionada = null;
+  await cargarOrdenes();
 }
 
 async function cargarArticulos() {
@@ -229,57 +316,13 @@ async function cargarArticulos() {
   });
 }
 
-async function cargarClientes() {
-  const res = await db.from('clientes').select('id, nombre, vehiculo, placa').order('nombre');
-  clientes = res.data || [];
-  const sel = document.getElementById('ocliente');
-  sel.innerHTML = '<option value="">Selecciona cliente...</option>';
-  clientes.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = c.nombre;
-    sel.appendChild(opt);
-  });
-}
-
-function chCliente() {
-  const id = document.getElementById('ocliente').value;
-  const c = clientes.find(x => x.id === id);
-  if (c) {
-    document.getElementById('ovehiculo').value = c.vehiculo || '';
-    document.getElementById('oplaca').value = c.placa || '';
-  }
-}
-
-async function crearOrden() {
-  const cliente_id = document.getElementById('ocliente').value;
-  const vehiculo = document.getElementById('ovehiculo').value.trim();
-  const placa = document.getElementById('oplaca').value.trim();
-  const descripcion = document.getElementById('odesc').value.trim();
-  if (!cliente_id) { msg('⚠️ Selecciona un cliente.', 'err', 'msg'); return; }
-  if (!vehiculo) { msg('⚠️ Ingresa el vehículo.', 'err', 'msg'); return; }
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'CREANDO...';
-  const res = await db.from('ordenes_trabajo').insert({ cliente_id: cliente_id || null, vehiculo, placa: placa || null, descripcion: descripcion || 'Nueva orden', estado: 'abierta' }).select().single();
-  if (res.error) { btn.disabled = false; btn.textContent = '✅ CREAR ORDEN'; msg('❌ ' + res.error.message, 'err', 'msg'); return; }
-  btn.disabled = false;
-  btn.textContent = '✅ CREAR ORDEN';
-  msg('✅ Orden creada.', 'ok', 'msg');
-  document.getElementById('ocliente').value = '';
-  document.getElementById('ovehiculo').value = '';
-  document.getElementById('oplaca').value = '';
-  document.getElementById('odesc').value = '';
-  await cargarOrdenes();
-}
-
 async function mostrarDetalle(id) {
   ordenActual = ordenes.find(o => o.id === id);
   if (!ordenActual) return;
   items = [];
-  document.getElementById('sec-lista').classList.remove('active');
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-detalle').classList.add('active');
-  document.getElementById('det-titulo').textContent = (ordenActual.clientes?.nombre || 'Sin cliente') + ' - ' + ordenActual.vehiculo;
+  document.getElementById('det-titulo').textContent = (ordenActual.clientes?.nombre || 'Sin cliente') + ' — ' + ordenActual.vehiculo;
   document.getElementById('detstado').value = ordenActual.estado;
   const info = document.getElementById('det-info');
   info.innerHTML = '';
@@ -289,25 +332,45 @@ async function mostrarDetalle(id) {
     ['Placa', ordenActual.placa || '-'],
     ['Descripción', ordenActual.descripcion],
     ['Estado', ordenActual.estado],
-    ['Creado', ordenActual.creado_en?.substring(0, 10) || '-']
+    ['Creado', ordenActual.creado_en?.substring(0,10) || '-']
   ];
   rows.forEach(r => {
     const row = document.createElement('div');
     row.className = 'otr';
-    const lbl = document.createElement('span');
-    lbl.textContent = r[0];
-    const val = document.createElement('span');
-    val.style.color = 'var(--cream)';
-    val.style.fontWeight = '600';
-    val.textContent = r[1];
-    row.appendChild(lbl);
-    row.appendChild(val);
+    const lbl = document.createElement('span'); lbl.textContent = r[0];
+    const val = document.createElement('span'); val.style.color = 'var(--cream)'; val.style.fontWeight = '600'; val.textContent = r[1];
+    row.appendChild(lbl); row.appendChild(val);
     info.appendChild(row);
   });
   const btnConv = document.getElementById('btnconvertir');
-  btnConv.style.display = ordenActual.estado === 'terminada' ? 'block' : 'none';
-  cargarItemsOrden();
+  const boxConv = document.getElementById('box-convertir');
+  if (ordenActual.estado === 'terminada') {
+    btnConv.style.display = 'block';
+    boxConv.style.display = 'block';
+    renderMetodosOrden();
+  } else {
+    btnConv.style.display = 'none';
+    boxConv.style.display = 'none';
+  }
+  await cargarItemsOrden();
   await cargarArticulos();
+}
+
+function renderMetodosOrden() {
+  const box = document.getElementById('metodos-orden');
+  box.innerHTML = '';
+  const modos = [['efectivo','💵'],['nequi','📱'],['daviplata','📲'],['tarjeta','💳'],['transferencia','🏦'],['credito','📋']];
+  modos.forEach(([nom, ico]) => {
+    const btn = document.createElement('div');
+    btn.className = 'mbtn' + (metodoPago === nom ? ' on' : '');
+    btn.innerHTML = '<span class="ico">' + ico + '</span><span class="nom">' + nom + '</span>';
+    btn.onclick = () => {
+      metodoPago = nom;
+      renderMetodosOrden();
+      document.getElementById('box-abono-orden').style.display = metodoPago === 'credito' ? 'block' : 'none';
+    };
+    box.appendChild(btn);
+  });
 }
 
 async function cargarItemsOrden() {
@@ -318,17 +381,18 @@ async function cargarItemsOrden() {
 }
 
 function chTipo() {
-  const tipo = document.getElementById('dtipo').value;
-  document.getElementById('boxrep').style.display = tipo === 'repuesto' ? 'block' : 'none';
+  document.getElementById('boxrep').style.display = document.getElementById('dtipo').value === 'repuesto' ? 'block' : 'none';
 }
 
 function chRep() {
   const id = document.getElementById('drep').value;
   const art = articulos.find(a => a.id === id);
-  if (art) {
-    document.getElementById('ddesc').value = art.nombre;
-    document.getElementById('dprecio').value = art.precio;
-  }
+  if (art) { document.getElementById('ddesc').value = art.nombre; document.getElementById('dprecio').value = art.precio; }
+}
+
+function cambiarCantO(n) {
+  const inp = document.getElementById('dcant');
+  inp.value = Math.max(1, (parseInt(inp.value) || 1) + n);
 }
 
 async function addItem() {
@@ -345,12 +409,9 @@ async function addItem() {
     if (art) { costo = art.costo || 0; articulo_id = art.id; }
   }
   const item = { tipo, descripcion: desc, cantidad: cant, precio_unitario: precio, costo_unitario: costo, subtotal: cant * precio, articulo_id };
-  if (ordenActual.id) {
-    const res = await db.from('orden_items').insert({ orden_id: ordenActual.id, ...item }).select().single();
-    if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg2'); return; }
-    item.id = res.data.id;
-  }
-  items.push(item);
+  const res = await db.from('orden_items').insert({ orden_id: ordenActual.id, ...item }).select().single();
+  if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg2'); return; }
+  items.push({ ...item, id: res.data.id });
   renderItems();
   document.getElementById('ddesc').value = '';
   document.getElementById('dprecio').value = '';
@@ -362,37 +423,26 @@ async function addItem() {
 function renderItems() {
   const lista = document.getElementById('det-items');
   const tbox = document.getElementById('det-total');
-  if (!items.length) { lista.innerHTML = ''; tbox.style.display = 'none'; return; }
   lista.innerHTML = '';
-  let total = 0, gan = 0;
+  if (!items.length) { tbox.style.display = 'none'; return; }
+  let total = 0;
   items.forEach((it, i) => {
     total += it.subtotal;
-    gan += (it.precio_unitario - it.costo_unitario) * it.cantidad;
     const row = document.createElement('div');
     row.className = 'oirow';
     const info = document.createElement('div');
-    const nom = document.createElement('div');
-    nom.className = 'oinom';
+    const nom = document.createElement('div'); nom.className = 'oinom';
     nom.textContent = (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion;
-    const sub = document.createElement('div');
-    sub.className = 'oisub';
+    const sub = document.createElement('div'); sub.className = 'oisub';
     sub.textContent = it.cantidad + ' x ' + fmt(it.precio_unitario);
-    info.appendChild(nom);
-    info.appendChild(sub);
-    const pr = document.createElement('div');
-    pr.className = 'oipr';
-    pr.textContent = fmt(it.subtotal);
-    const del = document.createElement('button');
-    del.className = 'bdel';
-    del.textContent = 'x';
+    info.appendChild(nom); info.appendChild(sub);
+    const pr = document.createElement('div'); pr.className = 'oipr'; pr.textContent = fmt(it.subtotal);
+    const del = document.createElement('button'); del.className = 'bdel'; del.textContent = 'x';
     del.onclick = () => eliminarItem(i, it.id);
-    row.appendChild(info);
-    row.appendChild(pr);
-    row.appendChild(del);
+    row.appendChild(info); row.appendChild(pr); row.appendChild(del);
     lista.appendChild(row);
   });
   document.getElementById('dcnt').textContent = items.length;
-  document.getElementById('dgan').textContent = fmt(gan);
   document.getElementById('dtot').textContent = fmt(total);
   tbox.style.display = 'block';
 }
@@ -409,7 +459,15 @@ async function cambiarEstado() {
   await db.from('ordenes_trabajo').update({ estado }).eq('id', ordenActual.id);
   ordenActual.estado = estado;
   const btnConv = document.getElementById('btnconvertir');
-  btnConv.style.display = estado === 'terminada' ? 'block' : 'none';
+  const boxConv = document.getElementById('box-convertir');
+  if (estado === 'terminada') {
+    btnConv.style.display = 'block';
+    boxConv.style.display = 'block';
+    renderMetodosOrden();
+  } else {
+    btnConv.style.display = 'none';
+    boxConv.style.display = 'none';
+  }
   msg('✅ Estado actualizado.', 'ok', 'msg2');
 }
 
@@ -421,58 +479,52 @@ async function convertirVenta() {
   const tieneRep = items.some(i => i.tipo === 'repuesto');
   const tieneServ = items.some(i => i.tipo === 'servicio');
   const tipo = tieneRep && tieneServ ? 'mixto' : items[0].tipo;
-  const fecha = new Date().toISOString().split('T')[0];
+  const abonado = metodoPago === 'credito' ? (parseFloat(document.getElementById('dabono').value) || 0) : total;
+  const saldo = total - abonado;
+  const estado_pago = saldo <= 0 ? 'pagado' : abonado > 0 ? 'parcial' : 'fiado';
+  const ahora = new Date(); ahora.setHours(ahora.getHours() - 5);
+  const fecha = ahora.toISOString().split('T')[0];
   const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'CONVIRTIENDO...';
-  const vRes = await db.from('ventas').insert({ cliente_id: ordenActual.cliente_id, tipo, descripcion, total, ganancia, estado_pago: 'pagado', metodo_pago: 'orden', abonado: total, saldo: 0, fecha }).select().single();
-  if (vRes.error) { btn.disabled = false; btn.textContent = '💰 CONVERTIR A VENTA'; msg('❌ ' + vRes.error.message, 'err', 'msg2'); return; }
+  btn.disabled = true; btn.textContent = 'PROCESANDO...';
+  const vRes = await db.from('ventas').insert({ cliente_id: ordenActual.cliente_id, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodoPago, abonado, saldo, fecha }).select().single();
+  if (vRes.error) { btn.disabled = false; btn.textContent = '💰 COBRAR'; msg('❌ ' + vRes.error.message, 'err', 'msg2'); return; }
   const venta = vRes.data;
-  await db.from('venta_items').insert(items.map(i => Object.assign({}, i, { venta_id: venta.id })));
-  await db.from('pagos').insert({ venta_id: venta.id, monto: total, metodo: 'orden', nota: 'Convertida desde orden ' + ordenActual.id });
+  await db.from('venta_items').insert(items.map(i => ({ ...i, venta_id: venta.id })));
+  await db.from('pagos').insert({ venta_id: venta.id, monto: abonado, metodo: metodoPago, nota: 'Pago orden #' + ordenActual.id });
   for (let i of items) {
     if (i.articulo_id) {
       const art = articulos.find(a => a.id === i.articulo_id);
       if (art) await db.from('articulos').update({ stock: Math.max(0, art.stock - i.cantidad) }).eq('id', art.id);
     }
   }
+  if (ordenActual.cliente_id && saldo > 0) {
+    const cliRes = await db.from('clientes').select('saldo_pendiente').eq('id', ordenActual.cliente_id).single();
+    if (cliRes.data) await db.from('clientes').update({ saldo_pendiente: (cliRes.data.saldo_pendiente || 0) + saldo }).eq('id', ordenActual.cliente_id);
+  }
   await db.from('ordenes_trabajo').update({ estado: 'pagada' }).eq('id', ordenActual.id);
-  btn.disabled = false;
-  btn.textContent = '💰 CONVERTIR A VENTA';
-  msg('✅ Venta creada desde orden.', 'ok', 'msg2');
+  btn.disabled = false; btn.textContent = '💰 COBRAR';
+  msg('✅ Venta registrada.', 'ok', 'msg2');
   volverLista();
-  await cargarOrdenes();
 }
 
 async function eliminarOrden() {
   if (!ordenActual) return;
-  if (!confirm('⚠️ Eliminar orden? Los items también se borrarán.')) return;
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = 'ELIMINANDO...';
+  if (!confirm('⚠️ Eliminar orden?')) return;
   await db.from('orden_items').delete().eq('orden_id', ordenActual.id);
   await db.from('ordenes_trabajo').delete().eq('id', ordenActual.id);
-  btn.disabled = false;
-  btn.textContent = '🗑️ ELIMINAR';
   volverLista();
 }
 
 function volverLista() {
-  ordenActual = null;
-  items = [];
-  document.getElementById('sec-detalle').classList.remove('active');
+  ordenActual = null; items = [];
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-lista').classList.add('active');
   cargarOrdenes();
 }
 
-  function cambiarCantO(n) {
-  const inp = document.getElementById('dcant');
-  const val = parseInt(inp.value) || 1;
-  inp.value = Math.max(1, val + n);
-  }
-  
 function msg(txt, tipo, el) {
   const el_msg = document.getElementById(el);
+  if (!el_msg) return;
   el_msg.textContent = txt;
   el_msg.className = 'msg ' + (tipo === 'ok' ? 'msgok' : 'msgerr');
   setTimeout(() => { el_msg.className = 'msg'; }, 3500);
