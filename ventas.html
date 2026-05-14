@@ -84,6 +84,7 @@
 <div class="tabs">
   <button class="tbtn active" onclick="sw('nueva',this)">➕ Nueva</button>
   <button class="tbtn" onclick="sw('hoy',this)">📊 Hoy</button>
+<button class="tbtn" onclick="sw('historial',this)">🗂️ Historial</button>
   <button class="tbtn" onclick="sw('fiados',this)">💳 Fiados</button>
   <button class="tbtn" onclick="sw('caja',this)">🧾 Caja</button>
 </div>
@@ -147,6 +148,20 @@
   <div id="lista-hoy"><div class="loading">Cargando...</div></div>
 </div>
 
+<div id="sec-historial" class="sec">
+  <div class="card">
+    <div class="ctitle">🗂️ Buscar factura</div>
+    <label class="fl">Fecha</label>
+    <input type="date" id="hist-fecha"/>
+    <label class="fl">Cliente (opcional)</label>
+    <select id="hist-cliente">
+      <option value="">Todos</option>
+    </select>
+    <button class="btnmain" onclick="buscarHistorial()">🔍 BUSCAR</button>
+  </div>
+  <div id="lista-historial"></div>
+</div>
+  
 <div id="sec-fiados" class="sec">
   <div id="lista-fiados"><div class="loading">Cargando...</div></div>
 </div>
@@ -567,6 +582,15 @@ async function cargarSelectClientes() {
     sel.appendChild(opt);
   });
 }
+  const selH = document.getElementById('hist-cliente');
+if (selH) {
+  selH.innerHTML = '<option value="">Todos</option>';
+  clientes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id; opt.textContent = c.nombre;
+    selH.appendChild(opt);
+  });
+}
 async function wasaVenta(venta_id, tel, total) {
   const res = await db.from('venta_items').select('*').eq('venta_id', venta_id);
   const its = res.data || [];
@@ -644,6 +668,46 @@ txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ':
   const val = parseInt(inp.value) || 1;
   inp.value = Math.max(1, val + n);
     }
+
+
+    async function buscarHistorial() {
+  const fecha = document.getElementById('hist-fecha').value;
+  const cliente_id = document.getElementById('hist-cliente').value;
+  if (!fecha) { alert('⚠️ Selecciona una fecha.'); return; }
+  let query = db.from('ventas').select('*, clientes(nombre, telefono)').eq('fecha', fecha).order('creado_en', { ascending: false });
+  if (cliente_id) query = query.eq('cliente_id', cliente_id);
+  const res = await query;
+  const data = res.data || [];
+  const cont = document.getElementById('lista-historial');
+  if (!data.length) { cont.innerHTML = '<div class="empty"><span>📭</span>Sin ventas en esa fecha.</div>'; return; }
+  cont.innerHTML = '';
+  data.forEach(v => {
+    const nomCli = v.clientes?.nombre || 'Mostrador';
+    const telCli = v.clientes?.telefono || '';
+    const card = document.createElement('div');
+    card.className = 'vc';
+    let html = '<div class="vtop"><div><div class="vnom">' + nomCli + '</div>';
+    html += '<div class="vsub">📝 ' + v.descripcion + '</div>';
+    html += '<div class="vsub">💳 ' + v.metodo_pago + ' | ' + v.fecha + '</div></div>';
+    html += '<div><div class="vtot">' + fmt(v.total) + '</div>';
+    html += '<span class="bdg ' + (v.estado_pago === 'pagado' ? 'bpag' : v.estado_pago === 'fiado' ? 'bfia' : 'bpar') + '">' + v.estado_pago + '</span></div></div>';
+    html += '<div class="acc">';
+    if (telCli) html += '<button class="bwasa" onclick="wasaVenta(\'' + v.id + '\',\'57' + telCli + '\',' + v.total + ')">📲 Factura</button>';
+    html += '<button class="babo" onclick="wasaVentaManual(\'' + v.id + '\',' + v.total + ')">📲 Otro número</button>';
+    html += '</div>';
+    card.innerHTML = html;
+    cont.appendChild(card);
+  });
+}
+
+async function wasaVentaManual(venta_id, total) {
+  const tel = prompt('Número WhatsApp (sin +57):');
+  if (!tel) return;
+  wasaVenta(venta_id, '57' + tel, total);
+}
+    
+
+    
 function msg(txt, tipo) {
   const el = document.getElementById('msg');
   el.textContent = txt;
