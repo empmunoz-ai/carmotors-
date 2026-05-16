@@ -94,8 +94,14 @@
     <input type="text" id="ctelefono" placeholder="3001234567"/>
     <label class="fl">Email</label>
     <input type="email" id="cemail" placeholder="juan@email.com"/>
-    <label class="fl">Notas</label>
-    <input type="text" id="cnotas" placeholder="Cliente habitual..."/>
+    <label class="fl">Intervalo cambio aceite (días)</label>
+<div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+  <button type="button" onclick="document.getElementById('edias').value=15" style="background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);cursor:pointer;font-family:Rajdhani,sans-serif;font-weight:700">15 días</button>
+  <button type="button" onclick="document.getElementById('edias').value=30" style="background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);cursor:pointer;font-family:Rajdhani,sans-serif;font-weight:700">30 días</button>
+  <input type="number" id="edias" value="30" style="width:80px;text-align:center"/>
+</div>
+<label class="fl">Notas</label>
+<input type="text" id="enotas"/>
     <button class="btnmain" onclick="guardarCliente()">✅ GUARDAR CLIENTE</button>
   </div>
 </div>
@@ -417,8 +423,8 @@ function mostrarEdicionMoto() {
     document.getElementById('eplaca').value = motoActual.placa || '';
     document.getElementById('eanio').value = motoActual.anio || '';
     document.getElementById('ecolor').value = motoActual.color || '';
-    document.getElementById('ekm').value = motoActual.kilometraje || '';
-    document.getElementById('enotas').value = motoActual.notas || '';
+    document.getElementById('edias').value = motoActual.dias_aceite || 30;
+document.getElementById('enotas').value = motoActual.notas || '';
   }
 }
 
@@ -433,7 +439,8 @@ async function guardarEdicionMoto() {
     anio: document.getElementById('eanio').value.trim(),
     color: document.getElementById('ecolor').value.trim(),
     kilometraje: document.getElementById('ekm').value.trim(),
-    notas: document.getElementById('enotas').value.trim()
+    notas: document.getElementById('enotas').value.trim(),
+dias_aceite: parseInt(document.getElementById('edias').value) || 30
   }).eq('id', motoActual.id).select().single();
   btn.disabled = false; btn.textContent = '💾 GUARDAR CAMBIOS';
   if (res.error) { alert('❌ ' + res.error.message); return; }
