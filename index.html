@@ -166,6 +166,7 @@
         </div>
       </div>
       <button class="btn-primary" onclick="guardarArticulo()">GUARDAR ARTÍCULO</button>
+      <button class="tbtn" onclick="switchTab('alertas',this)">🔔 Alertas</button>
     </div>
     <div class="table-header">
       <h2>Inventario</h2>
@@ -212,6 +213,9 @@
     </div>
     <div id="lista-ordenes"><div class="loading">Cargando...</div></div>
   </div>
+  <div id="tab-alertas" class="section">
+  <div id="lista-alertas"><div class="loading">Cargando...</div></div>
+  </div>
 </main>
 
  <nav class="bottom-nav">
@@ -251,6 +255,7 @@ function abrirEscaner() {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
     btn.classList.add('active');
+    if (tab === 'alertas') cargarAlertas();
   }
 
   function showMsg(id, texto, tipo) {
@@ -385,6 +390,43 @@ function abrirEscaner() {
         </div>
       </div>`).join('');
   }
+
+async function cargarAlertas() {
+  const hoy = new Date();
+  const en7 = new Date();
+  en7.setDate(hoy.getDate() + 7);
+  const hoyStr = hoy.toISOString().split('T')[0];
+  const en7Str = en7.toISOString().split('T')[0];
+  const res = await db.from('motos').select('*, clientes(nombre, telefono)').not('proximo_aceite', 'is', null).lte('proximo_aceite', en7Str).order('proximo_aceite');
+  const motos = res.data || [];
+  const cont = document.getElementById('lista-alertas');
+  if (!motos.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin alertas por ahora.</div>'; return; }
+  cont.innerHTML = '';
+  motos.forEach(m => {
+    const prox = new Date(m.proximo_aceite + 'T00:00:00');
+    const diff = Math.ceil((prox - hoy) / (1000*60*60*24));
+    const color = diff <= 0 ? 'var(--red)' : diff <= 2 ? 'var(--orange)' : 'var(--green)';
+    const texto = diff <= 0 ? '🔴 VENCIDO' : diff === 1 ? '🟠 MAÑANA' : '🟡 En ' + diff + ' días';
+    const nomCli = m.clientes?.nombre || 'Sin cliente';
+    const telCli = m.clientes?.telefono || '';
+    const card = document.createElement('div');
+    card.className = 'art-card';
+    let html = '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+    html += '<div><div style="font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--cream)">🏍️ ' + m.marca + ' ' + m.modelo + '</div>';
+    html += '<div style="font-size:12px;color:var(--muted);margin-top:2px">🔖 ' + (m.placa || 'Sin placa') + ' | 👤 ' + nomCli + '</div>';
+    html += '<div style="font-size:12px;color:var(--muted);margin-top:2px">📅 Próximo aceite: ' + m.proximo_aceite + '</div></div>';
+    html += '<div style="font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:' + color + '">' + texto + '</div></div>';
+    html += '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">';
+    if (telCli) {
+      const msg = '*CARMOTORS* 🏍️\nHola ' + nomCli + ', su moto ' + m.marca + ' ' + m.modelo + ' placa ' + (m.placa||'') + ' tiene cambio de aceite programado para el ' + m.proximo_aceite + '.\n¡Agéndese con nosotros!\nMecánicos de Confianza 🔧';
+      html += '<a href="https://wa.me/57' + telCli + '?text=' + encodeURIComponent(msg) + '" target="_blank" style="background:#1a3d2b;color:var(--green);border:1px solid #2a6040;border-radius:6px;padding:6px 12px;font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;text-decoration:none">📲 Notificar</a>';
+    }
+    html += '</div>';
+    card.innerHTML = html;
+    cont.appendChild(card);
+  });
+}
+  
 
   async function init() {
     const dot = document.getElementById('conn-dot');
