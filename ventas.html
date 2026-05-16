@@ -601,9 +601,13 @@ txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ':
   });
   txt += '─────────────\n';
   txt += 'TOTAL: ' + fmt(total) + '\n\nGracias por confiar en nosotros 🙏\nAnte cualquier inquietud estamos a sus órdenes.\nCARMOTORS — Mecánicos de Confianza 🏍️';
-  window.open('https://wa.me/' + tel + '?text=' + encodeURIComponent(txt), '_blank');
-    }
-    
+  const link = document.createElement('a');
+   link.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(txt);
+   link.target = '_blank';
+   link.click();
+   }
+
+  
     async function abonarTodo(cliente_id, nombre, telefono, total_saldo) {
   if (!turnoActivo) { alert('⚠️ Abre la caja primero.'); return; }
   const monto = parseFloat(prompt(nombre + ' debe: ' + fmt(total_saldo) + '\n¿Cuánto abona?'));
