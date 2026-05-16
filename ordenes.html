@@ -547,7 +547,16 @@ async function convertirVenta() {
     const cliRes = await db.from('clientes').select('saldo_pendiente').eq('id', ordenActual.cliente_id).single();
     if (cliRes.data) await db.from('clientes').update({ saldo_pendiente: (cliRes.data.saldo_pendiente || 0) + saldo }).eq('id', ordenActual.cliente_id);
   }
+
   await db.from('ordenes_trabajo').update({ estado: 'pagada' }).eq('id', ordenActual.id);
+const esAceite = items.some(i => i.descripcion.toLowerCase().includes('aceite'));
+if (esAceite && ordenActual.moto_id) {
+  const motoRes = await db.from('motos').select('dias_aceite').eq('id', ordenActual.moto_id).single();
+  const dias = motoRes.data?.dias_aceite || 30;
+  const proximo = new Date();
+  proximo.setDate(proximo.getDate() + dias);
+  await db.from('motos').update({ ultimo_aceite: fecha, proximo_aceite: proximo.toISOString().split('T')[0] }).eq('id', ordenActual.moto_id);
+}
   btn.disabled = false; btn.textContent = '💰 COBRAR';
   msg('✅ Venta registrada.', 'ok', 'msg2');
   setTimeout(() => volverLista(), 1000);
