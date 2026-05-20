@@ -581,6 +581,26 @@ function volverLista() {
   document.getElementById('sec-lista').classList.add('active');
   cargarOrdenes();
 }
+async function asignarDueno() {
+  if (!ordenActual) { alert('No hay orden activa.'); return; }
+  const res = await db.from('clientes').select('id, nombre').order('nombre');
+  const lista = res.data || [];
+  if (!lista.length) { alert('No hay clientes registrados.'); return; }
+  let opciones = lista.map((c, i) => (i+1) + '. ' + c.nombre).join('\n');
+  const sel = prompt('Selecciona el dueño:\n' + opciones + '\n\nEscribe el número:');
+  if (!sel) return;
+  const idx = parseInt(sel) - 1;
+  if (idx < 0 || idx >= lista.length) { alert('Número inválido.'); return; }
+  const cliente = lista[idx];
+  if (ordenActual.moto_id) {
+    await db.from('motos').update({ cliente_id: cliente.id }).eq('id', ordenActual.moto_id);
+  }
+  await db.from('ordenes_trabajo').update({ cliente_id: cliente.id }).eq('id', ordenActual.id);
+  ordenActual.cliente_id = cliente.id;
+  alert('✅ Dueño asignado: ' + cliente.nombre);
+  volverLista();
+}
+    
 
 function msg(txt, tipo, el) {
   const el_msg = document.getElementById(el);
