@@ -200,11 +200,14 @@
         <input type="number" id="dabono" placeholder="0 = fiado completo"/>
       </div>
     </div>
-    <div class="acc">
-      <button class="btnsmall" onclick="volverLista()">← VOLVER</button>
-      <button class="btnsmall btngreen" id="btnconvertir" style="display:none" onclick="convertirVenta()">💰 COBRAR</button>
-      <button class="btnsmall btnred" onclick="eliminarOrden()">🗑️ ELIMINAR</button>
-    </div>
+
+   <div class="acc">
+  <button class="btnsmall" onclick="volverLista()">← VOLVER</button>
+  <button class="btnsmall btngreen" id="btnconvertir" style="display:none" onclick="convertirVenta()">💰 COBRAR</button>
+  <button class="btnsmall" style="background:#1a2a3a;color:var(--steel);border:1px solid var(--border)" onclick="asignarDueno()">👤 Dueño</button>
+  <button class="btnsmall btnred" onclick="eliminarOrden()">🗑️ ELIMINAR</button>
+   </div>
+    
   </div>
 </div>
 
@@ -397,14 +400,6 @@ async function mostrarDetalle(id) {
   } else {
     btnConv.style.display = 'none'; boxConv.style.display = 'none';
   }
-  const accDiv = document.querySelector('#sec-detalle .acc');
-if (accDiv) {
-  const btnDueno = document.createElement('button');
-  btnDueno.className = 'btnsmall btngreen';
-  btnDueno.textContent = '👤 Asignar dueño';
-  btnDueno.onclick = asignarDueno;
-  accDiv.appendChild(btnDueno);
-}
 
   
   await cargarItemsOrden();
