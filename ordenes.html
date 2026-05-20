@@ -397,6 +397,16 @@ async function mostrarDetalle(id) {
   } else {
     btnConv.style.display = 'none'; boxConv.style.display = 'none';
   }
+  const accDiv = document.querySelector('#sec-detalle .acc');
+if (accDiv) {
+  const btnDueno = document.createElement('button');
+  btnDueno.className = 'btnsmall btngreen';
+  btnDueno.textContent = '👤 Asignar dueño';
+  btnDueno.onclick = asignarDueno;
+  accDiv.appendChild(btnDueno);
+}
+
+  
   await cargarItemsOrden();
   await cargarArticulos();
 }
