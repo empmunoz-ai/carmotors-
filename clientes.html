@@ -457,7 +457,7 @@ async function eliminarMoto() {
   const email = document.getElementById('cemail').value.trim();
   const notas = document.getElementById('cnotas').value.trim();
   if (!nombre) { msg('⚠️ Nombre requerido.', 'err', 'msg'); return; }
-  const btn = event.target;
+  const btn = document.querySelector('#sec-nuevo .btnmain');
   btn.disabled = true; btn.textContent = 'GUARDANDO...';
   try {
     const res = await db.from('clientes').insert({ nombre, telefono: telefono || null, email: email || null, notas: notas || null, saldo_pendiente: 0 }).select().single();
