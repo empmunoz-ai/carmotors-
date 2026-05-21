@@ -451,20 +451,31 @@ async function eliminarMoto() {
   volverDetalle();
 }
 
-  async function guardarCliente() {
+ async function guardarCliente() {
   const nombre = document.getElementById('cnombre').value.trim();
-  alert('nombre: ' + nombre);
-  if (!nombre) { alert('sin nombre'); return; }
-  alert('intentando guardar...');
+  const telefono = document.getElementById('ctelefono').value.trim();
+  const email = document.getElementById('cemail').value.trim();
+  const notas = document.getElementById('cnotas').value.trim();
+  if (!nombre) { msg('⚠️ Nombre requerido.', 'err', 'msg'); return; }
   try {
-    const res = await db.from('clientes').insert({ nombre, saldo_pendiente: 0 }).select().single();
-    alert('respuesta: ' + JSON.stringify(res.error));
-    if (res.error) { alert('error: ' + res.error.message); return; }
-    alert('guardado ok!');
+    const res = await db.from('clientes').insert({
+      nombre,
+      telefono: telefono || null,
+      email: email || null,
+      notas: notas || null,
+      saldo_pendiente: 0
+    }).select().single();
+    if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg'); return; }
+    msg('✅ Cliente guardado.', 'ok', 'msg');
+    document.getElementById('cnombre').value = '';
+    document.getElementById('ctelefono').value = '';
+    document.getElementById('cemail').value = '';
+    document.getElementById('cnotas').value = '';
+    await cargarLista();
   } catch(e) {
-    alert('excepcion: ' + e.message);
+    msg('❌ Error: ' + e.message, 'err', 'msg');
   }
-  }
+ }
 
 async function eliminarCliente() {
   if (!clienteActual) return;
