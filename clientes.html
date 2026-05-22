@@ -456,7 +456,7 @@ async function eliminarMoto() {
   const telefono = document.getElementById('ctelefono').value.trim();
   const email = document.getElementById('cemail').value.trim();
   const notas = document.getElementById('cnotas').value.trim();
-  if (!nombre) { msg('⚠️ Nombre requerido.', 'err', 'msg'); return; }
+  if (!nombre) { alert('⚠️ Nombre requerido.'); return; }
   try {
     const res = await db.from('clientes').insert({
       nombre,
@@ -465,17 +465,17 @@ async function eliminarMoto() {
       notas: notas || null,
       saldo_pendiente: 0
     }).select().single();
-    if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg'); return; }
-    msg('✅ Cliente guardado.', 'ok', 'msg');
+    if (res.error) { alert('❌ ' + res.error.message); return; }
+    alert('✅ Guardado!');
     document.getElementById('cnombre').value = '';
     document.getElementById('ctelefono').value = '';
     document.getElementById('cemail').value = '';
     document.getElementById('cnotas').value = '';
     await cargarLista();
   } catch(e) {
-    msg('❌ Error: ' + e.message, 'err', 'msg');
+    alert('❌ ' + e.message);
   }
- }
+}
 
 async function eliminarCliente() {
   if (!clienteActual) return;
