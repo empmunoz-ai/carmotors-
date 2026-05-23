@@ -394,7 +394,7 @@ function abrirEscaner() {
 async function cargarAlertas() {
   const hoy = new Date();
   const en7 = new Date();
-  en7.setDate(hoy.getDate() + 7);
+en7.setDate(hoy.getDate() + 40);
   const hoyStr = hoy.toISOString().split('T')[0];
   const en7Str = en7.toISOString().split('T')[0];
   const res = await db.from('motos').select('*, clientes(nombre, telefono)').not('proximo_aceite', 'is', null).lte('proximo_aceite', en7Str).order('proximo_aceite');
