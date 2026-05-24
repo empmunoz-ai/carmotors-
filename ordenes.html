@@ -106,9 +106,10 @@
     <div class="ctitle">🔍 Buscar moto por placa</div>
     <div id="msg" class="msg"></div>
     <div class="search-row">
-      <input type="text" id="busca-placa" placeholder="Ej: ELL55E" style="text-transform:uppercase"/>
-      <button onclick="buscarMoto()">BUSCAR</button>
-    </div>
+  <input type="text" id="busca-placa" placeholder="Ej: ELL55E" style="text-transform:uppercase" oninput="sugerirMotos()"/>
+  <button onclick="buscarMoto()">BUSCAR</button>
+</div>
+<div id="sugerencias" style="display:none;background:var(--dark);border:1px solid var(--border);border-radius:6px;margin-top:4px"></div>
 
     <div class="moto-found" id="moto-found">
       <div style="display:flex;align-items:center;gap:10px">
@@ -600,7 +601,34 @@ async function asignarDueno() {
   alert('✅ Dueño asignado: ' + cliente.nombre);
   volverLista();
 }
-    
+   async function sugerirMotos() {
+  const txt = document.getElementById('busca-placa').value.trim().toUpperCase();
+  const box = document.getElementById('sugerencias');
+  if (txt.length < 2) { box.style.display = 'none'; return; }
+  const res = await db.from('motos').select('*, clientes(nombre)').ilike('placa', txt + '%').limit(5);
+  const motos = res.data || [];
+  if (!motos.length) { box.style.display = 'none'; return; }
+  box.innerHTML = '';
+  box.style.display = 'block';
+  motos.forEach(m => {
+    const item = document.createElement('div');
+    item.style.cssText = 'padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--border);';
+    item.innerHTML = '<div style="font-family:Rajdhani,sans-serif;font-weight:700;color:var(--cream)">🏍️ ' + m.marca + ' ' + m.modelo + ' — ' + m.placa + '</div>' +
+      '<div style="font-size:12px;color:var(--muted)">' + (m.clientes?.nombre || 'Sin dueño') + ' | ' + (m.color || '') + '</div>';
+    item.onclick = () => {
+      document.getElementById('busca-placa').value = m.placa;
+      box.style.display = 'none';
+      motoActual = m;
+      document.getElementById('found-nom').textContent = m.marca + ' ' + m.modelo + (m.color ? ' — ' + m.color : '');
+      document.getElementById('found-sub').textContent = '🔖 ' + m.placa + (m.clientes ? ' | 👤 ' + m.clientes.nombre : '');
+      document.getElementById('moto-found').style.display = 'block';
+      document.getElementById('moto-new').style.display = 'none';
+      document.getElementById('box-cliente-orden').style.display = 'block';
+      document.getElementById('box-desc').style.display = 'block';
+    };
+    box.appendChild(item);
+  });
+      } 
 
 function msg(txt, tipo, el) {
   const el_msg = document.getElementById(el);
