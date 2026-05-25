@@ -393,38 +393,61 @@ function abrirEscaner() {
 
 async function cargarAlertas() {
   const hoy = new Date();
-  const en7 = new Date();
-en7.setDate(hoy.getDate() + 40);
+  const en40 = new Date();
+  en40.setDate(hoy.getDate() + 40);
   const hoyStr = hoy.toISOString().split('T')[0];
-  const en7Str = en7.toISOString().split('T')[0];
-  const res = await db.from('motos').select('*, clientes(nombre, telefono)').not('proximo_aceite', 'is', null).lte('proximo_aceite', en7Str).order('proximo_aceite');
-  const motos = res.data || [];
+  const en40Str = en40.toISOString().split('T')[0];
+  const resAceite = await db.from('motos').select('*, clientes(nombre, telefono)').not('proximo_aceite', 'is', null).lte('proximo_aceite', en40Str).order('proximo_aceite');
+  const resStock = await db.from('articulos').select('*').gt('stock_minimo', 0).filter('stock', 'lte', 'stock_minimo');
+  const motos = resAceite.data || [];
+  const bajos = resStock.data || [];
   const cont = document.getElementById('lista-alertas');
-  if (!motos.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin alertas por ahora.</div>'; return; }
   cont.innerHTML = '';
-  motos.forEach(m => {
-    const prox = new Date(m.proximo_aceite + 'T00:00:00');
-    const diff = Math.ceil((prox - hoy) / (1000*60*60*24));
-    const color = diff <= 0 ? 'var(--red)' : diff <= 2 ? 'var(--orange)' : 'var(--green)';
-    const texto = diff <= 0 ? '🔴 VENCIDO' : diff === 1 ? '🟠 MAÑANA' : '🟡 En ' + diff + ' días';
-    const nomCli = m.clientes?.nombre || 'Sin cliente';
-    const telCli = m.clientes?.telefono || '';
-    const card = document.createElement('div');
-    card.className = 'art-card';
-    let html = '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
-    html += '<div><div style="font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--cream)">🏍️ ' + m.marca + ' ' + m.modelo + '</div>';
-    html += '<div style="font-size:12px;color:var(--muted);margin-top:2px">🔖 ' + (m.placa || 'Sin placa') + ' | 👤 ' + nomCli + '</div>';
-    html += '<div style="font-size:12px;color:var(--muted);margin-top:2px">📅 Próximo aceite: ' + m.proximo_aceite + '</div></div>';
-    html += '<div style="font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:' + color + '">' + texto + '</div></div>';
-    html += '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">';
-    if (telCli) {
-      const msg = '*CARMOTORS* 🏍️\nHola ' + nomCli + ', su moto ' + m.marca + ' ' + m.modelo + ' placa ' + (m.placa||'') + ' tiene cambio de aceite programado para el ' + m.proximo_aceite + '.\n¡Agéndese con nosotros!\nMecánicos de Confianza 🔧';
-      html += '<a href="https://wa.me/57' + telCli + '?text=' + encodeURIComponent(msg) + '" target="_blank" style="background:#1a3d2b;color:var(--green);border:1px solid #2a6040;border-radius:6px;padding:6px 12px;font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;text-decoration:none">📲 Notificar</a>';
-    }
-    html += '</div>';
-    card.innerHTML = html;
-    cont.appendChild(card);
-  });
+  if (!motos.length && !bajos.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin alertas por ahora.</div>'; return; }
+  if (bajos.length) {
+    const titulo = document.createElement('div');
+    titulo.style.cssText = 'font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--red);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px';
+    titulo.textContent = '🔩 Inventario bajo';
+    cont.appendChild(titulo);
+    bajos.forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'art-card';
+      card.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center">' +
+        '<div><div style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700;color:var(--cream)">' + a.nombre + '</div>' +
+        '<div style="font-size:12px;color:var(--muted);margin-top:2px">Stock actual: <span style="color:var(--red);font-weight:700">' + a.stock + '</span> | Mínimo: ' + a.stock_minimo + '</div></div>' +
+        '<div style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:var(--red)">⚠️</div></div>';
+      cont.appendChild(card);
+    });
+  }
+  if (motos.length) {
+    const titulo2 = document.createElement('div');
+    titulo2.style.cssText = 'font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--orange);margin:16px 0 8px;text-transform:uppercase;letter-spacing:1px';
+    titulo2.textContent = '🏍️ Cambios de aceite';
+    cont.appendChild(titulo2);
+    motos.forEach(m => {
+      const prox = new Date(m.proximo_aceite + 'T00:00:00');
+      const diff = Math.ceil((prox - hoy) / (1000*60*60*24));
+      const color = diff <= 0 ? 'var(--red)' : diff <= 2 ? 'var(--orange)' : 'var(--green)';
+      const texto = diff <= 0 ? '🔴 VENCIDO' : diff === 1 ? '🟠 MAÑANA' : '🟡 En ' + diff + ' días';
+      const nomCli = m.clientes?.nombre || 'Sin cliente';
+      const telCli = m.clientes?.telefono || '';
+      const card = document.createElement('div');
+      card.className = 'art-card';
+      let html = '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+      html += '<div><div style="font-family:Rajdhani,sans-serif;font-size:16px;font-weight:700;color:var(--cream)">🏍️ ' + m.marca + ' ' + m.modelo + '</div>';
+      html += '<div style="font-size:12px;color:var(--muted);margin-top:2px">🔖 ' + (m.placa || 'Sin placa') + ' | 👤 ' + nomCli + '</div>';
+      html += '<div style="font-size:12px;color:var(--muted);margin-top:2px">📅 Próximo aceite: ' + m.proximo_aceite + '</div></div>';
+      html += '<div style="font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:' + color + '">' + texto + '</div></div>';
+      html += '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">';
+      if (telCli) {
+        const msgWasa = '*CARMOTORS* 🏍️\nHola ' + nomCli + ', su moto ' + m.marca + ' ' + m.modelo + ' placa ' + (m.placa||'') + ' tiene cambio de aceite programado para el ' + m.proximo_aceite + '.\n¡Agéndese con nosotros!\nMecánicos de Confianza 🔧';
+        html += '<a href="https://wa.me/57' + telCli + '?text=' + encodeURIComponent(msgWasa) + '" target="_blank" style="background:#1a3d2b;color:var(--green);border:1px solid #2a6040;border-radius:6px;padding:6px 12px;font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;text-decoration:none">📲 Notificar</a>';
+      }
+      html += '</div>';
+      card.innerHTML = html;
+      cont.appendChild(card);
+    });
+  }
 }
   
 
