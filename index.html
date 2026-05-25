@@ -398,9 +398,9 @@ async function cargarAlertas() {
   const hoyStr = hoy.toISOString().split('T')[0];
   const en40Str = en40.toISOString().split('T')[0];
   const resAceite = await db.from('motos').select('*, clientes(nombre, telefono)').not('proximo_aceite', 'is', null).lte('proximo_aceite', en40Str).order('proximo_aceite');
-  const resStock = await db.from('articulos').select('*').gt('stock_minimo', 0).filter('stock', 'lte', 'stock_minimo');
+  const resStock = await db.from('articulos').select('*').gt('stock_minimo', 0);
+  const bajos = (resStock.data || []).filter(a => a.stock <= a.stock_minimo); 
   const motos = resAceite.data || [];
-  const bajos = resStock.data || [];
   const cont = document.getElementById('lista-alertas');
   cont.innerHTML = '';
   if (!motos.length && !bajos.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin alertas por ahora.</div>'; return; }
