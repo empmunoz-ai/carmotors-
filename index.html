@@ -406,7 +406,7 @@ async function cargarAlertas() {
   if (!motos.length && !bajos.length) { cont.innerHTML = '<div class="empty"><span>✅</span>Sin alertas por ahora.</div>'; return; }
   if (bajos.length) {
     const titulo = document.createElement('div');
-    titulo.style.cssText = 'font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--red);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px';
+    titulo.style.cssText = 'font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--red);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;background:#3d1a1a;padding:8px 12px;border-radius:6px;border-left:4px solid var(--red)';
     titulo.textContent = '🔩 Inventario bajo';
     cont.appendChild(titulo);
     bajos.forEach(a => {
@@ -420,8 +420,8 @@ async function cargarAlertas() {
     });
   }
   if (motos.length) {
-    const titulo2 = document.createElement('div');
-    titulo2.style.cssText = 'font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--orange);margin:16px 0 8px;text-transform:uppercase;letter-spacing:1px';
+    const titulo2 = document.createElement('div')
+    titulo2.style.cssText = 'font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:var(--orange);margin:16px 0 8px;text-transform:uppercase;letter-spacing:1px;background:#3d2a10;padding:8px 12px;border-radius:6px;border-left:4px solid var(--orange)';
     titulo2.textContent = '🏍️ Cambios de aceite';
     cont.appendChild(titulo2);
     motos.forEach(m => {
