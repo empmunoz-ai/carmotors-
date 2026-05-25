@@ -81,7 +81,10 @@
 <main>
 
 <div id="sec-lista" class="sec active">
-  <div id="lista-clientes"><div class="loading">Cargando...</div></div>
+  <div style="padding:0 0 12px 0">
+  <input type="text" id="busca-cliente" placeholder="🔍 Buscar cliente..." oninput="filtrarClientes()" style="width:100%;background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:14px;outline:none"/>
+</div>
+<div id="lista-clientes"><div class="loading">Cargando...</div></div>
 </div>
 
 <div id="sec-nuevo" class="sec">
@@ -228,6 +231,7 @@ async function cargarLista() {
     else html += '<div class="bdg bdggreen">Al día</div>';
     card.innerHTML = html;
     cont.appendChild(card);
+    document.getElementById('busca-cliente').value = '';
   });
 }
 
@@ -502,7 +506,16 @@ function volverDetalle() {
   document.getElementById('sec-detalle').classList.add('active');
   cargarMotos();
 }
+function filtrarClientes() {
+  const txt = document.getElementById('busca-cliente').value.toLowerCase();
+  const cards = document.querySelectorAll('#lista-clientes .clicard');
+  cards.forEach(c => {
+    const nom = c.querySelector('.clinom').textContent.toLowerCase();
+    c.style.display = nom.includes(txt) ? 'block' : 'none';
+  });
+}
 
+  
 function msg(txt, tipo, el) {
   const el_msg = document.getElementById(el || 'msg');
   if (!el_msg) return;
