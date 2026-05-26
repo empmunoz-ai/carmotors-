@@ -288,7 +288,13 @@ function addItem() {
     const art = articulos.find(a => a.id === id);
     if (art) { costo = art.costo || 0; articulo_id = art.id; }
   }
+  const existente = items.find(i => i.descripcion.toLowerCase() === desc.toLowerCase() && i.precio_unitario === precio);
+if (existente) {
+  existente.cantidad += cant;
+  existente.subtotal = existente.cantidad * existente.precio_unitario;
+} else {
   items.push({ tipo, descripcion: desc, cantidad: cant, precio_unitario: precio, costo_unitario: costo, subtotal: cant * precio, articulo_id });
+}
   renderItems();
   document.getElementById('vdesc').value = '';
   document.getElementById('vprecio').value = '';
