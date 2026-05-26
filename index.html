@@ -443,13 +443,27 @@ async function cargarAlertas() {
         const msgWasa = '*CARMOTORS* 🏍️\nHola ' + nomCli + ', su moto ' + m.marca + ' ' + m.modelo + ' placa ' + (m.placa||'') + ' tiene cambio de aceite programado para el ' + m.proximo_aceite + '.\n¡Agéndese con nosotros!\nMecánicos de Confianza 🔧';
         html += '<a href="https://wa.me/57' + telCli + '?text=' + encodeURIComponent(msgWasa) + '" target="_blank" style="background:#1a3d2b;color:var(--green);border:1px solid #2a6040;border-radius:6px;padding:6px 12px;font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;text-decoration:none">📲 Notificar</a>';
       }
-      html += '</div>';
-      card.innerHTML = html;
-      cont.appendChild(card);
+      html += '<button onclick="editarAceite(\'' + m.id + '\',\'' + m.proximo_aceite + '\')" style="background:#103040;color:var(--steel);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;cursor:pointer">✏️ Editar fecha</button>';
+html += '<button onclick="eliminarAceite(\'' + m.id + '\')" style="background:#3d1a1a;color:#e07070;border:1px solid #6a2a2a;border-radius:6px;padding:6px 12px;font-family:Rajdhani,sans-serif;font-size:13px;font-weight:700;cursor:pointer">🗑️ Eliminar</button>';
+html += '</div>';
+card.innerHTML = html;
+cont.appendChild(card);
     });
   }
 }
-  
+
+  async function editarAceite(moto_id, fecha_actual) {
+  const nueva = prompt('Fecha actual: ' + fecha_actual + '\nNueva fecha (YYYY-MM-DD):');
+  if (!nueva) return;
+  await db.from('motos').update({ proximo_aceite: nueva }).eq('id', moto_id);
+  cargarAlertas();
+}
+
+async function eliminarAceite(moto_id) {
+  if (!confirm('¿Eliminar esta alerta de aceite?')) return;
+  await db.from('motos').update({ proximo_aceite: null, ultimo_aceite: null }).eq('id', moto_id);
+  cargarAlertas();
+}
 
   async function init() {
     const dot = document.getElementById('conn-dot');
