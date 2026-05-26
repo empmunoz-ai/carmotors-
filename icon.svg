@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#1B3A5C"/>
+  <polygon points="256,40 472,152 472,360 256,472 40,360 40,152" fill="#0f2236" stroke="#E8821A" stroke-width="12"/>
+  <text x="256" y="220" font-family="Arial Black,sans-serif" font-size="72" font-weight="900" fill="#E8821A" text-anchor="middle" letter-spacing="2">CM</text>
+  <rect x="80" y="310" width="352" height="60" fill="#C0392B" rx="6"/>
+  <text x="256" y="353" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="white" text-anchor="middle" letter-spacing="1">CARMOTORS</text>
+</svg>
