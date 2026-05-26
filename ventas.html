@@ -84,6 +84,7 @@
 <div class="tabs">
   <button class="tbtn active" onclick="sw('nueva',this)">➕ Nueva</button>
   <button class="tbtn" onclick="sw('hoy',this)">📊 Hoy</button>
+<button class="tbtn" onclick="sw('reportes',this)">📈 Reportes</button>
 <button class="tbtn" onclick="sw('historial',this)">🗂️ Historial</button>
   <button class="tbtn" onclick="sw('fiados',this)">💳 Fiados</button>
   <button class="tbtn" onclick="sw('caja',this)">🧾 Caja</button>
@@ -161,6 +162,42 @@
   </div>
   <div id="lista-historial"></div>
 </div>
+
+ <div id="sec-reportes" class="sec">
+  <div class="card">
+    <div class="ctitle">📈 Reportes</div>
+    <label class="fl">Período</label>
+    <select id="rep-periodo" onchange="cambiarPeriodo()">
+      <option value="hoy">Hoy</option>
+      <option value="semana">Esta semana</option>
+      <option value="mes">Este mes</option>
+      <option value="rango">Rango de fechas</option>
+    </select>
+    <div id="box-rango" style="display:none">
+      <div class="r2" style="margin-top:10px">
+        <div><label class="fl">Desde</label><input type="date" id="rep-desde"/></div>
+        <div><label class="fl">Hasta</label><input type="date" id="rep-hasta"/></div>
+      </div>
+    </div>
+    <button class="btnmain" onclick="cargarReportes()">🔍 VER REPORTE</button>
+  </div>
+  <div id="rep-resumen" style="display:none">
+    <div class="rgrid">
+      <div class="rcard"><div class="rval" id="rep-total">$0</div><div class="rlbl">Total vendido</div></div>
+      <div class="rcard"><div class="rvalg" id="rep-gan">$0</div><div class="rlbl">Ganancia</div></div>
+      <div class="rcard"><div class="rval" id="rep-serv">$0</div><div class="rlbl">Servicios</div></div>
+      <div class="rcard"><div class="rval" id="rep-rep">$0</div><div class="rlbl">Repuestos</div></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">💳 Por método de pago</div>
+      <div id="rep-metodos"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">📋 Ventas del período</div>
+      <div id="rep-lista"></div>
+    </div>
+  </div>
+ </div>
   
 <div id="sec-fiados" class="sec">
   <div id="lista-fiados"><div class="loading">Cargando...</div></div>
@@ -709,7 +746,71 @@ async function wasaVentaManual(venta_id, total) {
   if (!tel) return;
   wasaVenta(venta_id, '57' + tel, total);
 }
-    
+   function cambiarPeriodo() {
+  const p = document.getElementById('rep-periodo').value;
+  document.getElementById('box-rango').style.display = p === 'rango' ? 'block' : 'none';
+}
+
+async function cargarReportes() {
+  const periodo = document.getElementById('rep-periodo').value;
+  const ahora = new Date();
+  ahora.setHours(ahora.getHours() - 5);
+  let desde, hasta;
+  const hoy = ahora.toISOString().split('T')[0];
+  if (periodo === 'hoy') {
+    desde = hoy; hasta = hoy;
+  } else if (periodo === 'semana') {
+    const d = new Date(ahora);
+    d.setDate(d.getDate() - d.getDay());
+    desde = d.toISOString().split('T')[0];
+    hasta = hoy;
+  } else if (periodo === 'mes') {
+    desde = hoy.substring(0,7) + '-01';
+    hasta = hoy;
+  } else {
+    desde = document.getElementById('rep-desde').value;
+    hasta = document.getElementById('rep-hasta').value;
+    if (!desde || !hasta) { alert('Selecciona las fechas.'); return; }
+  }
+  const res = await db.from('ventas').select('*, clientes(nombre)').gte('fecha', desde).lte('fecha', hasta).order('fecha', { ascending: false });
+  const data = res.data || [];
+  let total = 0, gan = 0, serv = 0, rep = 0;
+  const metodos = {};
+  data.forEach(v => {
+    const cobrado = v.estado_pago === 'pagado' ? v.total : (v.abonado || 0);
+    total += cobrado;
+    gan += v.ganancia || 0;
+    if (v.tipo === 'servicio') serv += cobrado;
+    if (v.tipo === 'repuesto') rep += cobrado;
+    if (v.tipo === 'mixto') { serv += cobrado / 2; rep += cobrado / 2; }
+    const m = v.metodo_pago || 'otro';
+    metodos[m] = (metodos[m] || 0) + cobrado;
+  });
+  document.getElementById('rep-total').textContent = fmt(total);
+  document.getElementById('rep-gan').textContent = fmt(gan);
+  document.getElementById('rep-serv').textContent = fmt(serv);
+  document.getElementById('rep-rep').textContent = fmt(rep);
+  const mDiv = document.getElementById('rep-metodos');
+  mDiv.innerHTML = '';
+  Object.entries(metodos).forEach(([m, v]) => {
+    const row = document.createElement('div');
+    row.className = 'tr';
+    row.innerHTML = '<span style="text-transform:capitalize">💳 ' + m + '</span><span style="color:var(--orange);font-weight:700">' + fmt(v) + '</span>';
+    mDiv.appendChild(row);
+  });
+  const lista = document.getElementById('rep-lista');
+  lista.innerHTML = '';
+  if (!data.length) { lista.innerHTML = '<div class="empty"><span>📭</span>Sin ventas en este período.</div>'; }
+  data.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'vc';
+    const nomCli = v.clientes?.nombre || 'Mostrador';
+    card.innerHTML = '<div class="vtop"><div><div class="vnom">' + nomCli + '</div><div class="vsub">📝 ' + v.descripcion + '</div><div class="vsub">📅 ' + v.fecha + ' | 💳 ' + v.metodo_pago + '</div></div>' +
+      '<div><div class="vtot">' + fmt(v.total) + '</div><span class="bdg ' + (v.estado_pago === 'pagado' ? 'bpag' : v.estado_pago === 'fiado' ? 'bfia' : 'bpar') + '">' + v.estado_pago + '</span></div></div>';
+    lista.appendChild(card);
+  });
+  document.getElementById('rep-resumen').style.display = 'block';
+} 
 
     
 function msg(txt, tipo) {
