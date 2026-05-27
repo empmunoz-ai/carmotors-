@@ -842,7 +842,7 @@ async function init() {
 
 async function verificarTurno() {
   const hoy = new Date().toISOString().split('T')[0];
-  const res = await db.from('turnos_caja').select('*').eq('fecha', hoy).eq('estado', 'abierto').order('hora_apertura', { ascending: false }).limit(1);
+  const res = await db.from('turnos_caja').select('*').eq('estado', 'abierto')
   turnoActivo = (res.data && res.data.length) ? res.data[0] : null;
   const btnGuardar = document.querySelector('.btnmain');
   if (!turnoActivo) {
