@@ -94,8 +94,9 @@
 <button class="tbtn" onclick="sw('historial',this)">🗂️ Historial</button>
   <button class="tbtn" onclick="sw('fiados',this)">💳 Fiados</button>
   <button class="tbtn" onclick="sw('caja',this)">🧾 Caja</button>
+<button class="tbtn" onclick="sw('gastos',this)">💸 Gastos</button>
 </div>
-
+  
 <main>
 
 <div id="sec-nueva" class="sec active">
@@ -209,6 +210,42 @@
   <div id="lista-fiados"><div class="loading">Cargando...</div></div>
 </div>
 
+<div id="sec-gastos" class="sec">
+  <div class="card">
+    <div class="ctitle">💸 Registrar gasto</div>
+    <div id="msg-gasto" class="msg"></div>
+    <label class="fl">Descripcion</label>
+    <input type="text" id="g-desc" placeholder="Ej: Compra aceite, arriendo..."/>
+    <label class="fl">Categoria</label>
+    <select id="g-cat">
+      <option value="repuestos">🔩 Repuestos</option>
+      <option value="servicios">💡 Servicios (luz, agua...)</option>
+      <option value="herramientas">🔧 Herramientas</option>
+      <option value="arriendo">🏠 Arriendo</option>
+      <option value="otro">📋 Otro</option>
+    </select>
+    <div class="r2" style="margin-top:10px">
+      <div><label class="fl">Monto ($)</label><input type="number" id="g-monto" placeholder="0"/></div>
+      <div><label class="fl">Metodo</label>
+        <select id="g-metodo">
+          <option value="efectivo">💵 Efectivo</option>
+          <option value="nequi">📱 Nequi</option>
+          <option value="daviplata">📲 Daviplata</option>
+          <option value="tarjeta">💳 Tarjeta</option>
+        </select>
+      </div>
+    </div>
+    <button class="btnmain" onclick="guardarGasto()">💸 REGISTRAR GASTO</button>
+  </div>
+  <div class="card">
+    <div class="ctitle">📋 Gastos de hoy</div>
+    <div id="lista-gastos"><div class="loading">Cargando...</div></div>
+    <div id="total-gastos" style="display:none" class="tbox">
+      <div class="tf"><span>TOTAL GASTOS</span><span id="sum-gastos">$0</span></div>
+    </div>
+  </div>
+</div>
+  
 <div id="sec-caja" class="sec">
   <div class="card" id="box-ap">
     <div class="ctitle">🔓 Abrir turno</div>
@@ -265,6 +302,7 @@ function sw(sec, btn) {
   if (sec === 'hoy') cargarHoy();
   if (sec === 'fiados') cargarFiados();
   if (sec === 'caja') cargarCaja();
+  if (sec === 'gastos') cargarGastos();
 }
 
 function chTipo() {
@@ -824,6 +862,54 @@ async function cargarReportes() {
   document.getElementById('rep-resumen').style.display = 'block';
 } 
 
+ async function guardarGasto() {
+  if (!turnoActivo) { msg('⚠️ Abre la caja primero.', 'err', 'msg-gasto'); return; }
+  const desc = document.getElementById('g-desc').value.trim();
+  const monto = parseFloat(document.getElementById('g-monto').value) || 0;
+  const cat = document.getElementById('g-cat').value;
+  const metodo = document.getElementById('g-metodo').value;
+  if (!desc) { msg('⚠️ Escribe la descripcion.', 'err', 'msg-gasto'); return; }
+  if (!monto) { msg('⚠️ Escribe el monto.', 'err', 'msg-gasto'); return; }
+  const ahora = new Date(); ahora.setHours(ahora.getHours() - 5);
+  const fecha = ahora.toISOString().split('T')[0];
+  const res = await db.from('gastos').insert({ descripcion: desc, monto, categoria: cat, metodo, fecha }).select().single();
+  if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg-gasto'); return; }
+  msg('✅ Gasto registrado.', 'ok', 'msg-gasto');
+  document.getElementById('g-desc').value = '';
+  document.getElementById('g-monto').value = '';
+  await cargarGastos();
+}
+
+async function cargarGastos() {
+  const ahora = new Date(); ahora.setHours(ahora.getHours() - 5);
+  const hoy = ahora.toISOString().split('T')[0];
+  const res = await db.from('gastos').select('*').eq('fecha', hoy).order('creado_en', { ascending: false });
+  const data = res.data || [];
+  const cont = document.getElementById('lista-gastos');
+  const tbox = document.getElementById('total-gastos');
+  if (!data.length) { cont.innerHTML = '<div class="empty"><span>💸</span>Sin gastos hoy.</div>'; tbox.style.display = 'none'; return; }
+  cont.innerHTML = '';
+  let total = 0;
+  data.forEach(g => {
+    total += g.monto;
+    const card = document.createElement('div');
+    card.className = 'vc';
+    card.innerHTML = '<div class="vtop"><div><div class="vnom">' + g.descripcion + '</div>' +
+      '<div class="vsub">📂 ' + g.categoria + ' | 💳 ' + g.metodo + '</div></div>' +
+      '<div><div class="vtot" style="color:var(--red)">-' + fmt(g.monto) + '</div>' +
+      '<button onclick="eliminarGasto(\'' + g.id + '\')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px">🗑️</button></div></div>';
+    cont.appendChild(card);
+  });
+  document.getElementById('sum-gastos').textContent = fmt(total);
+  tbox.style.display = 'block';
+}
+
+async function eliminarGasto(id) {
+  if (!confirm('¿Eliminar este gasto?')) return;
+  await db.from('gastos').delete().eq('id', id);
+  await cargarGastos();
+}
+    
     
 function msg(txt, tipo) {
   const el = document.getElementById('msg');
