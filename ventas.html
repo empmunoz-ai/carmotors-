@@ -849,31 +849,15 @@ async function cargarReportes() {
   document.getElementById('rep-resumen').style.display = 'block';
 } 
 
- async function guardarGasto() {
-  if (!turnoActivo) { msg('⚠️ Abre la caja primero.', 'err', 'msg-gasto'); return; }
-  const desc = document.getElementById('g-desc').value.trim();
-  const monto = parseFloat(document.getElementById('g-monto').value) || 0;
-  const cat = document.getElementById('g-cat').value;
-  const metodo = document.getElementById('g-metodo').value;
-  if (!desc) { msg('⚠️ Escribe la descripcion.', 'err', 'msg-gasto'); return; }
-  if (!monto) { msg('⚠️ Escribe el monto.', 'err', 'msg-gasto'); return; }
-  const ahora = new Date(); ahora.setHours(ahora.getHours() - 5);
-  const fecha = ahora.toISOString().split('T')[0];
-  const res = await db.from('gastos').insert({ descripcion: desc, monto, categoria: cat, metodo, fecha }).select().single();
-  if (res.error) { msg('❌ ' + res.error.message, 'err', 'msg-gasto'); return; }
-  msg('✅ Gasto registrado.', 'ok', 'msg-gasto');
-  document.getElementById('g-desc').value = '';
-  document.getElementById('g-monto').value = '';
-  await cargarGastos();
-}
-
-async function cargarGastos() {
-  const ahora = new Date(); ahora.setHours(ahora.getHours() - 5);
+ async function cargarGastos() {
+  const ahora = new Date();
+  ahora.setHours(ahora.getHours() - 5);
   const hoy = ahora.toISOString().split('T')[0];
   const res = await db.from('gastos').select('*').eq('fecha', hoy).order('creado_en', { ascending: false });
   const data = res.data || [];
   const cont = document.getElementById('lista-gastos');
   const tbox = document.getElementById('total-gastos');
+  if (!cont) return;
   if (!data.length) { cont.innerHTML = '<div class="empty"><span>💸</span>Sin gastos hoy.</div>'; tbox.style.display = 'none'; return; }
   cont.innerHTML = '';
   let total = 0;
@@ -882,7 +866,7 @@ async function cargarGastos() {
     const card = document.createElement('div');
     card.className = 'vc';
     card.innerHTML = '<div class="vtop"><div><div class="vnom">' + g.descripcion + '</div>' +
-      '<div class="vsub">📂 ' + g.categoria + ' | 💳 ' + g.metodo + '</div></div>' +
+      '<div class="vsub">💳 ' + g.metodo + '</div></div>' +
       '<div><div class="vtot" style="color:var(--red)">-' + fmt(g.monto) + '</div>' +
       '<button onclick="eliminarGasto(\'' + g.id + '\')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px">🗑️</button></div></div>';
     cont.appendChild(card);
@@ -896,6 +880,24 @@ async function eliminarGasto(id) {
   await db.from('gastos').delete().eq('id', id);
   await cargarGastos();
 }
+
+async function guardarGasto() {
+  if (!turnoActivo) { alert('⚠️ Abre la caja primero.'); return; }
+  const desc = document.getElementById('g-desc').value.trim();
+  const monto = parseFloat(document.getElementById('g-monto').value) || 0;
+  const metodo = document.getElementById('g-metodo').value;
+  if (!desc) { alert('⚠️ Escribe la descripcion.'); return; }
+  if (!monto) { alert('⚠️ Escribe el monto.'); return; }
+  const ahora = new Date(); ahora.setHours(ahora.getHours() - 5);
+  const fecha = ahora.toISOString().split('T')[0];
+  const res = await db.from('gastos').insert({ descripcion: desc, monto, metodo, fecha }).select().single();
+  if (res.error) { alert('❌ ' + res.error.message); return; }
+  alert('✅ Gasto registrado.');
+  document.getElementById('g-desc').value = '';
+  document.getElementById('g-monto').value = '';
+  await cargarGastos();
+}
+ 
     
     
 function msg(txt, tipo) {
