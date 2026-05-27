@@ -209,7 +209,34 @@
   <div id="lista-fiados"><div class="loading">Cargando...</div></div>
 </div>
 
-<div id="sec-gastos" class="sec">
+  
+<div id="sec-caja" class="sec">
+  <div class="card" id="box-ap">
+    <div class="ctitle">🔓 Abrir turno</div>
+    <label class="fl">Vendedor</label>
+    <input type="text" id="tvendedor" placeholder="Tu nombre"/>
+    <label class="fl">Base de apertura ($)</label>
+    <input type="number" id="tbase" placeholder="50000"/>
+    <button class="btnmain" onclick="abrirTurno()">🔓 ABRIR TURNO</button>
+  </div>
+  <div class="card" id="box-ci" style="display:none">
+    <div class="ctitle">🔒 Cerrar turno</div>
+    <div id="cresumen"></div>
+    <label class="fl" style="margin-top:12px">Conteo fisico ($)</label>
+    <input type="number" id="tconteo" placeholder="0"/>
+    <label class="fl">Notas</label>
+    <input type="text" id="tnotas" placeholder="Observaciones..."/>
+    <button class="btnmain btnred" style="margin-top:12px" onclick="cerrarTurno()">🔒 CERRAR TURNO</button>
+    <a id="btnwasacierre" class="bwasa" style="display:block;text-align:center;padding:10px;margin-top:10px" href="#" target="_blank">📲 WhatsApp resumen</a>
+  </div>
+  <div class="card">
+    <div class="ctitle">📋 Historial</div>
+    <div id="lista-turnos"><div class="loading">Cargando...</div></div>
+  </div>
+</div>
+  
+
+  <div id="sec-gastos" class="sec">
   <div class="card">
     <div class="ctitle">💸 Registrar gasto</div>
     <div id="msg-gasto" class="msg"></div>
@@ -243,32 +270,7 @@
       <div class="tf"><span>TOTAL GASTOS</span><span id="sum-gastos">$0</span></div>
     </div>
   </div>
-</div>
-  
-<div id="sec-caja" class="sec">
-  <div class="card" id="box-ap">
-    <div class="ctitle">🔓 Abrir turno</div>
-    <label class="fl">Vendedor</label>
-    <input type="text" id="tvendedor" placeholder="Tu nombre"/>
-    <label class="fl">Base de apertura ($)</label>
-    <input type="number" id="tbase" placeholder="50000"/>
-    <button class="btnmain" onclick="abrirTurno()">🔓 ABRIR TURNO</button>
   </div>
-  <div class="card" id="box-ci" style="display:none">
-    <div class="ctitle">🔒 Cerrar turno</div>
-    <div id="cresumen"></div>
-    <label class="fl" style="margin-top:12px">Conteo fisico ($)</label>
-    <input type="number" id="tconteo" placeholder="0"/>
-    <label class="fl">Notas</label>
-    <input type="text" id="tnotas" placeholder="Observaciones..."/>
-    <button class="btnmain btnred" style="margin-top:12px" onclick="cerrarTurno()">🔒 CERRAR TURNO</button>
-    <a id="btnwasacierre" class="bwasa" style="display:block;text-align:center;padding:10px;margin-top:10px" href="#" target="_blank">📲 WhatsApp resumen</a>
-  </div>
-  <div class="card">
-    <div class="ctitle">📋 Historial</div>
-    <div id="lista-turnos"><div class="loading">Cargando...</div></div>
-  </div>
-</div>
 
 </main>
 
