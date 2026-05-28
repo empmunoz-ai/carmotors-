@@ -88,11 +88,10 @@
 </header>
 
 <div class="tabs">
- <button class="tbtn active" onclick="sw('nueva',this)">➕ Nueva</button>
-<button class="tbtn" onclick="sw('hoy',this)">📊 Hoy</button>
+ <button class="tbtn active" onclick="sw('nueva',this)">➕ Nueva venta</button>
 <button class="tbtn" onclick="sw('fiados',this)">💳 Fiados</button>
+<button class="tbtn" onclick="sw('gastos',this)">💸 Gastos</button>
 <button class="tbtn" onclick="sw('caja',this)">🧾 Caja</button>
-<button class="tbtn" onclick="sw('reportes',this)">📈 +</button>
 </div>
   
 <main>
@@ -285,7 +284,6 @@ function sw(sec, btn) {
   document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-' + sec).classList.add('active');
   btn.classList.add('active');
-  if (sec === 'hoy') cargarHoy();
   if (sec === 'fiados') cargarFiados();
   if (sec === 'caja') cargarCaja();
   if (sec === 'gastos') cargarGastos();
