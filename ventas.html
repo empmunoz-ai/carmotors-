@@ -207,30 +207,55 @@
   <div id="lista-fiados"><div class="loading">Cargando...</div></div>
 </div>
 
-  
-<div id="sec-caja" class="sec">
+  <div id="sec-caja" class="sec">
   <div class="card">
-  <div class="ctitle">💸 Registrar gasto</div>
-  <div id="msg-gasto" class="msg"></div>
-  <label class="fl">Descripcion</label>
-  <input type="text" id="g-desc" placeholder="Ej: Compra aceite, arriendo..."/>
-  <div class="r2" style="margin-top:10px">
-    <div><label class="fl">Monto ($)</label><input type="number" id="g-monto" placeholder="0"/></div>
-    <div><label class="fl">Metodo</label>
-      <select id="g-metodo">
-        <option value="efectivo">💵 Efectivo</option>
-        <option value="nequi">📱 Nequi</option>
-        <option value="daviplata">📲 Daviplata</option>
-        <option value="tarjeta">💳 Tarjeta</option>
-      </select>
+    <div class="ctitle">📊 Balance del día</div>
+    <div id="balance-box">
+      <div class="tr"><span>Base apertura</span><span id="bal-base">$0</span></div>
+      <div class="tr"><span>Total cobrado</span><span id="bal-cobrado" style="color:var(--green)">$0</span></div>
+      <div class="tr"><span>Total gastos</span><span id="bal-gastos" style="color:var(--red)">$0</span></div>
+      <div class="tf"><span>Debería haber</span><span id="bal-total">$0</span></div>
     </div>
   </div>
-  <button class="btnmain" style="background:#103040;color:var(--steel)" onclick="guardarGasto()">💸 REGISTRAR GASTO</button>
-  <div id="lista-gastos" style="margin-top:10px"></div>
-  <div id="total-gastos" style="display:none" class="tbox">
-    <div class="tf"><span>TOTAL GASTOS HOY</span><span id="sum-gastos">$0</span></div>
+  <div class="card">
+    <div class="ctitle">📈 Reporte del día</div>
+    <div id="rep-dia">
+      <div class="tr"><span>Servicios</span><span id="bal-serv">$0</span></div>
+      <div class="tr"><span>Repuestos</span><span id="bal-rep">$0</span></div>
+      <div class="tr"><span>Efectivo</span><span id="bal-ef">$0</span></div>
+      <div class="tr"><span>Nequi</span><span id="bal-nq">$0</span></div>
+      <div class="tr"><span>Daviplata</span><span id="bal-dp">$0</span></div>
+      <div class="tr"><span>Tarjeta</span><span id="bal-tj">$0</span></div>
+      <div class="tr"><span>Transferencia</span><span id="bal-tr">$0</span></div>
+      <div class="tr"><span>Credito</span><span id="bal-cr">$0</span></div>
+      <div class="tr"><span>Ganancia</span><span id="bal-gan" style="color:var(--green)">$0</span></div>
+    </div>
   </div>
+  <div class="card" id="box-ap">
+    <div class="ctitle">🔓 Abrir turno</div>
+    <label class="fl">Vendedor</label>
+    <input type="text" id="tvendedor" placeholder="Tu nombre"/>
+    <label class="fl">Base de apertura ($)</label>
+    <input type="number" id="tbase" placeholder="50000"/>
+    <button class="btnmain" onclick="abrirTurno()">🔓 ABRIR TURNO</button>
   </div>
+  <div class="card" id="box-ci" style="display:none">
+    <div class="ctitle">🔒 Cerrar turno</div>
+    <div id="cresumen"></div>
+    <label class="fl" style="margin-top:12px">Conteo fisico ($)</label>
+    <input type="number" id="tconteo" placeholder="0"/>
+    <label class="fl">Notas</label>
+    <input type="text" id="tnotas" placeholder="Observaciones..."/>
+    <button class="btnmain btnred" style="margin-top:12px" onclick="cerrarTurno()">🔒 CERRAR TURNO</button>
+    <a id="btnwasacierre" class="bwasa" style="display:block;text-align:center;padding:10px;margin-top:10px" href="#" target="_blank">📲 WhatsApp resumen</a>
+  </div>
+  <div class="card">
+    <div class="ctitle">📋 Historial turnos</div>
+     <div id="lista-turnos"><div class="loading">Cargando...</div></div>
+   </div>
+   </div>
+  
+
   <div class="card" id="box-ap">
     <div class="ctitle">🔓 Abrir turno</div>
     <label class="fl">Vendedor</label>
@@ -561,39 +586,62 @@ async function abrirTurno() {
 async function actualizarResumen() {
   if (!turnoActivo) return;
   const ahora = new Date();
-ahora.setHours(ahora.getHours() - 5);
-const hoy = ahora.toISOString().split('T')[0];
-const resVentas = await db.from('ventas').select('*').eq('fecha', hoy).gte('creado_en', turnoActivo.hora_apertura);
+  ahora.setHours(ahora.getHours() - 5);
+  const hoy = ahora.toISOString().split('T')[0];
+  const resVentas = await db.from('ventas').select('*').eq('fecha', hoy).gte('creado_en', turnoActivo.hora_apertura);
   const ventasHoy = resVentas.data || [];
-const ventaIds = ventasHoy.map(v => v.id);
-let gan = ventasHoy.reduce((s, v) => s + (v.ganancia || 0), 0);
-let total = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0;
-if (ventaIds.length) {
-  const resPagos = await db.from('pagos').select('*').in('venta_id', ventaIds).gte('creado_en', turnoActivo.hora_apertura);
-  const pagos_data = resPagos.data || [];
-  pagos_data.forEach(p => {
-    total += p.monto;
-    if (p.metodo === 'efectivo') ef += p.monto;
-    else if (p.metodo === 'nequi') nq += p.monto;
-    else if (p.metodo === 'daviplata') dp += p.monto;
-    else if (p.metodo === 'tarjeta') tj += p.monto;
-    else if (p.metodo === 'transferencia') tr += p.monto;
-    else if (p.metodo === 'credito') cr += p.monto;
+  const ventaIds = ventasHoy.map(v => v.id);
+  let gan = ventasHoy.reduce((s, v) => s + (v.ganancia || 0), 0);
+  let cobrado = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0;
+  let serv = 0, rep = 0;
+  if (ventaIds.length) {
+    const resPagos = await db.from('pagos').select('*').in('venta_id', ventaIds);
+    const pagos = resPagos.data || [];
+    pagos.forEach(p => {
+      cobrado += p.monto;
+      if (p.metodo === 'efectivo') ef += p.monto;
+      else if (p.metodo === 'nequi') nq += p.monto;
+      else if (p.metodo === 'daviplata') dp += p.monto;
+      else if (p.metodo === 'tarjeta') tj += p.monto;
+      else if (p.metodo === 'transferencia') tr += p.monto;
+      else if (p.metodo === 'credito') cr += p.monto;
+    });
+  }
+  ventasHoy.forEach(v => {
+    const c = v.estado_pago === 'pagado' ? v.total : (v.abonado || 0);
+    if (v.tipo === 'servicio') serv += c;
+    if (v.tipo === 'repuesto') rep += c;
   });
-}
-  turnoActivo = Object.assign({}, turnoActivo, { total_ventas: total, ganancia: gan, total_efectivo: ef, total_nequi: nq, total_daviplata: dp, total_tarjeta: tj, total_transferencia: tr, total_credito: cr });
+  const resGastos = await db.from('gastos').select('monto').eq('fecha', hoy);
+  const totalGastos = (resGastos.data || []).reduce((s, g) => s + g.monto, 0);
+  const base = turnoActivo.base_apertura || 0;
+  const deberiaHaber = base + cobrado - totalGastos;
+  document.getElementById('bal-base').textContent = fmt(base);
+  document.getElementById('bal-cobrado').textContent = fmt(cobrado);
+  document.getElementById('bal-gastos').textContent = '-' + fmt(totalGastos);
+  document.getElementById('bal-total').textContent = fmt(deberiaHaber);
+  document.getElementById('bal-serv').textContent = fmt(serv);
+  document.getElementById('bal-rep').textContent = fmt(rep);
+  document.getElementById('bal-ef').textContent = fmt(ef);
+  document.getElementById('bal-nq').textContent = fmt(nq);
+  document.getElementById('bal-dp').textContent = fmt(dp);
+  document.getElementById('bal-tj').textContent = fmt(tj);
+  document.getElementById('bal-tr').textContent = fmt(tr);
+  document.getElementById('bal-cr').textContent = fmt(cr);
+  document.getElementById('bal-gan').textContent = fmt(gan);
+  turnoActivo = Object.assign({}, turnoActivo, { total_ventas: cobrado, ganancia: gan, total_efectivo: ef, total_nequi: nq, total_daviplata: dp, total_tarjeta: tj, total_transferencia: tr, total_credito: cr });
+  const wasa = '*CIERRE CARMOTORS*\nVendedor: ' + turnoActivo.vendedor + '\nFecha: ' + hoy + '\nTotal cobrado: ' + fmt(cobrado) + '\nGastos: ' + fmt(totalGastos) + '\nDebería haber: ' + fmt(deberiaHaber) + '\nGanancia: ' + fmt(gan) + '\nEfectivo: ' + fmt(ef) + '\nNequi: ' + fmt(nq) + '\nDaviplata: ' + fmt(dp) + '\nTarjeta: ' + fmt(tj);
+  document.getElementById('btnwasacierre').href = 'https://wa.me/?text=' + encodeURIComponent(wasa);
   document.getElementById('cresumen').innerHTML =
-    '<div class="tr"><span>Total cobrado</span><span style="color:var(--orange)">' + fmt(total) + '</span></div>' +
+    '<div class="tr"><span>Total cobrado</span><span style="color:var(--orange)">' + fmt(cobrado) + '</span></div>' +
+    '<div class="tr"><span>Gastos</span><span style="color:var(--red)">-' + fmt(totalGastos) + '</span></div>' +
     '<div class="tr"><span>Ganancia</span><span style="color:var(--green)">' + fmt(gan) + '</span></div>' +
     '<div class="tr"><span>Efectivo</span><span>' + fmt(ef) + '</span></div>' +
     '<div class="tr"><span>Nequi</span><span>' + fmt(nq) + '</span></div>' +
     '<div class="tr"><span>Daviplata</span><span>' + fmt(dp) + '</span></div>' +
     '<div class="tr"><span>Tarjeta</span><span>' + fmt(tj) + '</span></div>' +
-    '<div class="tr"><span>Transferencia</span><span>' + fmt(tr) + '</span></div>' +
-    '<div class="tr"><span>Credito</span><span>' + fmt(cr) + '</span></div>' +
-    '<div class="tr"><span>Base apertura</span><span>' + fmt(turnoActivo.base_apertura) + '</span></div>';
-  const wasa = '*CIERRE CARMOTORS*\nVendedor: ' + turnoActivo.vendedor + '\nFecha: ' + turnoActivo.fecha + '\nTotal: ' + fmt(total) + '\nGanancia: ' + fmt(gan) + '\nEfectivo: ' + fmt(ef) + '\nNequi: ' + fmt(nq) + '\nDaviplata: ' + fmt(dp) + '\nTarjeta: ' + fmt(tj);
-  document.getElementById('btnwasacierre').href = 'https://wa.me/?text=' + encodeURIComponent(wasa);
+    '<div class="tr"><span>Base apertura</span><span>' + fmt(base) + '</span></div>' +
+    '<div class="tf"><span>Debería haber</span><span>' + fmt(deberiaHaber) + '</span></div>';
 }
 
 async function cerrarTurno() {
