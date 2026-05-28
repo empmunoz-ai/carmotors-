@@ -201,7 +201,37 @@
   <div id="lista-fiados"><div class="loading">Cargando...</div></div>
 </div>
 
-  <div id="sec-caja" class="sec">
+</div>
+
+<div id="sec-gastos" class="sec">
+  <div class="card">
+    <div class="ctitle">💸 Registrar gasto</div>
+    <div id="msg-gasto" class="msg"></div>
+    <label class="fl">Descripcion</label>
+    <input type="text" id="g-desc" placeholder="Ej: Compra aceite, arriendo..."/>
+    <div class="r2" style="margin-top:10px">
+      <div><label class="fl">Monto ($)</label><input type="number" id="g-monto" placeholder="0"/></div>
+      <div><label class="fl">Metodo</label>
+        <select id="g-metodo">
+          <option value="efectivo">💵 Efectivo</option>
+          <option value="nequi">📱 Nequi</option>
+          <option value="daviplata">📲 Daviplata</option>
+          <option value="tarjeta">💳 Tarjeta</option>
+        </select>
+      </div>
+    </div>
+    <button class="btnmain" onclick="guardarGasto()">💸 REGISTRAR GASTO</button>
+  </div>
+  <div class="card">
+    <div class="ctitle">📋 Gastos de hoy</div>
+    <div id="lista-gastos"><div class="loading">Cargando...</div></div>
+    <div id="total-gastos" style="display:none" class="tbox">
+      <div class="tf"><span>TOTAL GASTOS HOY</span><span id="sum-gastos">$0</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="sec-caja" class="sec">
   <div class="card">
     <div class="ctitle">📊 Balance del día</div>
     <div id="balance-box">
