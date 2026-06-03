@@ -436,6 +436,7 @@ async function guardar() {
   const tipo = tieneRep && tieneServ ? 'mixto' : items[0].tipo;
   const descripcion = items.map(i => i.descripcion).join(', ');
   const cliente_id = document.getElementById('vcliente').value || null;
+  const vendedor = turnoActivo ? turnoActivo.vendedor : 'Sin turno';
   const ahora2 = new Date();
 ahora2.setHours(ahora2.getHours() - 5);
 const fecha = ahora2.toISOString().split('T')[0];
