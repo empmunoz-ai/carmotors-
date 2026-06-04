@@ -450,6 +450,10 @@ const res = await db.from('ventas').insert({ cliente_id, tipo, descripcion, tota
       const art = articulos.find(a => a.id === i.articulo_id);
       if (art) await db.from('articulos').update({ stock: Math.max(0, art.stock - i.cantidad) }).eq('id', art.id);
     }
+    if (window._orden_pendiente_id) {
+  await db.from('ordenes_trabajo').update({ estado: 'pagada' }).eq('id', window._orden_pendiente_id);
+  window._orden_pendiente_id = null;
+    }
   }
   if (cliente_id && saldo > 0) {
     const cliRes = await db.from('clientes').select('saldo_pendiente').eq('id', cliente_id).single();
@@ -965,6 +969,22 @@ async function init() {
   await verificarTurno();
   renderMetodos();
   cargarHoy();
+  const ordenPendiente = localStorage.getItem('orden_pendiente');
+  if (ordenPendiente) {
+    localStorage.removeItem('orden_pendiente');
+    const datos = JSON.parse(ordenPendiente);
+    if (!turnoActivo) { msg('⚠️ Abre la caja primero para cobrar esta orden.', 'err'); return; }
+    items = datos.items;
+    if (datos.cliente_id) document.getElementById('vcliente').value = datos.cliente_id;
+    renderItems();
+    renderMetodos();
+    document.querySelector('.tbtn.active').classList.remove('active');
+    document.querySelector('.tbtn').classList.add('active');
+    document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-nueva').classList.add('active');
+    msg('🏍️ Orden de ' + datos.vehiculo + ' lista para cobrar.', 'ok');
+    window._orden_pendiente_id = datos.orden_id;
+  }
 }
 
 async function verificarTurno() {
