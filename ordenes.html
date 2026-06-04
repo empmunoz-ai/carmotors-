@@ -514,59 +514,25 @@ async function cambiarEstado() {
   msg('✅ Estado actualizado.', 'ok', 'msg2');
 }
 
-async function convertirVenta() {
+    async function convertirVenta() {
   if (!ordenActual || !items.length) { msg('⚠️ Agrega items a la orden.', 'err', 'msg2'); return; }
-  const total = items.reduce((s, i) => s + i.subtotal, 0);
-  const ganancia = items.reduce((s, i) => s + (i.precio_unitario - i.costo_unitario) * i.cantidad, 0);
-  const descripcion = items.map(i => i.descripcion).join(', ');
-  const tieneRep = items.some(i => i.tipo === 'repuesto');
-  const tieneServ = items.some(i => i.tipo === 'servicio');
-  const tipo = tieneRep && tieneServ ? 'mixto' : items[0].tipo;
-  const abonado = metodoPago === 'credito' ? (parseFloat(document.getElementById('dabono').value) || 0) : total;
-  const saldo = total - abonado;
-  const estado_pago = saldo <= 0 ? 'pagado' : abonado > 0 ? 'parcial' : 'fiado';
-  const ahora = new Date(); ahora.setHours(ahora.getHours() - 5);
-  const fecha = ahora.toISOString().split('T')[0];
-  const btn = event.target;
-  btn.disabled = true; btn.textContent = 'PROCESANDO...';
-  const vRes = await db.from('ventas').insert({ cliente_id: ordenActual.cliente_id || null, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodoPago, abonado, saldo, fecha }).select().single();
-  if (vRes.error) { btn.disabled = false; btn.textContent = '💰 COBRAR'; msg('❌ ' + vRes.error.message, 'err', 'msg2'); return; }
-  const venta = vRes.data;
-  await db.from('venta_items').insert(items.map(i => ({
-  venta_id: venta.id,
-  tipo: i.tipo,
-  descripcion: i.descripcion,
-  cantidad: i.cantidad,
-  precio_unitario: i.precio_unitario,
-  costo_unitario: i.costo_unitario,
-  subtotal: i.subtotal,
-  articulo_id: i.articulo_id || null
-})));
-  await db.from('pagos').insert({ venta_id: venta.id, monto: abonado, metodo: metodoPago, nota: 'Orden #' + ordenActual.id });
-  for (let i of items) {
-    if (i.articulo_id) {
-      const art = articulos.find(a => a.id === i.articulo_id);
-      if (art) await db.from('articulos').update({ stock: Math.max(0, art.stock - i.cantidad) }).eq('id', art.id);
+  localStorage.setItem('orden_pendiente', JSON.stringify({
+    orden_id: ordenActual.id,
+    cliente_id: ordenActual.cliente_id || null,
+    vehiculo: ordenActual.vehiculo,
+    items: items.map(i => ({
+      tipo: i.tipo,
+      descripcion: i.descripcion,
+      cantidad: i.cantidad,
+      precio_unitario: i.precio_unitario,
+      costo_unitario: i.costo_unitario || 0,
+      subtotal: i.subtotal,
+      articulo_id: i.articulo_id || null
+    }))
+  }));
+  window.location.href = 'ventas.html';
     }
-  }
-  if (ordenActual.cliente_id && saldo > 0) {
-    const cliRes = await db.from('clientes').select('saldo_pendiente').eq('id', ordenActual.cliente_id).single();
-    if (cliRes.data) await db.from('clientes').update({ saldo_pendiente: (cliRes.data.saldo_pendiente || 0) + saldo }).eq('id', ordenActual.cliente_id);
-  }
 
-  await db.from('ordenes_trabajo').update({ estado: 'pagada' }).eq('id', ordenActual.id);
-const esAceite = items.some(i => i.descripcion.toLowerCase().includes('aceite'));
-if (esAceite && ordenActual.moto_id) {
-  const motoRes = await db.from('motos').select('dias_aceite').eq('id', ordenActual.moto_id).single();
-  const dias = motoRes.data?.dias_aceite || 30;
-  const proximo = new Date();
-  proximo.setDate(proximo.getDate() + dias);
-  await db.from('motos').update({ ultimo_aceite: fecha, proximo_aceite: proximo.toISOString().split('T')[0] }).eq('id', ordenActual.moto_id);
-}
-  btn.disabled = false; btn.textContent = '💰 COBRAR';
-  msg('✅ Venta registrada.', 'ok', 'msg2');
-  setTimeout(() => volverLista(), 1000);
-}
 
 async function eliminarOrden() {
   if (!ordenActual) return;
