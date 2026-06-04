@@ -440,7 +440,7 @@ async function guardar() {
   const ahora2 = new Date();
 ahora2.setHours(ahora2.getHours() - 5);
 const fecha = ahora2.toISOString().split('T')[0];
-  const res = await db.from('ventas').insert({ cliente_id, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodo, abonado, saldo, fecha }).select().single();
+const res = await db.from('ventas').insert({ cliente_id, tipo, descripcion, total, ganancia, estado_pago, metodo_pago: metodo, abonado, saldo, fecha, vendedor }).select().single();
   if (res.error) { btn.disabled = false; btn.textContent = '💰 REGISTRAR VENTA'; msg('❌ ' + res.error.message, 'err'); return; }
   const venta = res.data;
   await db.from('venta_items').insert(items.map(i => Object.assign({}, i, { venta_id: venta.id })));
