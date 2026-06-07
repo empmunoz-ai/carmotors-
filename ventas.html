@@ -733,8 +733,8 @@ txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ':
   });
   txt += '─────────────\n';
   txt += 'TOTAL: ' + fmt(total) + '\n\nGracias por confiar en nosotros 🙏\nAnte cualquier inquietud estamos a sus órdenes.\nCARMOTORS — Mecánicos de Confianza 🏍️';
-  window.location.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(txt);
-   }
+  window.open('whatsapp://send?phone=' + tel + '&text=' + encodeURIComponent(txt));
+}
 async function wasaVentaManual(venta_id, total) {
   const tel = prompt('Número WhatsApp (sin +57):');
   if (!tel) return;
