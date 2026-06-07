@@ -734,8 +734,12 @@ txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ':
   txt += '─────────────\n';
   txt += 'TOTAL: ' + fmt(total) + '\n\nGracias por confiar en nosotros 🙏\nAnte cualquier inquietud estamos a sus órdenes.\nCARMOTORS — Mecánicos de Confianza 🏍️';
   const link = document.createElement('a');
-link.href = 'whatsapp://send?phone=' + tel + '&text=' + encodeURIComponent(txt);
-link.click();
+link.href = 'https://wa.me/' + tel + '?text=' + encodeURIComponent(txt);
+link.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a3d2b;color:#5ddb8c;border:1px solid #2a6040;border-radius:8px;padding:14px 24px;font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;text-decoration:none;z-index:999';
+link.textContent = '📲 Abrir WhatsApp';
+link.target = '_blank';
+document.body.appendChild(link);
+setTimeout(() => document.body.removeChild(link), 8000);
 }
 
     
