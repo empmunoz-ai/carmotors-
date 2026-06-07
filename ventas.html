@@ -733,14 +733,19 @@ txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ':
   });
   txt += '─────────────\n';
   txt += 'TOTAL: ' + fmt(total) + '\n\nGracias por confiar en nosotros 🙏\nAnte cualquier inquietud estamos a sus órdenes.\nCARMOTORS — Mecánicos de Confianza 🏍️';
-  window.open('whatsapp://send?phone=' + tel + '&text=' + encodeURIComponent(txt));
+  const link = document.createElement('a');
+link.href = 'whatsapp://send?phone=' + tel + '&text=' + encodeURIComponent(txt);
+link.click();
 }
-async function wasaVentaManual(venta_id, total) {
+
+    
+  async function wasaVentaManual(venta_id, total) {
   const tel = prompt('Número WhatsApp (sin +57):');
   if (!tel) return;
   await wasaVenta(venta_id, '57' + tel, total);
   }
-  
+
+    
     async function abonarTodo(cliente_id, nombre, telefono, total_saldo) {
   if (!turnoActivo) { alert('⚠️ Abre la caja primero.'); return; }
   const monto = parseFloat(prompt(nombre + ' debe: ' + fmt(total_saldo) + '\n¿Cuánto abona?'));
