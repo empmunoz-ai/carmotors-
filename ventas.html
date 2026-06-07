@@ -554,15 +554,50 @@ async function abono(venta_id, saldo_actual) {
 }
 
 async function cargarCaja() {
-  const hoy = new Date().toISOString().split('T')[0];
-  const res = await db.from('turnos_caja').select('*').eq('fecha', hoy).eq('estado', 'abierto').order('hora_apertura', { ascending: false }).limit(1);
-  turnoActivo = (res.data && res.data.length) ? res.data[0] : null;
-  const boxAp = document.getElementById('box-ap');
-  const boxCi = document.getElementById('box-ci');
-  if (turnoActivo) { boxAp.style.display = 'none'; boxCi.style.display = 'block'; actualizarResumen(); }
-  else { boxAp.style.display = 'block'; boxCi.style.display = 'none'; }
+  const ahora = new Date();
+  ahora.setHours(ahora.getHours() - 5);
+  const hoy = ahora.toISOString().split('T')[0];
+  const resVentas = await db.from('ventas').select('*').eq('fecha', hoy);
+  const ventasHoy = resVentas.data || [];
+  const ventaIds = ventasHoy.map(v => v.id);
+  let cobrado = 0, ef = 0, nq = 0, dp = 0, tj = 0, tr = 0, cr = 0, gan = 0, serv = 0, rep = 0;
+  if (ventaIds.length) {
+    const resPagos = await db.from('pagos').select('*').in('venta_id', ventaIds);
+    const pagos = resPagos.data || [];
+    pagos.forEach(p => {
+      cobrado += p.monto;
+      if (p.metodo === 'efectivo') ef += p.monto;
+      else if (p.metodo === 'nequi') nq += p.monto;
+      else if (p.metodo === 'daviplata') dp += p.monto;
+      else if (p.metodo === 'tarjeta') tj += p.monto;
+      else if (p.metodo === 'transferencia') tr += p.monto;
+      else if (p.metodo === 'credito') cr += p.monto;
+    });
+  }
+  ventasHoy.forEach(v => {
+    gan += v.ganancia || 0;
+    const c = v.estado_pago === 'pagado' ? v.total : (v.abonado || 0);
+    if (v.tipo === 'servicio') serv += c;
+    else if (v.tipo === 'repuesto') rep += c;
+  });
+  const resGastos = await db.from('gastos').select('monto').eq('fecha', hoy);
+  const totalGastos = (resGastos.data || []).reduce((s, g) => s + g.monto, 0);
+  const deberiaHaber = cobrado - totalGastos;
+  document.getElementById('bal-base') && (document.getElementById('bal-base').textContent = fmt(cobrado));
+  document.getElementById('bal-cobrado') && (document.getElementById('bal-cobrado').textContent = fmt(cobrado));
+  document.getElementById('bal-gastos') && (document.getElementById('bal-gastos').textContent = '-' + fmt(totalGastos));
+  document.getElementById('bal-total') && (document.getElementById('bal-total').textContent = fmt(deberiaHaber));
+  document.getElementById('bal-serv') && (document.getElementById('bal-serv').textContent = fmt(serv));
+  document.getElementById('bal-rep') && (document.getElementById('bal-rep').textContent = fmt(rep));
+  document.getElementById('bal-ef') && (document.getElementById('bal-ef').textContent = fmt(ef));
+  document.getElementById('bal-nq') && (document.getElementById('bal-nq').textContent = fmt(nq));
+  document.getElementById('bal-dp') && (document.getElementById('bal-dp').textContent = fmt(dp));
+  document.getElementById('bal-tj') && (document.getElementById('bal-tj').textContent = fmt(tj));
+  document.getElementById('bal-tr') && (document.getElementById('bal-tr').textContent = fmt(tr));
+  document.getElementById('bal-cr') && (document.getElementById('bal-cr').textContent = fmt(cr));
+  document.getElementById('bal-gan') && (document.getElementById('bal-gan').textContent = fmt(gan));
   cargarHistorial();
-}
+                                        }
 
 async function abrirTurno() {
   const vendedor = document.getElementById('tvendedor').value.trim();
