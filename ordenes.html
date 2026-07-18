@@ -209,6 +209,7 @@
   <button class="btnsmall btngreen" id="btnconvertir" style="display:none" onclick="convertirVenta()">💰 COBRAR</button>
   <button class="btnsmall" style="background:#1a2a3a;color:var(--steel);border:1px solid var(--border)" onclick="asignarDueno()">👤 Dueño</button>
   <button class="btnsmall btnred" onclick="eliminarOrden()">🗑️ ELIMINAR</button>
+  <bbutton class="btnsmall" style="background:#1a3d2b;color:var(--green);border:1px solid #2a6040" onclick="enviarPresupuesto()">📲 Presupuesto</button>
     </div>
    
     
@@ -628,6 +629,32 @@ async function crearYAsignarDueno() {
     box.appendChild(item);
   });
       } 
+    async function enviarPresupuesto() {
+  if (!ordenActual || !items.length) { msg('⚠️ Agrega items primero.', 'err', 'msg2'); return; }
+  const total = items.reduce((s, i) => s + i.subtotal, 0);
+  const cli = ordenActual.clientes?.nombre || 'Cliente';
+  let txt = '*CARMOTORS* 🏍️\n';
+  txt += 'Hola ' + cli + ', presupuesto para su ' + ordenActual.vehiculo;
+  if (ordenActual.placa) txt += ' - ' + ordenActual.placa;
+  txt += ':\n\n';
+  items.forEach(it => {
+    const cant = it.cantidad > 1 ? ' (x' + it.cantidad + ')' : '';
+    txt += (it.tipo === 'repuesto' ? '🔩 ' : '🔧 ') + it.descripcion + cant + ': ' + fmt(it.precio_unitario * it.cantidad) + '\n';
+  });
+  txt += '─────────────\n';
+  txt += 'TOTAL: ' + fmt(total) + '\n\n';
+  txt += '_Presupuesto sujeto a cambios_\n';
+  txt += 'CARMOTORS — Mecánicos de Confianza 🏍️';
+  const tel = prompt('Teléfono WhatsApp (sin +57):');
+  if (!tel) return;
+  const link = document.createElement('a');
+  link.href = 'https://wa.me/57' + tel + '?text=' + encodeURIComponent(txt);
+  link.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a3d2b;color:#5ddb8c;border:1px solid #2a6040;border-radius:8px;padding:14px 24px;font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;text-decoration:none;z-index:999';
+  link.textContent = '📲 Abrir WhatsApp';
+  link.target = '_blank';
+  document.body.appendChild(link);
+  setTimeout(() => document.body.removeChild(link), 8000);
+    }
 
 function msg(txt, tipo, el) {
   const el_msg = document.getElementById(el);
