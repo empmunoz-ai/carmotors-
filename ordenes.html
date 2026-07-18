@@ -553,23 +553,53 @@ function volverLista() {
 }
 async function asignarDueno() {
   if (!ordenActual) { alert('No hay orden activa.'); return; }
-  const res = await db.from('clientes').select('id, nombre').order('nombre');
-  const lista = res.data || [];
-  if (!lista.length) { alert('No hay clientes registrados.'); return; }
-  let opciones = lista.map((c, i) => (i+1) + '. ' + c.nombre).join('\n');
-  const sel = prompt('Selecciona el dueño:\n' + opciones + '\n\nEscribe el número:');
-  if (!sel) return;
-  const idx = parseInt(sel) - 1;
-  if (idx < 0 || idx >= lista.length) { alert('Número inválido.'); return; }
-  const cliente = lista[idx];
-  if (ordenActual.moto_id) {
-    await db.from('motos').update({ cliente_id: cliente.id }).eq('id', ordenActual.moto_id);
-  }
-  await db.from('ordenes_trabajo').update({ cliente_id: cliente.id }).eq('id', ordenActual.id);
-  ordenActual.cliente_id = cliente.id;
+  const box = document.getElementById('box-asignar-dueno');
+  if (box) { box.style.display = box.style.display === 'none' ? 'block' : 'none'; return; }
+  const div = document.createElement('div');
+  div.id = 'box-asignar-dueno';
+  div.className = 'card';
+  div.style.marginTop = '12px';
+  let html = '<div class="ctitle">👤 Asignar dueño</div>';
+  html += '<label class="fl">Cliente existente</label>';
+  html += '<select id="sel-dueno"><option value="">Selecciona...</option>';
+  clientes.forEach(c => { html += '<option value="' + c.id + '">' + c.nombre + '</option>'; });
+  html += '</select>';
+  html += '<button class="btnmain" style="margin-top:8px" onclick="confirmarDueno()">✅ ASIGNAR</button>';
+  html += '<div style="text-align:center;margin:10px 0;color:var(--muted);font-size:12px">— o crear nuevo —</div>';
+  html += '<label class="fl">Nombre</label><input type="text" id="nuevo-dueno-nom" placeholder="Juan Perez"/>';
+  html += '<label class="fl">Teléfono</label><input type="text" id="nuevo-dueno-tel" placeholder="3001234567"/>';
+  html += '<button class="btnmain" style="background:#103040;color:var(--steel);margin-top:8px" onclick="crearYAsignarDueno()">➕ CREAR Y ASIGNAR</button>';
+  div.innerHTML = html;
+  document.querySelector('#sec-detalle .card').appendChild(div);
+}
+
+async function confirmarDueno() {
+  const id = document.getElementById('sel-dueno').value;
+  if (!id) { alert('Selecciona un cliente.'); return; }
+  const cliente = clientes.find(c => c.id === id);
+  await db.from('motos').update({ cliente_id: id }).eq('id', ordenActual.moto_id);
+  await db.from('ordenes_trabajo').update({ cliente_id: id }).eq('id', ordenActual.id);
+  ordenActual.cliente_id = id;
   alert('✅ Dueño asignado: ' + cliente.nombre);
+  document.getElementById('box-asignar-dueno').remove();
   volverLista();
 }
+
+async function crearYAsignarDueno() {
+  const nombre = document.getElementById('nuevo-dueno-nom').value.trim();
+  const telefono = document.getElementById('nuevo-dueno-tel').value.trim();
+  if (!nombre) { alert('⚠️ Escribe el nombre.'); return; }
+  const res = await db.from('clientes').insert({ nombre, telefono: telefono || null, saldo_pendiente: 0 }).select().single();
+  if (res.error) { alert('❌ ' + res.error.message); return; }
+  const nuevo = res.data;
+  await db.from('motos').update({ cliente_id: nuevo.id }).eq('id', ordenActual.moto_id);
+  await db.from('ordenes_trabajo').update({ cliente_id: nuevo.id }).eq('id', ordenActual.id);
+  ordenActual.cliente_id = nuevo.id;
+  alert('✅ Cliente creado y asignado: ' + nombre);
+  document.getElementById('box-asignar-dueno').remove();
+  volverLista();
+}
+
    async function sugerirMotos() {
   const txt = document.getElementById('busca-placa').value.trim().toUpperCase();
   const box = document.getElementById('sugerencias');
